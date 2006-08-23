@@ -20,6 +20,7 @@ class pakeSimpletestTask
     set_include_path('test'.PATH_SEPARATOR.'lib'.PATH_SEPARATOR.'classes'.PATH_SEPARATOR.get_include_path());
 
     include_once('simpletest/unit_tester.php');
+    include_once('simpletest/web_tester.php');
     if (!class_exists('GroupTest'))
     {
       throw new pakeException('You must install SimpleTest to use this task.');
