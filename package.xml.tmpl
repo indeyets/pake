@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.4.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+ <name>pake</name>
+ <channel>pear.symfony-project.com</channel>
+ <summary>Build system with capabilities similar to make.</summary>
+ <description>Build system with capabilities similar to make.
+ </description>
+ <lead>
+  <name>Fabien POTENCIER</name>
+  <user>fabpot</user>
+  <email>fabien.potencier@symfony-project.com</email>
+  <active>yes</active>
+ </lead>
+ <date>##CURRENT_DATE##</date>
+ <version>
+   <release>##PAKE_VERSION##</release>
+   <api>1.0.0</api>
+ </version>
+ <stability>
+  <release>stable</release>
+  <api>stable</api>
+ </stability>
+ <license uri="http://www.pake-project.com/license">MIT license</license>
+  <notes>-</notes>
+ <contents>
+  <dir name="/">
+   <file role="script" baseinstalldir="/" name="bin/pake.sh">
+    <tasks:replace type="pear-config" from="@PHP-BIN@" to="php_bin"/>
+    <tasks:replace type="pear-config" from="@BIN-DIR@" to="bin_dir"/>
+    <tasks:replace type="pear-config" from="@PEAR-DIR@" to="php_dir"/>
+   </file>
+   <file role="script" baseinstalldir="/" name="bin/pake.bat">
+    <tasks:replace type="pear-config" from="@PHP-BIN@" to="php_bin"/>
+    <tasks:replace type="pear-config" from="@BIN-DIR@" to="bin_dir"/>
+    <tasks:replace type="pear-config" from="@PEAR-DIR@" to="php_dir"/>
+   </file>
+
+   <file role="php" baseinstalldir="/" install-as="pake.php" name="bin/pake.php"/>
+   <file role="php" baseinstalldir="pake" install-as="pakeApp.class.php" name="lib/pake/pakeApp.class.php">
+    <tasks:replace type="package-info" from="1.0.DEV" to="version"/>
+   </file>
+
+   ##CLASS_FILES##
+
+   <file role="doc" baseinstalldir="pake" name="LICENSE"/>
+  </dir>
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>5.0.0</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.1</min>
+   </pearinstaller>
+  </required>
+ </dependencies>
+
+ <phprelease>
+   <installconditions>
+    <os>
+     <name>windows</name>
+    </os>
+   </installconditions>
+   <filelist>
+    <install as="pake.bat" name="bin/pake.bat" />
+    <ignore name="bin/pake.sh" />
+   </filelist>
+  </phprelease>
+
+  <phprelease>
+   <filelist>
+    <install as="pake" name="bin/pake.sh" />
+    <ignore name="bin/pake.bat" />
+   </filelist>
+  </phprelease>
+
+ <changelog>
+ </changelog>
+</package>
