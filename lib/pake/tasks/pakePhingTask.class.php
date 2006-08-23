@@ -1,5 +1,11 @@
 <?php
 
+include_once 'phing/Phing.php';
+if (!class_exists('Phing'))
+{
+  throw new pakeException('You must install Phing to use this task. (pear install http://phing.info/pear/phing-current.tgz)');
+}
+
 class pakePhingTask
 {
   public static function import_default_tasks()
@@ -34,24 +40,19 @@ class pakePhingTask
       $args[] = $target;
     }
 
-    include_once 'phing/Phing.php';
-    if (!class_exists('Phing'))
-    {
-      throw new pakeException('You must install Phing to use this task. (pear install http://phing.info/pear/phing-current.tgz)');
-    }
-
     Phing::startup();
     Phing::setProperty('phing.home', getenv('PHING_HOME'));
 
-    try
-    {
-      $m = new Phing();
-      $m->execute($args);
-      $m->runBuild();
-    }
-    catch (Exception $e)
-    {
-      throw new Exception($e->getMessage());
-    }
+    $m = new pakePhing();
+    $m->execute($args);
+    $m->runBuild();
+  }
+}
+
+class pakePhing extends Phing
+{
+  function getPhingVersion()
+  {
+    return 'pakePhing';
   }
 }
