@@ -478,8 +478,6 @@ class pakeFinder
   {
     if (!count($this->prunes)) return false;
 
-    $entry = str_replace($this->search_dir.DIRECTORY_SEPARATOR, '', $dir.DIRECTORY_SEPARATOR.$entry);
-
     foreach ($this->prunes as $args)
     {
       $regex = $args[1];
@@ -492,8 +490,6 @@ class pakeFinder
   private function is_discarded($dir, $entry)
   {
     if (!count($this->discards)) return false;
-
-    $entry = str_replace($this->search_dir.DIRECTORY_SEPARATOR, '', $dir.DIRECTORY_SEPARATOR.$entry);
 
     foreach ($this->discards as $args)
     {
