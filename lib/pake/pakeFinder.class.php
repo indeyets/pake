@@ -2,8 +2,8 @@
 
 /**
  * @package    pake
- * @author     Fabien Potencier <fabien.potencier@gmail.com>
- * @copyright  2004-2005 Fabien Potencier <fabien.potencier@gmail.com>
+ * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
+ * @copyright  2004-2005 Fabien Potencier <fabien.potencier@symfony-project.com>
  * @license    see the LICENSE file included in the distribution
  * @version    SVN: $Id$
  */
@@ -31,8 +31,8 @@ if (class_exists('pakeFinder'))
  * Interface loosely based on perl File::Find::Rule module.
  *
  * @package    pake
- * @author     Fabien Potencier <fabien.potencier@gmail.com>
- * @copyright  2004-2005 Fabien Potencier <fabien.potencier@gmail.com>
+ * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
+ * @copyright  2004-2005 Fabien Potencier <fabien.potencier@symfony-project.com>
  * @license    see the LICENSE file included in the distribution
  * @version    SVN: $Id$
  */

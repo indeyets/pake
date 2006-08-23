@@ -2,8 +2,8 @@
 
 /**
  * @package    pake
- * @author     Fabien Potencier <fabien.potencier@gmail.com>
- * @copyright  2004-2005 Fabien Potencier <fabien.potencier@gmail.com>
+ * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
+ * @copyright  2004-2005 Fabien Potencier <fabien.potencier@symfony-project.com>
  * @license    see the LICENSE file included in the distribution
  * @version    SVN: $Id$
  */
@@ -15,8 +15,8 @@
  * This class is a singleton.
  *
  * @package    pake
- * @author     Fabien Potencier <fabien.potencier@gmail.com>
- * @copyright  2004-2005 Fabien Potencier <fabien.potencier@gmail.com>
+ * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
+ * @copyright  2004-2005 Fabien Potencier <fabien.potencier@symfony-project.com>
  * @license    see the LICENSE file included in the distribution
  * @version    SVN: $Id$
  */

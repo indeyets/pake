@@ -1,11 +1,20 @@
 <?php
 
+/**
+ * @package    pake
+ * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
+ * @copyright  2004-2005 Fabien Potencier <fabien.potencier@symfony-project.com>
+ * @license    see the LICENSE file included in the distribution
+ * @version    SVN: $Id$
+ */
+
 require_once 'pake/pakeException.class.php';
 require_once 'pake/pakeYaml.class.php';
 require_once 'pake/pakeGetopt.class.php';
 require_once 'pake/pakeFinder.class.php';
 require_once 'pake/pakeTask.class.php';
 require_once 'pake/pakeFileTask.class.php';
+require_once 'pake/pakeColor.class.php';
 require_once 'pake/pakeApp.class.php';
 
 function pake_import($name, $import_default_tasks = true)

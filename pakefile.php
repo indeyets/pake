@@ -10,6 +10,13 @@ pake_task('compact');
 pake_desc('release a new pake version');
 pake_task('release');
 
+pake_task('foo');
+
+function run_foo($task, $args)
+{
+  throw new Exception('test');
+}
+
 /* tasks */
 /**
  * To be able to include a plugin in pake_runtime.php, you have to use include_once for external dependencies

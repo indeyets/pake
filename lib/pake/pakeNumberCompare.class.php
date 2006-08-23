@@ -2,9 +2,9 @@
 
 /**
  * @package    pake
- * @author     Fabien Potencier <fabien.potencier@gmail.com> php port
+ * @author     Fabien Potencier <fabien.potencier@symfony-project.com> php port
  * @author     Richard Clamp <richardc@unixbeard.net> perl version
- * @copyright  2004-2005 Fabien Potencier <fabien.potencier@gmail.com>
+ * @copyright  2004-2005 Fabien Potencier <fabien.potencier@symfony-project.com>
  * @copyright  2002 Richard Clamp <richardc@unixbeard.net>
  * @license    see the LICENSE file included in the distribution
  * @version    SVN: $Id$
@@ -33,9 +33,9 @@ if (class_exists('pakeNumberCompare'))
  * based on perl Number::Compare module.
  *
  * @package    pake
- * @author     Fabien Potencier <fabien.potencier@gmail.com> php port
+ * @author     Fabien Potencier <fabien.potencier@symfony-project.com> php port
  * @author     Richard Clamp <richardc@unixbeard.net> perl version
- * @copyright  2004-2005 Fabien Potencier <fabien.potencier@gmail.com>
+ * @copyright  2004-2005 Fabien Potencier <fabien.potencier@symfony-project.com>
  * @copyright  2002 Richard Clamp <richardc@unixbeard.net>
  * @see        http://physics.nist.gov/cuu/Units/binary.html
  * @license    see the LICENSE file included in the distribution

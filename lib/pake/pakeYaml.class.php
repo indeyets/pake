@@ -1,4 +1,13 @@
 <?php
+
+/**
+ * @package    pake
+ * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
+ * @copyright  2004-2005 Fabien Potencier <fabien.potencier@symfony-project.com>
+ * @license    see the LICENSE file included in the distribution
+ * @version    SVN: $Id$
+ */
+
   class pakeYaml
   {
     public static function load ($input)
