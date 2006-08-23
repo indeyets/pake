@@ -12,14 +12,6 @@ else
 
 include_once('pake/pakeFunction.php');
 
-// register our default exception handler
-function pake_exception_default_handler($exception)
-{
-  $e = new pakeException();
-  $e->render($exception);
-}
-set_exception_handler('pake_exception_default_handler');
-
 if (basename(__FILE__) == basename($_SERVER['SCRIPT_NAME']))
 {
   $pake = pakeApp::get_instance();

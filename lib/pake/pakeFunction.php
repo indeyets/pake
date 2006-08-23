@@ -342,3 +342,11 @@ function pake_strip_php_comments($arg)
     file_put_contents($file, $output);
   }
 }
+
+// register our default exception handler
+function pake_exception_default_handler($exception)
+{
+  $e = new pakeException();
+  $e->render($exception);
+}
+set_exception_handler('pake_exception_default_handler');
