@@ -166,7 +166,7 @@ function pake_remove($arg, $target_dir)
 
   foreach ($files as $file)
   {
-    if (is_dir($file))
+    if (is_dir($file) && !is_link($file))
     {
       if ($verbose) echo '>> dir-      '.pakeApp::excerpt($file)."\n";
 
