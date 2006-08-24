@@ -21,13 +21,16 @@ class pakeException extends Exception
 {
   function render($e)
   {
-    echo pakeColor::colorize('  ['.get_class($e).'] '.$e->getMessage()."  \n", 'ERROR');
+    $message = '  ['.get_class($e).'] '.$e->getMessage().'  ';
+    echo "\n".pakeColor::colorize(str_repeat(' ', strlen($message))."\n", 'ERROR');
+    echo pakeColor::colorize($message."\n", 'ERROR');
+    echo pakeColor::colorize(str_repeat(' ', strlen($message))."\n", 'ERROR')."\n";
 
     $pake = pakeApp::get_instance();
 
     if ($pake->get_trace())
     {
-      echo "\ntrace:\n";
+      echo "exception trace:\n";
 
       $trace = $this->trace($e);
       for ($i = 0, $count = count($trace); $i < $count; $i++)

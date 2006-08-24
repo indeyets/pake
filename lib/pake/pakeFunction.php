@@ -104,9 +104,9 @@ function pake_mkdirs($path, $mode = 0777)
     return true;
   }
 
-  if ($verbose) echo '>> dir+      '.pakeApp::excerpt($path)."\n";
+  pake_echo_action('dir+', $path);
 
-  return mkdir($path, $mode, true);
+  return @mkdir($path, $mode, true);
 }
 
 /*
@@ -137,7 +137,7 @@ function pake_copy($origin_file, $target_file, $options = array())
 
   if ($options['override'] || !file_exists($target_file) || $most_recent)
   {
-    if ($verbose) echo '>> file+     '.pakeApp::excerpt($target_file)."\n";
+    pake_echo_action('file+', $target_file);
     copy($origin_file, $target_file);
   }
 }
@@ -177,13 +177,13 @@ function pake_remove($arg, $target_dir)
   {
     if (is_dir($file) && !is_link($file))
     {
-      if ($verbose) echo '>> dir-      '.pakeApp::excerpt($file)."\n";
+      pake_echo_action('dir-', $file);
 
       rmdir($file);
     }
     else
     {
-      if ($verbose) echo '>> file-     '.pakeApp::excerpt($file)."\n";
+      pake_echo_action('file-', $file);
 
       unlink($file);
     }
@@ -198,7 +198,7 @@ function pake_touch($arg, $target_dir)
 
   foreach ($files as $file)
   {
-    if ($verbose) echo '>> file+     '.pakeApp::excerpt($file)."\n";
+    pake_echo_action('file+', $file);
 
     touch($file);
   }
@@ -220,7 +220,7 @@ function pake_replace_tokens($arg, $target_dir, $begin_token, $end_token, $token
       if ($count) $replaced = true;
     }
 
-    if ($verbose && $replaced) echo '>> tokens    '.pakeApp::excerpt($target_dir.DIRECTORY_SEPARATOR.$file)."\n";
+    pake_echo_action('tokens', $target_dir.DIRECTORY_SEPARATOR.$file);
 
     file_put_contents($target_dir.DIRECTORY_SEPARATOR.$file, $content);
   }
@@ -244,7 +244,7 @@ function pake_symlink($origin_dir, $target_dir)
   if (!$ok)
   {
     $verbose = pakeApp::get_instance()->get_verbose();
-    if ($verbose) echo '>> symlink+  '.pakeApp::excerpt($target_dir)."\n";
+    pake_echo_action('symlink+', $target_dir);
     symlink($origin_dir, $target_dir);
   }
 }
@@ -260,7 +260,7 @@ function pake_chmod($arg, $target_dir, $mode, $umask = 0000)
 
   foreach ($files as $file)
   {
-    if ($verbose) printf('>> chmod %o '.pakeApp::excerpt($target_dir.DIRECTORY_SEPARATOR.$file)."\n", $mode);
+    pake_echo_action(sprintf('chmod %o', $mode), $target_dir.DIRECTORY_SEPARATOR.$file);
     chmod($target_dir.DIRECTORY_SEPARATOR.$file, $mode);
   }
 
@@ -270,8 +270,8 @@ function pake_chmod($arg, $target_dir, $mode, $umask = 0000)
 function pake_sh($cmd)
 {
   $verbose = pakeApp::get_instance()->get_verbose();
-  if ($verbose) echo ">> exec      $cmd\n";
-  
+  pake_echo_action('exec ', $cmd);
+
   ob_start();
   passthru($cmd.' 2>&1', $return);
   $content = ob_get_contents();
@@ -340,6 +340,30 @@ function pake_strip_php_comments($arg)
     }
 
     file_put_contents($file, $output);
+  }
+}
+
+function pake_echo_action($section, $text)
+{
+  if (pakeApp::get_instance()->get_verbose())
+  {
+    echo sprintf('>> %-20s %s', pakeColor::colorize($section, 'INFO'), pakeApp::excerpt($text))."\n";
+  }
+}
+
+function pake_excerpt($text)
+{
+  if (pakeApp::get_instance()->get_verbose())
+  {
+    echo pakeApp::excerpt($text)."\n";
+  }
+}
+
+function pake_echo($text)
+{
+  if (pakeApp::get_instance()->get_verbose())
+  {
+    echo $text."\n";
   }
 }
 

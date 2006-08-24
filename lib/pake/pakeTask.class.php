@@ -153,7 +153,7 @@ class pakeTask
   {
     if ($this->trace)
     {
-      echo '>> invoke '.$this->name.' '.$this->format_trace_flags()."\n";
+      pake_echo_action('invoke', $this->name.' '.$this->format_trace_flags());
     }
 
     // return if already invoked
@@ -186,13 +186,13 @@ class pakeTask
   {
     if ($this->dryrun)
     {
-      echo '>> execute (dry run) '.$this->name."\n";
+      pake_echo_action('execute', '(dry run) '.$this->name);
       return;
     }
 
     if ($this->trace)
     {
-      echo '>> execute '.$this->name."\n";
+      pake_echo_action('execute', $this->name);
     }
 
     // action to run

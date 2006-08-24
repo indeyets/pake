@@ -232,7 +232,7 @@ class pakeApp
         $this->verbose = true;
         break;
       case 'version':
-        echo 'pake version '.pakeApp::VERSION."\n";
+        echo sprintf('pake version %s', pakeColor::colorize(pakeApp::VERSION, 'INFO'))."\n";
         exit();
       default:
         throw new pakeException(sprintf("Unknown option: %s", $opt));
@@ -242,7 +242,7 @@ class pakeApp
   // Display the program usage line.
   public function usage()
   {
-    echo "pake [-f pakefile] {options} targets...\nTry pake -H for more information\n";
+    echo "pake [-f pakefile] {options} targets...\n".pakeColor::colorize("Try pake -H for more information", 'INFO')."\n";
   }
 
   // Display the rake command line help.
@@ -250,7 +250,7 @@ class pakeApp
   {
     $this->usage();
     echo "\n";
-    echo "available options";
+    echo "available options:";
     echo "\n";
 
     foreach (pakeApp::$OPTIONS as $option)
@@ -261,7 +261,7 @@ class pakeApp
         if (preg_match('/\b([A-Z]{2,})\b/', $comment, $match))
           $long .= '='.$match[1];
       }
-      printf("  %-20s (%s)\n", $long, $short);
+      printf("  %-20s (%s)\n", pakeColor::colorize($long, 'INFO'), pakeColor::colorize($short, 'INFO'));
       printf("      %s\n", $comment);
     }
   }
@@ -276,8 +276,9 @@ class pakeApp
       $w = strlen(pakeTask::get_mini_task_name($name));
       if ($w > $width) $width = $w;
     }
+    $width += 12;
 
-    echo "pake\n";
+    echo "available pake tasks:\n";
 
     // display tasks
     $has_alias = false;
@@ -292,13 +293,13 @@ class pakeApp
       if (!$task->get_alias() && $task->get_comment())
       {
         $mini_name = pakeTask::get_mini_task_name($name);
-        printf('  %-'.$width.'s > %s'."\n", $mini_name, $task->get_comment().($mini_name != $name ? ' ['.$name.']' : ''));
+        printf('  %-'.$width.'s > %s'."\n", pakeColor::colorize($mini_name, 'INFO'), $task->get_comment().($mini_name != $name ? ' ['.$name.']' : ''));
       }
     }
 
     if ($has_alias)
     {
-      print("\naliases:\n");
+      print("\ntask aliases:\n");
 
       // display aliases
       foreach ($tasks as $name => $task)
@@ -306,7 +307,7 @@ class pakeApp
         if ($task->get_alias())
         {
           $mini_name = pakeTask::get_mini_task_name($name);
-          printf('  %-'.$width.'s = pake %s'."\n", pakeTask::get_mini_task_name($name), $task->get_alias().($mini_name != $name ? ' ['.$name.']' : ''));
+          printf('  %-'.$width.'s = pake %s'."\n", pakeColor::colorize(pakeTask::get_mini_task_name($name), 'INFO'), $task->get_alias().($mini_name != $name ? ' ['.$name.']' : ''));
         }
       }
     }
@@ -367,7 +368,7 @@ class pakeApp
 
     $subsize = floor(($size - 3) / 2);
 
-    return substr($text, 0, $subsize).'...'.substr($text, -$subsize);
+    return substr($text, 0, $subsize).pakeColor::colorize('...', 'INFO').substr($text, -$subsize);
   }
 
   /* see perl Text::Abbrev module */
