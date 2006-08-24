@@ -21,10 +21,22 @@ class pakeException extends Exception
 {
   function render($e)
   {
-    $message = '  ['.get_class($e).'] '.$e->getMessage().'  ';
-    echo "\n".pakeColor::colorize(str_repeat(' ', strlen($message))."\n", 'ERROR');
-    echo pakeColor::colorize($message."\n", 'ERROR');
-    echo pakeColor::colorize(str_repeat(' ', strlen($message))."\n", 'ERROR')."\n";
+    $title = '  ['.get_class($e).']  ';
+    $message = '  '.$e->getMessage().'  ';
+    $len = max(strlen($message), strlen($title));
+    $messages = array(
+      str_repeat(' ', $len),
+      $title.str_repeat(' ', $len - strlen($title)),
+      $message.str_repeat(' ', $len - strlen($message)),
+      str_repeat(' ', $len),
+    );
+
+    echo "\n";
+    foreach ($messages as $message)
+    {
+      echo pakeColor::colorize($message, 'ERROR')."\n";
+    }
+    echo "\n";
 
     $pake = pakeApp::get_instance();
 
@@ -41,7 +53,7 @@ class pakeException extends Exception
         $file = isset($trace[$i]['file']) ? $trace[$i]['file'] : 'n/a';
         $line = isset($trace[$i]['line']) ? $trace[$i]['line'] : 'n/a';
 
-        echo sprintf(" %s%s%s at %s:%s.\n", $class, $type, $function, pakeColor::colorize($file, 'INFO'), pakeColor::colorize($line, 'INFO'));
+        echo sprintf(" %s%s%s at %s:%s\n", $class, $type, $function, pakeColor::colorize($file, 'INFO'), pakeColor::colorize($line, 'INFO'));
       }
     }
 
