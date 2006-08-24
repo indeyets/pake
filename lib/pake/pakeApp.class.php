@@ -276,7 +276,7 @@ class pakeApp
       $w = strlen(pakeTask::get_mini_task_name($name));
       if ($w > $width) $width = $w;
     }
-    $width += 12;
+    $width += strlen(pakeColor::colorize(' ', 'INFO'));
 
     echo "available pake tasks:\n";
 

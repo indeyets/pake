@@ -347,7 +347,8 @@ function pake_echo_action($section, $text)
 {
   if (pakeApp::get_instance()->get_verbose())
   {
-    echo sprintf('>> %-20s %s', pakeColor::colorize($section, 'INFO'), pakeApp::excerpt($text))."\n";
+    $width = 9 + strlen(pakeColor::colorize('', 'INFO'));
+    echo sprintf('>> %-'.$width.'s %s', pakeColor::colorize($section, 'INFO'), pakeApp::excerpt($text))."\n";
   }
 }
 
