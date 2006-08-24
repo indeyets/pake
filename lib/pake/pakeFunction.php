@@ -97,8 +97,6 @@ function pake_file($name)
 
 function pake_mkdirs($path, $mode = 0777)
 {
-  $verbose = pakeApp::get_instance()->get_verbose();
-
   if (is_dir($path))
   {
     return true;
@@ -114,8 +112,6 @@ function pake_mkdirs($path, $mode = 0777)
 */
 function pake_copy($origin_file, $target_file, $options = array())
 {
-  $verbose = pakeApp::get_instance()->get_verbose();
-
   if (!array_key_exists('override', $options))
   {
     $options['override'] = false;
@@ -140,6 +136,18 @@ function pake_copy($origin_file, $target_file, $options = array())
     pake_echo_action('file+', $target_file);
     copy($origin_file, $target_file);
   }
+}
+
+function pake_rename($origin, $target, $options = array())
+{
+  // we check that target does not exist
+  if (is_readable($target))
+  {
+    throw new pakeException(sprintf('Cannot rename because the target "%" already exist.', $target));
+  }
+
+  pake_echo_action('rename', $origin.' > '.$target);
+  rename($origin, $target);
 }
 
 function pake_mirror($arg, $origin_dir, $target_dir, $options = array())
@@ -171,8 +179,6 @@ function pake_remove($arg, $target_dir)
 {
   $files = array_reverse(pakeApp::get_files_from_argument($arg, $target_dir));
 
-  $verbose = pakeApp::get_instance()->get_verbose();
-
   foreach ($files as $file)
   {
     if (is_dir($file) && !is_link($file))
@@ -194,8 +200,6 @@ function pake_touch($arg, $target_dir)
 {
   $files = pakeApp::get_files_from_argument($arg, $target_dir);
 
-  $verbose = pakeApp::get_instance()->get_verbose();
-
   foreach ($files as $file)
   {
     pake_echo_action('file+', $file);
@@ -207,8 +211,6 @@ function pake_touch($arg, $target_dir)
 function pake_replace_tokens($arg, $target_dir, $begin_token, $end_token, $tokens)
 {
   $files = pakeApp::get_files_from_argument($arg, $target_dir, true);
-
-  $verbose = pakeApp::get_instance()->get_verbose();
 
   foreach ($files as $file)
   {
@@ -243,7 +245,6 @@ function pake_symlink($origin_dir, $target_dir)
 
   if (!$ok)
   {
-    $verbose = pakeApp::get_instance()->get_verbose();
     pake_echo_action('symlink+', $target_dir);
     symlink($origin_dir, $target_dir);
   }
@@ -255,8 +256,6 @@ function pake_chmod($arg, $target_dir, $mode, $umask = 0000)
   umask($umask);
 
   $files = pakeApp::get_files_from_argument($arg, $target_dir, true);
-
-  $verbose = pakeApp::get_instance()->get_verbose();
 
   foreach ($files as $file)
   {
