@@ -60,7 +60,19 @@ class pakePhingTask
 
   public static function colorize($text)
   {
-    return preg_replace(array('#(\[.+?\])#e', '#(\+ [^ ]+)#e'), array('pakeColor::colorize("$1", "INFO")', 'pakeColor::colorize("$1", "INFO")'), $text);
+    return preg_replace(array(
+      '#\[(.+?)\]#',
+      '#{{PHP Error}}#e',
+      '#({{.+?}})#e',
+      '#(\+ [^ ]+)#e',
+      '#{{(.+?)}}#',
+    ), array(
+      '{{$1}}',
+      'pakeColor::colorize("(PHP Error)", "ERROR")',
+      'pakeColor::colorize("$1", "INFO")',
+      'pakeColor::colorize("$1", "INFO")',
+      '[$1]',
+    ), $text);
   }
 }
 
