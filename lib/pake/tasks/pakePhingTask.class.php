@@ -51,9 +51,16 @@ class pakePhingTask
     Phing::startup();
     Phing::setProperty('phing.home', getenv('PHING_HOME'));
 
+    ob_start(array('pakePhingTask', 'colorize'), 2);
     $m = new pakePhing();
     $m->execute($args);
     $m->runBuild();
+    ob_end_clean();
+  }
+
+  public static function colorize($text)
+  {
+    return preg_replace(array('#(\[.+?\])#e', '#(\+ [^ ]+)#e'), array('pakeColor::colorize("$1", "INFO")', 'pakeColor::colorize("$1", "INFO")'), $text);
   }
 }
 
