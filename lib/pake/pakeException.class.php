@@ -22,14 +22,24 @@ class pakeException extends Exception
   function render($e)
   {
     $title = '  ['.get_class($e).']  ';
-    $message = '  '.$e->getMessage().'  ';
-    $len = max(strlen($message), strlen($title));
+    $len = strlen($title);
+    $lines = array();
+    foreach (explode("\n", $e->getMessage()) as $line)
+    {
+      $lines[] = '  '.$line.'  ';
+      $len = max(strlen($line) + 4, $len);
+    }
     $messages = array(
       str_repeat(' ', $len),
       $title.str_repeat(' ', $len - strlen($title)),
-      $message.str_repeat(' ', $len - strlen($message)),
-      str_repeat(' ', $len),
     );
+
+    foreach ($lines as $line)
+    {
+      $messages[] = $line.str_repeat(' ', $len - strlen($line));
+    }
+
+    $messages[] = str_repeat(' ', $len);
 
     echo "\n";
     foreach ($messages as $message)
