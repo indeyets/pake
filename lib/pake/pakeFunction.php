@@ -342,13 +342,18 @@ function pake_strip_php_comments($arg)
   }
 }
 
-function pake_echo_action($section, $text)
+function pake_format_action($section, $text)
 {
   if (pakeApp::get_instance()->get_verbose())
   {
     $width = 9 + strlen(pakeColor::colorize('', 'INFO'));
-    echo sprintf('>> %-'.$width.'s %s', pakeColor::colorize($section, 'INFO'), pakeApp::excerpt($text))."\n";
+    return sprintf('>> %-'.$width.'s %s', pakeColor::colorize($section, 'INFO'), pakeApp::excerpt($text))."\n";
   }
+}
+
+function pake_echo_action($section, $text)
+{
+  echo pake_format_action($section, $text);
 }
 
 function pake_excerpt($text)
