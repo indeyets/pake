@@ -8,8 +8,8 @@
  * @version    SVN: $Id$
  */
 
-require_once 'pake/pakeGlobToRegex.class.php';
-require_once 'pake/pakeNumberCompare.class.php';
+require_once dirname(__FILE__).'/pakeGlobToRegex.class.php';
+require_once dirname(__FILE__).'/pakeNumberCompare.class.php';
 
 if (class_exists('pakeFinder'))
 {

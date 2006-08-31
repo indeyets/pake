@@ -8,14 +8,14 @@
  * @version    SVN: $Id$
  */
 
-require_once 'pake/pakeException.class.php';
-require_once 'pake/pakeYaml.class.php';
-require_once 'pake/pakeGetopt.class.php';
-require_once 'pake/pakeFinder.class.php';
-require_once 'pake/pakeTask.class.php';
-require_once 'pake/pakeFileTask.class.php';
-require_once 'pake/pakeColor.class.php';
-require_once 'pake/pakeApp.class.php';
+require_once dirname(__FILE__).'/pakeException.class.php';
+require_once dirname(__FILE__).'/pakeYaml.class.php';
+require_once dirname(__FILE__).'/pakeGetopt.class.php';
+require_once dirname(__FILE__).'/pakeFinder.class.php';
+require_once dirname(__FILE__).'/pakeTask.class.php';
+require_once dirname(__FILE__).'/pakeFileTask.class.php';
+require_once dirname(__FILE__).'/pakeColor.class.php';
+require_once dirname(__FILE__).'/pakeApp.class.php';
 
 function pake_import($name, $import_default_tasks = true)
 {
