@@ -372,6 +372,14 @@ function pake_echo($text)
   }
 }
 
+function pake_echo_comment($text)
+{
+  if (pakeApp::get_instance()->get_verbose())
+  {
+    echo sprintf(pakeColor::colorize('   # %s', 'COMMENT'), $text)."\n";
+  }
+}
+
 // register our default exception handler
 function pake_exception_default_handler($exception)
 {

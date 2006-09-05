@@ -67,5 +67,6 @@ class pakeColor
   }
 }
 
-pakeColor::style('ERROR', array('bg' => 'red', 'fg' => 'white', 'bold' => true));
-pakeColor::style('INFO',  array('fg' => 'green', 'bold' => true));
+pakeColor::style('ERROR',    array('bg' => 'red', 'fg' => 'white', 'bold' => true));
+pakeColor::style('INFO',     array('fg' => 'green', 'bold' => true));
+pakeColor::style('COMMENT',  array('fg' => 'yellow'));
