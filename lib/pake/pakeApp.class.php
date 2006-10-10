@@ -32,7 +32,7 @@ class pakeApp
     array('--dry-run',  '-n', pakeGetopt::NO_ARGUMENT,       "Do a dry run without executing actions."),
     array('--help',     '-H', pakeGetopt::NO_ARGUMENT,       "Display this help message."),
     array('--libdir',   '-I', pakeGetopt::REQUIRED_ARGUMENT, "Include LIBDIR in the search path for required modules."),
-    array('--nosearch', '-N', pakeGetopt::NO_ARGUMENT,       "Do not search parent directories for the Rakefile."),
+    array('--nosearch', '-N', pakeGetopt::NO_ARGUMENT,       "Do not search parent directories for the pakefile."),
     array('--prereqs',  '-P', pakeGetopt::NO_ARGUMENT,       "Display the tasks and dependencies, then exit."),
     array('--quiet',    '-q', pakeGetopt::NO_ARGUMENT,       "Do not log messages to standard output."),
     array('--pakefile', '-f', pakeGetopt::REQUIRED_ARGUMENT, "Use FILE as the pakefile."),
