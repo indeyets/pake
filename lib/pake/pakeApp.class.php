@@ -97,7 +97,7 @@ class pakeApp
     return $this->dryrun;
   }
 
-  public function run($pakefile = null, $options = null)
+  public function run($pakefile = null, $options = null, $load_pakefile = true)
   {
     if ($pakefile)
     {
@@ -105,7 +105,10 @@ class pakeApp
     }
 
     $this->handle_options($options);
-    $this->load_pakefile();
+    if ($load_pakefile)
+    {
+      $this->load_pakefile();
+    }
 
     if ($this->show_tasks)
     {
