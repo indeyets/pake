@@ -392,5 +392,6 @@ function pake_exception_default_handler($exception)
 {
   $e = new pakeException();
   $e->render($exception);
+  exit(1);
 }
 set_exception_handler('pake_exception_default_handler');

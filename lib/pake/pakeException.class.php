@@ -41,18 +41,18 @@ class pakeException extends Exception
 
     $messages[] = str_repeat(' ', $len);
 
-    echo "\n";
+    fwrite(STDERR, "\n");
     foreach ($messages as $message)
     {
-      echo pakeColor::colorize($message, 'ERROR')."\n";
+      fwrite(STDERR, pakeColor::colorize($message, 'ERROR', STDERR)."\n");
     }
-    echo "\n";
+    fwrite(STDERR, "\n");
 
     $pake = pakeApp::get_instance();
 
     if ($pake->get_trace())
     {
-      echo "exception trace:\n";
+      fwrite(STDERR, "exception trace:\n");
 
       $trace = $this->trace($e);
       for ($i = 0, $count = count($trace); $i < $count; $i++)
@@ -63,11 +63,11 @@ class pakeException extends Exception
         $file = isset($trace[$i]['file']) ? $trace[$i]['file'] : 'n/a';
         $line = isset($trace[$i]['line']) ? $trace[$i]['line'] : 'n/a';
 
-        echo sprintf(" %s%s%s at %s:%s\n", $class, $type, $function, pakeColor::colorize($file, 'INFO'), pakeColor::colorize($line, 'INFO'));
+        fwrite(STDERR, sprintf(" %s%s%s at %s:%s\n", $class, $type, $function, pakeColor::colorize($file, 'INFO', STDERR), pakeColor::colorize($line, 'INFO', STDERR)));
       }
     }
 
-    echo "\n";
+    fwrite(STDERR, "\n");
   }
 
   function trace($exception)
