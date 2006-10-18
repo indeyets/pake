@@ -395,3 +395,26 @@ function pake_exception_default_handler($exception)
   exit(1);
 }
 set_exception_handler('pake_exception_default_handler');
+
+// fix php behavior if using cgi php
+// from http://www.sitepoint.com/article/php-command-line-1/3
+if (false !== strpos(php_sapi_name(), 'cgi'))
+{
+   // handle output buffering
+   @ob_end_flush();
+   ob_implicit_flush(true);
+
+   // PHP ini settings
+   set_time_limit(0);
+   ini_set('track_errors', true);
+   ini_set('html_errors', false);
+   ini_set('magic_quotes_runtime', false);
+
+   // define stream constants
+   define('STDIN', fopen('php://stdin', 'r'));
+   define('STDOUT', fopen('php://stdout', 'w'));
+   define('STDERR', fopen('php://stderr', 'w'));
+
+   // close the streams on script termination
+   register_shutdown_function(create_function('', 'fclose(STDIN); fclose(STDOUT); fclose(STDERR); return true;'));
+}
