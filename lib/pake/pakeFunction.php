@@ -415,6 +415,12 @@ if (false !== strpos(php_sapi_name(), 'cgi'))
    define('STDOUT', fopen('php://stdout', 'w'));
    define('STDERR', fopen('php://stderr', 'w'));
 
+   // change directory
+   if (isset($_SERVER['PWD']))
+   {
+     chdir($_SERVER['PWD']);
+   }
+
    // close the streams on script termination
    register_shutdown_function(create_function('', 'fclose(STDIN); fclose(STDOUT); fclose(STDERR); return true;'));
 }
