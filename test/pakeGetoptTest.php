@@ -19,7 +19,7 @@ class pakeGetoptTest extends UnitTestCase
     }
     catch (pakeException $e)
     {
-      $this->assertWantedPattern('/you cannot get a value for a NO_ARGUMENT/', $e->getMessage());
+      $this->assertWantedPattern('/You cannot get a value for a NO_ARGUMENT/', $e->getMessage());
     }
 
     $g->parse('-t');
