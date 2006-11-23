@@ -320,9 +320,15 @@ class pakeFinder
       $numargs  = count($arg_list);
     }
 
+    $dirs = array();
     for ($i = 0; $i < $numargs; $i++)
     {
-      $real_dir = realpath($arg_list[$i]);
+      $dirs = array_merge($dirs, (array) glob($arg_list[$i]));
+    }
+
+    foreach ($dirs as $dir)
+    {
+      $real_dir = realpath($dir);
 
       // absolute path?
       if (!self::isPathAbsolute($real_dir))
