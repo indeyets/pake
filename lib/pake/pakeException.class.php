@@ -19,24 +19,29 @@
  */
 class pakeException extends Exception
 {
+  public static function strlen($string)
+  {
+      return function_exists('mb_strlen') ? mb_strlen($string) : strlen($string);
+  }
+
   function render($e)
   {
     $title = '  ['.get_class($e).']  ';
-    $len = strlen($title);
+    $len = self::strlen($title);
     $lines = array();
     foreach (explode("\n", $e->getMessage()) as $line)
     {
       $lines[] = '  '.$line.'  ';
-      $len = max(strlen($line) + 4, $len);
+      $len = max(self::strlen($line) + 4, $len);
     }
     $messages = array(
       str_repeat(' ', $len),
-      $title.str_repeat(' ', $len - strlen($title)),
+      $title.str_repeat(' ', $len - self::strlen($title)),
     );
 
     foreach ($lines as $line)
     {
-      $messages[] = $line.str_repeat(' ', $len - strlen($line));
+      $messages[] = $line.str_repeat(' ', $len - self::strlen($line));
     }
 
     $messages[] = str_repeat(' ', $len);
