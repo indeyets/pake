@@ -342,7 +342,7 @@ class pakeFinder
 
       if (!is_dir($real_dir))
       {
-        throw new pakeException(sprintf('Directory "%s" does not exist', $arg_list[$i]));
+        return array();
       }
 
       $this->search_dir = $dir;
