@@ -10,7 +10,7 @@
 
   class pakeYaml
   {
-    public static function load ($input)
+    public static function load($input)
     {
       // syck is prefered over spyc
       if (function_exists('syck_load')) {
@@ -29,7 +29,7 @@
       }
     }
 
-    public static function dump ($array)
+    public static function dump($array)
     {
       $spyc = new pakeSpyc();
 

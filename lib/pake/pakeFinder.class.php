@@ -323,7 +323,10 @@ class pakeFinder
     $dirs = array();
     for ($i = 0; $i < $numargs; $i++)
     {
-      $dirs = array_merge($dirs, (array) glob($arg_list[$i]));
+      if ($argDirs = glob($arg_list[$i]))
+      {
+        $dirs = array_merge($dirs, $argDirs);
+      }
     }
 
     foreach ($dirs as $dir)
