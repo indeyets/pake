@@ -349,12 +349,12 @@ function pake_strip_php_comments($arg)
   }
 }
 
-function pake_format_action($section, $text)
+function pake_format_action($section, $text, $size = null)
 {
   if (pakeApp::get_instance()->get_verbose())
   {
     $width = 9 + strlen(pakeColor::colorize('', 'INFO'));
-    return sprintf('>> %-'.$width.'s %s', pakeColor::colorize($section, 'INFO'), pakeApp::excerpt($text))."\n";
+    return sprintf('>> %-'.$width.'s %s', pakeColor::colorize($section, 'INFO'), pakeApp::excerpt($text, $size))."\n";
   }
 }
 
