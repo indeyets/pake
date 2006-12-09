@@ -32,7 +32,7 @@ class pakeColor
   static function colorize($text = '', $parameters = array(), $stream = STDOUT)
   {
     // disable colors if not supported (windows or non tty console)
-    if (strtoupper(substr(PHP_OS, 0, 3)) == 'WIN' || !function_exists('posix_isatty') || !@posix_isatty($stream))
+    if (DIRECTORY_SEPARATOR == '\\' || !function_exists('posix_isatty') || !@posix_isatty($stream))
     {
       return $text;
     }
