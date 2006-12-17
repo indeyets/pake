@@ -398,7 +398,7 @@ set_exception_handler('pake_exception_default_handler');
 
 // fix php behavior if using cgi php
 // from http://www.sitepoint.com/article/php-command-line-1/3
-if (false !== strpos(php_sapi_name(), 'cgi'))
+if (false !== strpos(PHP_SAPI, 'cgi'))
 {
    // handle output buffering
    @ob_end_flush();
