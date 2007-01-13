@@ -345,7 +345,7 @@ class pakeFinder
 
       if (!is_dir($real_dir))
       {
-        return array();
+        continue;
       }
 
       $this->search_dir = $dir;
