@@ -21,24 +21,27 @@ function pake_import($name, $import_default_tasks = true)
 {
   $class_name = 'pake'.ucfirst(strtolower($name)).'Task';
 
-  // plugin available?
-  $plugin_path = '';
-  foreach (pakeApp::get_plugin_dirs() as $dir)
+  if (!class_exists($class_name))
   {
-    if (file_exists($dir.DIRECTORY_SEPARATOR.$class_name.'.class.php'))
+    // plugin available?
+    $plugin_path = '';
+    foreach (pakeApp::get_plugin_dirs() as $dir)
     {
-      $plugin_path = $dir.DIRECTORY_SEPARATOR.$class_name.'.class.php';
-      break;
+      if (file_exists($dir.DIRECTORY_SEPARATOR.$class_name.'.class.php'))
+      {
+        $plugin_path = $dir.DIRECTORY_SEPARATOR.$class_name.'.class.php';
+        break;
+      }
     }
-  }
 
-  if ($plugin_path)
-  {
-    require_once $plugin_path;
-  }
-  else
-  {
-    throw new pakeException(sprintf('Plugin "%s" does not exist.', $name));
+    if ($plugin_path)
+    {
+      require_once $plugin_path;
+    }
+    else
+    {
+      throw new pakeException(sprintf('Plugin "%s" does not exist.', $name));
+    }
   }
 
   if ($import_default_tasks && is_callable($class_name, 'import_default_tasks'))
