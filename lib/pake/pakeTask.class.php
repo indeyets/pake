@@ -149,7 +149,7 @@ class pakeTask
     return (count($flags)) ? '('.join(', ', $flags).')' : '';
   }
 
-  public function invoke($args)
+  public function invoke($args, $options)
   {
     if ($this->trace)
     {
@@ -178,11 +178,11 @@ class pakeTask
     // only run if needed
     if ($this->is_needed())
     {
-      return $this->execute($args);
+      return $this->execute($args, $options);
     }
   }
 
-  public function execute($args)
+  public function execute($args, $options)
   {
     if ($this->dryrun)
     {
@@ -215,7 +215,7 @@ class pakeTask
     }
 
     // execute action
-    return call_user_func_array($function, array($this, $args));
+    return call_user_func_array($function, array($this, $args, $options));
   }
 
   public function is_needed()

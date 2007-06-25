@@ -123,6 +123,24 @@ class pakeApp
       $args = $this->opt->get_arguments();
       $task = array_shift($args);
 
+      $options = array();
+      for ($i = 0, $max = count($args); $i < $max; $i++)
+      {
+        if (0 === strpos($args[$i], '--'))
+        {
+          if (false !== $pos = strpos($args[$i], '='))
+          {
+            $options[substr($args[$i], 2, $pos - 2)] = substr($args[$i], $pos + 1);
+          }
+          else
+          {
+            $options[substr($args[$i], 2)] = true;
+          }
+          unset($args[$i]);
+        }
+      }
+      $args = array_values($args);
+
       $abbrev_options = $this->abbrev(array_keys(pakeTask::get_tasks()));
       $task = pakeTask::get_full_task_name($task);
       if (!$task)
@@ -140,7 +158,7 @@ class pakeApp
       }
       else
       {
-        return pakeTask::get($abbrev_options[$task][0])->invoke($args);
+        return pakeTask::get($abbrev_options[$task][0])->invoke($args, $options);
       }
     }
   }
