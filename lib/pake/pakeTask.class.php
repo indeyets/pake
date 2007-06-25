@@ -167,7 +167,7 @@ class pakeTask
       $real_prerequisite = self::get_full_task_name($prerequisite);
       if (array_key_exists($real_prerequisite, $tasks))
       {
-        $tasks[$real_prerequisite]->invoke($args);
+        $tasks[$real_prerequisite]->invoke($args, $options);
       }
       else
       {
