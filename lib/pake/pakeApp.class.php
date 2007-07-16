@@ -130,11 +130,25 @@ class pakeApp
         {
           if (false !== $pos = strpos($args[$i], '='))
           {
-            $options[substr($args[$i], 2, $pos - 2)] = substr($args[$i], $pos + 1);
+            $key = substr($args[$i], 2, $pos - 2);
+            $value = substr($args[$i], $pos + 1);
           }
           else
           {
-            $options[substr($args[$i], 2)] = true;
+            $key = substr($args[$i], 2);
+            $value = true;
+          }
+          if ('[]' == substr($key, -2))
+          {
+            if (!isset($options[$key]))
+            {
+              $options[$key] = array();
+            }
+            $options[$key][] = $value;
+          }
+          else
+          {
+            $options[$key] = $value;
           }
           unset($args[$i]);
         }
