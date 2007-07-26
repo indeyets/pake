@@ -48,31 +48,15 @@ class pakePhingTask
       $args[] = $target;
     }
 
+    $args[] = '-logger';
+    $args[] = 'phing.listener.AnsiColorLogger';
+
     Phing::startup();
     Phing::setProperty('phing.home', getenv('PHING_HOME'));
 
-    ob_start(array('pakePhingTask', 'colorize'), 2);
     $m = new pakePhing();
     $m->execute($args);
     $m->runBuild();
-    ob_end_clean();
-  }
-
-  public static function colorize($text)
-  {
-    return preg_replace(array(
-      '#\[(.+?)\]#',
-      '#{{PHP Error}}#e',
-      '#({{.+?}})#e',
-      '#(\+ [^ ]+)#e',
-      '#{{(.+?)}}#',
-    ), array(
-      '{{$1}}',
-      'pakeColor::colorize("(PHP Error)", "ERROR")',
-      'pakeColor::colorize("$1", "INFO")',
-      'pakeColor::colorize("$1", "INFO")',
-      '[$1]',
-    ), $text);
   }
 }
 
