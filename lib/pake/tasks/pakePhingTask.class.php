@@ -47,10 +47,13 @@ class pakePhingTask
     {
       $args[] = $target;
     }
-
-    $args[] = '-logger';
-    $args[] = 'phing.listener.AnsiColorLogger';
-
+    
+    if (DIRECTORY_SEPARATOR != '\\' && (function_exists('posix_isatty') && @posix_isatty(STDOUT)))
+    {
+      $args[] = '-logger';
+      $args[] = 'phing.listener.AnsiColorLogger';
+    }
+    
     Phing::startup();
     Phing::setProperty('phing.home', getenv('PHING_HOME'));
 
