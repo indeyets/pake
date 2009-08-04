@@ -17,7 +17,7 @@ class pakeFinderTest extends UnitTestCase
     $this->assertIsA($finder, 'pakeFinder');
 
     $finder = pakeFinder::type('file')->name('*.php')->prune('*.svn');
-    $this->assertTrue($finder->in($this->dir), $finder->in($this->dir));
+    $this->assertTrue($finder->in($this->dir), 'pakeFinder');
   }
 
   public function test_args_as_array()
@@ -259,7 +259,7 @@ class pakeFinderTest extends UnitTestCase
 
     try
     {
-      $files = pakeFinder::type('any')->in('/nonexistantdirectory')->prune('*.svn');
+      $files = pakeFinder::type('any')->prune('*.svn')->in('/nonexistantdirectory');
     }
     catch (pakeException $e)
     {
@@ -271,7 +271,7 @@ class pakeFinderTest extends UnitTestCase
   {
     $finder = pakeFinder::type('any')->name('file*')->prune('.svn');
     $finder1 = clone $finder;
-    $this->assertTrue($finder->in($this->dir), $finder1->in($this->dir));
+    $this->assertTrue($finder->in($this->dir), implode(', ', $finder1->in($this->dir)));
 
     $finder->size('>1K');
     $this->assertNotEqual($finder->in($this->dir), $finder1->in($this->dir));
