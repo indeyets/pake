@@ -241,7 +241,7 @@ class pakeFinder
    */
   public function ignore_version_control()
   {
-    $ignores = array('.svn', 'CVS', '_darcs', '.arch-params', '.monotone', '.bzr');
+    $ignores = array('.svn', 'CVS', '_darcs', '.arch-params', '.monotone', '.bzr', '.git', '.hg');
 
     return $this->discard($ignores)->prune($ignores);
   }
