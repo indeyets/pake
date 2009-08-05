@@ -65,8 +65,8 @@ class pakePhingTask
 
 class pakePhing extends Phing
 {
-  function getPhingVersion()
-  {
-    return 'pakePhing';
-  }
+    static function getPhingVersion()
+    {
+        return 'pakePhing';
+    }
 }
