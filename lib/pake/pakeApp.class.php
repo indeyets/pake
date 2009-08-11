@@ -148,12 +148,14 @@ class pakeApp
     }
     $args = array_values($args);
 
+    // generating abbreviations
     $abbreviated_tasks = self::abbrev(array_keys(pakeTask::get_tasks()));
     $task_name = pakeTask::get_full_task_name($task_name);
     if (!$task_name) {
       $task_name = 'default';
     }
 
+    // does requested task correspond to full or abbreviated name?
     if (!array_key_exists($task_name, $abbreviated_tasks)) {
       throw new pakeException('Task "'.$task_name.'" is not defined.');
     }
@@ -162,6 +164,7 @@ class pakeApp
       throw new pakeException('Task "'.$task_name.'" is ambiguous ('.implode(', ', $abbreviated_tasks[$task_name]).').');
     }
 
+    // init and run task
     $task = pakeTask::get($abbreviated_tasks[$task_name][0]);
     return $task->invoke($args, $options);
   }
