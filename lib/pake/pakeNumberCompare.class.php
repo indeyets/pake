@@ -75,7 +75,9 @@ class pakeNumberCompare
     $target = array_key_exists(2, $matches) ? $matches[2] : '';
     $magnitude = array_key_exists(3, $matches) ? $matches[3] : '';
 
-    $target *= self::$magnitudes[strtolower($magnitude)];
+    if ('' !== $magnitude) {
+      $target *= self::$magnitudes[strtolower($magnitude)];
+    }
 
     $comparison = array_key_exists(1, $matches) ? $matches[1] : '==';
 
