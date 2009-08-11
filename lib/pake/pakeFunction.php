@@ -395,6 +395,11 @@ function pake_echo_comment($text)
   }
 }
 
+function pake_echo_error($text)
+{
+    echo sprintf(pakeColor::colorize('   ! %s', 'ERROR'), $text)."\n";
+}
+
 // register our default exception handler
 function pake_exception_default_handler($exception)
 {
