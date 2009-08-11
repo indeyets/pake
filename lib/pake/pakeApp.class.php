@@ -120,7 +120,7 @@ class pakeApp
 
     // parsing out options and arguments
     $args = $this->opt->get_arguments();
-    $task = array_shift($args);
+    $task_name = array_shift($args);
 
     $options = array();
     for ($i = 0, $max = count($args); $i < $max; $i++) {
@@ -148,21 +148,22 @@ class pakeApp
     }
     $args = array_values($args);
 
-    $abbrev_options = self::abbrev(array_keys(pakeTask::get_tasks()));
-    $task = pakeTask::get_full_task_name($task);
-    if (!$task) {
-      $task = 'default';
+    $abbreviated_tasks = self::abbrev(array_keys(pakeTask::get_tasks()));
+    $task_name = pakeTask::get_full_task_name($task_name);
+    if (!$task_name) {
+      $task_name = 'default';
     }
 
-    if (!array_key_exists($task, $abbrev_options)) {
-      throw new pakeException(sprintf('Task "%s" is not defined.', $task));
+    if (!array_key_exists($task_name, $abbreviated_tasks)) {
+      throw new pakeException('Task "'.$task_name.'" is not defined.');
     }
 
-    if (count($abbrev_options[$task]) > 1) {
-      throw new pakeException(sprintf('Task "%s" is ambiguous (%s).', $task, implode(', ', $abbrev_options[$task])));
+    if (count($abbreviated_tasks[$task_name]) > 1) {
+      throw new pakeException('Task "'.$task_name.'" is ambiguous ('.implode(', ', $abbreviated_tasks[$task_name]).').');
     }
 
-    return pakeTask::get($abbrev_options[$task][0])->invoke($args, $options);
+    $task = pakeTask::get($abbreviated_tasks[$task_name][0]);
+    return $task->invoke($args, $options);
   }
 
   // Read and handle the command line options.
