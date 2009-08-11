@@ -47,12 +47,10 @@ class pakeFileTask extends pakeTask
   {
     if (!file_exists($this->get_name()))
     {
-      throw new pakeException(sprintf('File "%s" does not exist!', $this->get_name()));
+      throw new pakeException('File "'.$this->get_name().'" does not exist!');
     }
 
-    $stats = stat($this->get_name());
-
-    return $stats['mtime'];
+    return filemtime($this->get_name());
   }
 
   public static function define_task($name, $deps = null)
