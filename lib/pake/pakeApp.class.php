@@ -99,82 +99,70 @@ class pakeApp
 
   public function run($pakefile = null, $options = null, $load_pakefile = true)
   {
-    if ($pakefile)
-    {
+    if ($pakefile) {
       pakeApp::$PAKEFILES = array($pakefile);
     }
 
     $this->handle_options($options);
-    if ($load_pakefile)
-    {
+    if ($load_pakefile) {
       $this->load_pakefile();
     }
 
-    if ($this->show_tasks)
-    {
+    if ($this->show_tasks) {
       $this->display_tasks_and_comments();
+      return;
     }
-    else if ($this->show_prereqs)
-    {
+
+    if ($this->show_prereqs) {
       $this->display_prerequisites();
+      return;
     }
-    else
-    {
-      $args = $this->opt->get_arguments();
-      $task = array_shift($args);
 
-      $options = array();
-      for ($i = 0, $max = count($args); $i < $max; $i++)
-      {
-        if (0 === strpos($args[$i], '--'))
-        {
-          if (false !== $pos = strpos($args[$i], '='))
-          {
-            $key = substr($args[$i], 2, $pos - 2);
-            $value = substr($args[$i], $pos + 1);
-          }
-          else
-          {
-            $key = substr($args[$i], 2);
-            $value = true;
-          }
-          if ('[]' == substr($key, -2))
-          {
-            if (!isset($options[$key]))
-            {
-              $options[$key] = array();
-            }
-            $options[$key][] = $value;
-          }
-          else
-          {
-            $options[$key] = $value;
-          }
-          unset($args[$i]);
+    // parsing out options and arguments
+    $args = $this->opt->get_arguments();
+    $task = array_shift($args);
+
+    $options = array();
+    for ($i = 0, $max = count($args); $i < $max; $i++) {
+      if (0 === strpos($args[$i], '--')) {
+        if (false !== $pos = strpos($args[$i], '=')) {
+          $key = substr($args[$i], 2, $pos - 2);
+          $value = substr($args[$i], $pos + 1);
+        } else {
+          $key = substr($args[$i], 2);
+          $value = true;
         }
-      }
-      $args = array_values($args);
 
-      $abbrev_options = $this->abbrev(array_keys(pakeTask::get_tasks()));
-      $task = pakeTask::get_full_task_name($task);
-      if (!$task)
-      {
-        $task = 'default';
-      }
+        if ('[]' == substr($key, -2)) {
+          if (!isset($options[$key])) {
+            $options[$key] = array();
+          }
 
-      if (!array_key_exists($task, $abbrev_options))
-      {
-        throw new pakeException(sprintf('Task "%s" is not defined.', $task));
-      }
-      else if (count($abbrev_options[$task]) > 1)
-      {
-        throw new pakeException(sprintf('Task "%s" is ambiguous (%s).', $task, implode(', ', $abbrev_options[$task])));
-      }
-      else
-      {
-        return pakeTask::get($abbrev_options[$task][0])->invoke($args, $options);
+          $options[$key][] = $value;
+        } else {
+          $options[$key] = $value;
+        }
+
+        unset($args[$i]);
       }
     }
+    $args = array_values($args);
+
+    $abbrev_options = self::abbrev(array_keys(pakeTask::get_tasks()));
+    $task = pakeTask::get_full_task_name($task);
+    if (!$task) {
+      $task = 'default';
+    }
+
+    if (!array_key_exists($task, $abbrev_options)) {
+      throw new pakeException(sprintf('Task "%s" is not defined.', $task));
+    }
+
+    if (count($abbrev_options[$task]) > 1) {
+      throw new pakeException(sprintf('Task "%s" is ambiguous (%s).', $task, implode(', ', $abbrev_options[$task])));
+    }
+
+    return pakeTask::get($abbrev_options[$task][0])->invoke($args, $options);
   }
 
   // Read and handle the command line options.
@@ -409,38 +397,41 @@ class pakeApp
     return substr($text, 0, $subsize).pakeColor::colorize('...', 'INFO').substr($text, -$subsize);
   }
 
-  /* see perl Text::Abbrev module */
-  private function abbrev($options)
+  /**
+   * gets array of words as input and returns array, where shortened words are keys and arrays of corresponding full-words are values.
+   * For example:
+   * input: array('abc', 'abd')
+   * output: array('a' => array('abc', 'abd'), 'ab' => array('abc', 'abd'), 'abc' => array('abc'), 'abd' => array('abd'))
+   *
+   * @param array $options 
+   * @return array
+   * @author Jimi Dini
+   */
+  public static function abbrev(array $options)
   {
     $abbrevs = array();
     $table = array();
 
-    foreach ($options as $option)
-    {
+    foreach ($options as $option) {
       $option = pakeTask::get_mini_task_name($option);
 
-      for ($len = (strlen($option)) - 1; $len > 0; --$len)
-      {
+      for ($len = (strlen($option)) - 1; $len > 0; --$len) {
         $abbrev = substr($option, 0, $len);
+
         if (!array_key_exists($abbrev, $table))
           $table[$abbrev] = 1;
         else
           ++$table[$abbrev];
 
         $seen = $table[$abbrev];
-        if ($seen == 1)
-        { 
+        if ($seen == 1) {
           // we're the first word so far to have this abbreviation.
           $abbrevs[$abbrev] = array($option);
-        }
-        else if ($seen == 2)
-        { 
+        } else if ($seen == 2) {
           // we're the second word to have this abbreviation, so we can't use it.
           //unset($abbrevs[$abbrev]);
           $abbrevs[$abbrev][] = $option;
-        }
-        else
-        { 
+        } else { 
           // we're the third word to have this abbreviation, so skip to the next word.
           continue;
         }
@@ -448,8 +439,7 @@ class pakeApp
     }
 
     // Non-abbreviations always get entered, even if they aren't unique
-    foreach ($options as $option)
-    {
+    foreach ($options as $option) {
       $abbrevs[$option] = array($option);
     }
 
