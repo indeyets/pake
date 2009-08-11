@@ -211,24 +211,29 @@ function pake_touch($arg, $target_dir)
   }
 }
 
+function pake_replace_tokens_to_dir($arg, $src_dir, $target_dir, $begin_token, $end_token, $tokens)
+{
+    $files = pakeApp::get_files_from_argument($arg, $src_dir, true);
+
+    foreach ($files as $file)
+    {
+      $replaced = false;
+      $content = file_get_contents($src_dir.DIRECTORY_SEPARATOR.$file);
+      foreach ($tokens as $key => $value)
+      {
+        $content = str_replace($begin_token.$key.$end_token, $value, $content, $count);
+        if ($count) $replaced = true;
+      }
+
+      pake_echo_action('tokens', $target_dir.DIRECTORY_SEPARATOR.$file);
+
+      file_put_contents($target_dir.DIRECTORY_SEPARATOR.$file, $content);
+    }
+}
+
 function pake_replace_tokens($arg, $target_dir, $begin_token, $end_token, $tokens)
 {
-  $files = pakeApp::get_files_from_argument($arg, $target_dir, true);
-
-  foreach ($files as $file)
-  {
-    $replaced = false;
-    $content = file_get_contents($target_dir.DIRECTORY_SEPARATOR.$file);
-    foreach ($tokens as $key => $value)
-    {
-      $content = str_replace($begin_token.$key.$end_token, $value, $content, $count);
-      if ($count) $replaced = true;
-    }
-
-    pake_echo_action('tokens', $target_dir.DIRECTORY_SEPARATOR.$file);
-
-    file_put_contents($target_dir.DIRECTORY_SEPARATOR.$file, $content);
-  }
+    pake_replace_tokens_to_dir($arg, $target_dir, $target_dir, $begin_token, $end_token, $tokens);
 }
 
 function pake_symlink($origin_dir, $target_dir, $copy_on_windows = false)
