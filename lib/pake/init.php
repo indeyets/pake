@@ -26,6 +26,7 @@ function pake_autoloader($classname)
             'pakeColor'      => PAKE_DIR.'/pakeColor.class.php',
             'pakeApp'        => PAKE_DIR.'/pakeApp.class.php',
             'pakeSubversion' => PAKE_DIR.'/pakeSubversion.class.php',
+            'pakeGit'        => PAKE_DIR.'/pakeGit.class.php',
         );
     }
 
