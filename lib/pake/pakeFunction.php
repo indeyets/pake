@@ -8,15 +8,6 @@
  * @version    SVN: $Id$
  */
 
-require_once dirname(__FILE__).'/pakeException.class.php';
-require_once dirname(__FILE__).'/pakeYaml.class.php';
-require_once dirname(__FILE__).'/pakeGetopt.class.php';
-require_once dirname(__FILE__).'/pakeFinder.class.php';
-require_once dirname(__FILE__).'/pakeTask.class.php';
-require_once dirname(__FILE__).'/pakeFileTask.class.php';
-require_once dirname(__FILE__).'/pakeColor.class.php';
-require_once dirname(__FILE__).'/pakeApp.class.php';
-
 function pake_import($name, $import_default_tasks = true)
 {
   $class_name = 'pake'.ucfirst(strtolower($name)).'Task';
@@ -398,42 +389,4 @@ function pake_echo_comment($text)
 function pake_echo_error($text)
 {
     echo sprintf(pakeColor::colorize('   ! %s', 'ERROR'), $text)."\n";
-}
-
-// register our default exception handler
-function pake_exception_default_handler($exception)
-{
-  $e = new pakeException();
-  $e->render($exception);
-  exit(1);
-}
-set_exception_handler('pake_exception_default_handler');
-
-// fix php behavior if using cgi php
-// from http://www.sitepoint.com/article/php-command-line-1/3
-if (false !== strpos(PHP_SAPI, 'cgi'))
-{
-   // handle output buffering
-   @ob_end_flush();
-   ob_implicit_flush(true);
-
-   // PHP ini settings
-   set_time_limit(0);
-   ini_set('track_errors', true);
-   ini_set('html_errors', false);
-   ini_set('magic_quotes_runtime', false);
-
-   // define stream constants
-   define('STDIN', fopen('php://stdin', 'r'));
-   define('STDOUT', fopen('php://stdout', 'w'));
-   define('STDERR', fopen('php://stderr', 'w'));
-
-   // change directory
-   if (isset($_SERVER['PWD']))
-   {
-     chdir($_SERVER['PWD']);
-   }
-
-   // close the streams on script termination
-   register_shutdown_function(create_function('', 'fclose(STDIN); fclose(STDOUT); fclose(STDERR); return true;'));
 }

@@ -1,0 +1,76 @@
+<?php
+
+/**
+ * @package    pake
+ * @author     Alexey Zakhlestin <indeyets@gmail.com>
+ * @copyright  2009 Alexey Zakhlestin <indeyets@gmail.com>
+ * @copyright  2004-2005 Fabien Potencier <fabien.potencier@symfony-project.com>
+ * @license    see the LICENSE file included in the distribution
+ */
+
+define('PAKE_DIR', dirname(__FILE__));
+
+function pake_autoloader($classname)
+{
+    static $classes = null;
+
+    if (null === $classes) {
+        $classes = array(
+            'pakeException' => PAKE_DIR.'/pakeException.class.php',
+            'pakeYaml'      => PAKE_DIR.'/pakeYaml.class.php',
+            'pakeSpyc'      => PAKE_DIR.'/pakeYaml.class.php',
+            'pakeGetopt'    => PAKE_DIR.'/pakeGetopt.class.php',
+            'pakeFinder'    => PAKE_DIR.'/pakeFinder.class.php',
+            'pakeTask'      => PAKE_DIR.'/pakeTask.class.php',
+            'pakeFileTask'  => PAKE_DIR.'/pakeFileTask.class.php',
+            'pakeColor'     => PAKE_DIR.'/pakeColor.class.php',
+            'pakeApp'       => PAKE_DIR.'/pakeApp.class.php',
+        );
+    }
+
+    if (isset($classes[$classname]))
+        require $classes[$classname];
+}
+
+spl_autoload_register('pake_autoloader');
+
+// register our default exception handler
+function pake_exception_default_handler($exception)
+{
+  $e = new pakeException();
+  $e->render($exception);
+  exit(1);
+}
+set_exception_handler('pake_exception_default_handler');
+
+// fix php behavior if using cgi php
+// from http://www.sitepoint.com/article/php-command-line-1/3
+if (false !== strpos(PHP_SAPI, 'cgi'))
+{
+   // handle output buffering
+   @ob_end_flush();
+   ob_implicit_flush(true);
+
+   // PHP ini settings
+   set_time_limit(0);
+   ini_set('track_errors', true);
+   ini_set('html_errors', false);
+   ini_set('magic_quotes_runtime', false);
+
+   // define stream constants
+   define('STDIN', fopen('php://stdin', 'r'));
+   define('STDOUT', fopen('php://stdout', 'w'));
+   define('STDERR', fopen('php://stderr', 'w'));
+
+   // change directory
+   if (isset($_SERVER['PWD']))
+   {
+     chdir($_SERVER['PWD']);
+   }
+
+   // close the streams on script termination
+   register_shutdown_function(create_function('', 'fclose(STDIN); fclose(STDOUT); fclose(STDERR); return true;'));
+}
+
+// enabling pake's helper-functions
+require PAKE_DIR.'/pakeFunction.php';

@@ -10,7 +10,7 @@ else
   set_include_path(dirname(__FILE__).'/../lib'.PATH_SEPARATOR.get_include_path());
 }
 
-include_once('pake/pakeFunction.php');
+require 'pake/init.php';
 
 if (basename(__FILE__) == basename($_SERVER['SCRIPT_NAME']))
 {
