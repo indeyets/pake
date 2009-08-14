@@ -16,22 +16,22 @@ function pake_autoloader($classname)
 
     if (null === $classes) {
         $classes = array(
-            'pakeException' => PAKE_DIR.'/pakeException.class.php',
-            'pakeYaml'      => PAKE_DIR.'/pakeYaml.class.php',
-            'pakeSpyc'      => PAKE_DIR.'/pakeYaml.class.php',
-            'pakeGetopt'    => PAKE_DIR.'/pakeGetopt.class.php',
-            'pakeFinder'    => PAKE_DIR.'/pakeFinder.class.php',
-            'pakeTask'      => PAKE_DIR.'/pakeTask.class.php',
-            'pakeFileTask'  => PAKE_DIR.'/pakeFileTask.class.php',
-            'pakeColor'     => PAKE_DIR.'/pakeColor.class.php',
-            'pakeApp'       => PAKE_DIR.'/pakeApp.class.php',
+            'pakeException'  => PAKE_DIR.'/pakeException.class.php',
+            'pakeYaml'       => PAKE_DIR.'/pakeYaml.class.php',
+            'pakeSpyc'       => PAKE_DIR.'/pakeYaml.class.php',
+            'pakeGetopt'     => PAKE_DIR.'/pakeGetopt.class.php',
+            'pakeFinder'     => PAKE_DIR.'/pakeFinder.class.php',
+            'pakeTask'       => PAKE_DIR.'/pakeTask.class.php',
+            'pakeFileTask'   => PAKE_DIR.'/pakeFileTask.class.php',
+            'pakeColor'      => PAKE_DIR.'/pakeColor.class.php',
+            'pakeApp'        => PAKE_DIR.'/pakeApp.class.php',
+            'pakeSubversion' => PAKE_DIR.'/pakeSubversion.class.php',
         );
     }
 
     if (isset($classes[$classname]))
         require $classes[$classname];
 }
-
 spl_autoload_register('pake_autoloader');
 
 // register our default exception handler
