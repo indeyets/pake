@@ -24,7 +24,7 @@ class pakeException extends Exception
       return function_exists('mb_strlen') ? mb_strlen($string) : strlen($string);
   }
 
-  function render($e)
+  public static function render($e)
   {
     $title = '  ['.get_class($e).']  ';
     $len = self::strlen($title);
@@ -75,7 +75,7 @@ class pakeException extends Exception
     fwrite(STDERR, "\n");
   }
 
-  function trace($exception)
+  public static function trace($exception)
   {
     // exception related properties
     $trace = $exception->getTrace();

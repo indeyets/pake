@@ -40,8 +40,7 @@ spl_autoload_register('pake_autoloader');
 // register our default exception handler
 function pake_exception_default_handler($exception)
 {
-  $e = new pakeException();
-  $e->render($exception);
+  pakeException::render($exception);
   exit(1);
 }
 set_exception_handler('pake_exception_default_handler');
