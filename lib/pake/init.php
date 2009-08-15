@@ -27,6 +27,7 @@ function pake_autoloader($classname)
             'pakeApp'        => PAKE_DIR.'/pakeApp.class.php',
             'pakeSubversion' => PAKE_DIR.'/pakeSubversion.class.php',
             'pakeGit'        => PAKE_DIR.'/pakeGit.class.php',
+            'pakeRSync'      => PAKE_DIR.'/pakeRSync.class.php',
         );
     }
 
