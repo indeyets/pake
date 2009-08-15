@@ -29,6 +29,7 @@ function pake_autoloader($classname)
             'pakeGit'        => PAKE_DIR.'/pakeGit.class.php',
             'pakeRSync'      => PAKE_DIR.'/pakeRSync.class.php',
             'pakeSSH'        => PAKE_DIR.'/pakeSSH.class.php',
+            'pakeArchive'    => PAKE_DIR.'/pakeArchive.class.php',
         );
     }
 
