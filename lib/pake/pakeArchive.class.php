@@ -76,6 +76,43 @@ class pakeArchive
         }
     }
 
+    public static function createPharArchive($arg, $origin_dir, $archive_file, $stub = null, $web_stub = null, $overwrite = false)
+    {
+        if (!extension_loaded('phar'))
+            throw new pakeException(__CLASS__.' module requires "phar" extension');
+
+        if (false === $overwrite and file_exists($archive_file))
+            return true;
+
+        if (!self::endsWith($archive_file, '.phar')) {
+            throw new pakeException("Archive must have .phar extension");
+        }
+
+        $files = pakeApp::get_files_from_argument($arg, $origin_dir, true);
+        pake_echo_action('phar+', $archive_file);
+        try {
+            $arc = new Phar($archive_file);
+            foreach ($files as $file) {
+                $full_path = $origin_dir.'/'.$file;
+
+                pake_echo_action('phar', '-> '.$file);
+                if (is_dir($full_path))
+                    $arc->addEmptyDir($file);
+                else
+                    $arc->addFile($full_path, $file);
+            }
+
+            if (null !== $stub) {
+                pake_echo_action('phar', '[stub] '.$stub.(null === $web_stub ? '' : ', '.$web_stub));
+                $arc->setStub($arc->createDefaultStub($stub, $web_stub));
+            }
+        } catch (PharException $e) {
+            unset($arc);
+            pake_remove($archive_file);
+            throw $e;
+        }
+    }
+
     public static function extractArchive($archive_file, $target_dir, $overwrite = false, $files = null)
     {
         if (!extension_loaded('phar'))
