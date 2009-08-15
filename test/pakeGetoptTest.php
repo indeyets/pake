@@ -1,7 +1,5 @@
 <?php
 
-require_once 'pake/pakeGetopt.class.php';
-
 class pakeGetoptTest extends UnitTestCase
 {
   public function test_simple()

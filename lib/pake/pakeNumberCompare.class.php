@@ -11,11 +11,6 @@
  * @version    SVN: $Id$
  */
 
-if (class_exists('pakeNumberCompare'))
-{
- return;
-}
-
 /**
  *
  * Numeric comparisons.

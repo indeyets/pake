@@ -10,11 +10,6 @@
  * @version    SVN: $Id$
  */
 
-if (class_exists('pakeGlobToRegex'))
-{
-  return;
-}
-
 /**
  *
  * Match globbing patterns against text.

@@ -1,7 +1,5 @@
 <?php
 
-require_once 'pake/pakeGlobToRegex.class.php';
-
 class pakeGlobToRegexTest extends UnitTestCase
 {
   public function test_simple()

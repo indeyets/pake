@@ -1,7 +1,5 @@
 <?php
 
-require_once 'pake/pakeFinder.class.php';
-
 class pakeFinderTest extends UnitTestCase
 {
   private $dir = '';

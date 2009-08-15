@@ -17,20 +17,22 @@ function pake_autoloader($classname)
 
     if (null === $classes) {
         $classes = array(
-            'pakeException'  => PAKE_DIR.'/pakeException.class.php',
-            'pakeYaml'       => PAKE_DIR.'/pakeYaml.class.php',
-            'pakeSpyc'       => PAKE_DIR.'/pakeYaml.class.php',
-            'pakeGetopt'     => PAKE_DIR.'/pakeGetopt.class.php',
-            'pakeFinder'     => PAKE_DIR.'/pakeFinder.class.php',
-            'pakeTask'       => PAKE_DIR.'/pakeTask.class.php',
-            'pakeFileTask'   => PAKE_DIR.'/pakeFileTask.class.php',
-            'pakeColor'      => PAKE_DIR.'/pakeColor.class.php',
-            'pakeApp'        => PAKE_DIR.'/pakeApp.class.php',
-            'pakeSubversion' => PAKE_DIR.'/pakeSubversion.class.php',
-            'pakeGit'        => PAKE_DIR.'/pakeGit.class.php',
-            'pakeRSync'      => PAKE_DIR.'/pakeRSync.class.php',
-            'pakeSSH'        => PAKE_DIR.'/pakeSSH.class.php',
-            'pakeArchive'    => PAKE_DIR.'/pakeArchive.class.php',
+            'pakeException'     => PAKE_DIR.'/pakeException.class.php',
+            'pakeYaml'          => PAKE_DIR.'/pakeYaml.class.php',
+            'pakeSpyc'          => PAKE_DIR.'/pakeYaml.class.php',
+            'pakeGetopt'        => PAKE_DIR.'/pakeGetopt.class.php',
+            'pakeGlobToRegex'   => PAKE_DIR.'/pakeGlobToRegex.class.php',
+            'pakeFinder'        => PAKE_DIR.'/pakeFinder.class.php',
+            'pakeNumberCompare' => PAKE_DIR.'/pakeNumberCompare.class.php',
+            'pakeTask'          => PAKE_DIR.'/pakeTask.class.php',
+            'pakeFileTask'      => PAKE_DIR.'/pakeFileTask.class.php',
+            'pakeColor'         => PAKE_DIR.'/pakeColor.class.php',
+            'pakeApp'           => PAKE_DIR.'/pakeApp.class.php',
+            'pakeSubversion'    => PAKE_DIR.'/pakeSubversion.class.php',
+            'pakeGit'           => PAKE_DIR.'/pakeGit.class.php',
+            'pakeRSync'         => PAKE_DIR.'/pakeRSync.class.php',
+            'pakeSSH'           => PAKE_DIR.'/pakeSSH.class.php',
+            'pakeArchive'       => PAKE_DIR.'/pakeArchive.class.php',
         );
     }
 

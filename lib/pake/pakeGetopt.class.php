@@ -8,11 +8,6 @@
  * @version    SVN: $Id$
  */
 
-if (class_exists('pakeGetopt'))
-{
-  return;
-}
-
 /**
  *
  * Console options parsing class.

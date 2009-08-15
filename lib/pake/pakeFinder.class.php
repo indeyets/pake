@@ -8,14 +8,6 @@
  * @version    SVN: $Id$
  */
 
-require_once dirname(__FILE__).'/pakeGlobToRegex.class.php';
-require_once dirname(__FILE__).'/pakeNumberCompare.class.php';
-
-if (class_exists('pakeFinder'))
-{
-  return;
-}
-
 /**
  *
  * Allow to build rules to find files and directories.

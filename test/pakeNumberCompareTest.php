@@ -1,7 +1,5 @@
 <?php
 
-require_once 'pake/pakeNumberCompare.class.php';
-
 class pakeNumberCompareTest extends UnitTestCase
 {
   public function test_simple()
