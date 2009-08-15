@@ -184,11 +184,12 @@ class pakeApp
   // If a match is found, it is copied into @pakefile.
   public function have_pakefile()
   {
+    $here = getcwd();
     foreach (pakeApp::$PAKEFILES as $file)
     {
-      if (file_exists($file))
+      if (file_exists($here.'/'.$file))
       {
-        $this->pakefile = $file;
+        $this->pakefile = $here.'/'.$file;
         return true;
       }
     }

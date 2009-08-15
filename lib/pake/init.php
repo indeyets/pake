@@ -8,7 +8,8 @@
  * @license    see the LICENSE file included in the distribution
  */
 
-define('PAKE_DIR', dirname(__FILE__));
+if (!defined('PAKE_DIR'))
+    define('PAKE_DIR', dirname(__FILE__));
 
 function pake_autoloader($classname)
 {
