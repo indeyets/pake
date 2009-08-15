@@ -71,7 +71,7 @@ function run_phar()
 function run_create_pear_package($task, $args)
 {
     if (!isset($args[0]) || !$args[0]) {
-        throw new pakeException('You must provide pake version to release (1.1.X for example).');
+        throw new pakeException('You must provide pake version to release (1.2.X for example).');
     }
 
     $version = $args[0];
@@ -79,10 +79,10 @@ function run_create_pear_package($task, $args)
     // create a pear package
     echo 'create pear package for version "'.$version."\"\n";
 
-    pake_copy(getcwd().'/package.xml.tmpl', getcwd().'/package.xml');
+    pake_copy(getcwd().'/package.xml.tmpl', getcwd().'/package.xml', array('override' => true));
 
     // add class files
-    $class_files = pakeFinder::type('file')->prune('.svn')->not_name('/^pakeApp.class.php$/')->name('*.php')->relative()->in('lib');
+    $class_files = pakeFinder::type('file')->ignore_version_control()->not_name('/^pakeApp.class.php$/')->name('*.php')->relative()->in('lib');
     $xml_classes = '';
     foreach ($class_files as $file) {
         $dir_name  = dirname($file);
@@ -96,11 +96,21 @@ function run_create_pear_package($task, $args)
         'CURRENT_DATE' => date('Y-m-d'),
         'CLASS_FILES'  => $xml_classes,
     ));
-    pake_replace_tokens('lib/pake/pakeApp.class.php', getcwd(), 'const VERSION = \'', '\';', array('1.1.DEV' => "const VERSION = '$version';"));
+    pake_replace_tokens('lib/pake/pakeApp.class.php', getcwd(), 'const VERSION = \'', '\';', array(
+        '1.1.DEV' => "const VERSION = '$version';"
+    ));
 
-    pakePearTask::run_pear($task, $args);
+    try {
+        pakePearTask::run_pear($task, $args);
+    } catch (pakeException $e) {
+    }
     pake_remove('package.xml', getcwd());
-    pake_replace_tokens('lib/pake/pakeApp.class.php', getcwd(), 'const VERSION = \'', '\';', array($version => "const VERSION = '1.1.DEV';"));
+    pake_replace_tokens('lib/pake/pakeApp.class.php', getcwd(), 'const VERSION = \'', '\';', array(
+        $version => "const VERSION = '1.1.DEV';"
+    ));
+
+    if (isset($e))
+        throw $e;
 }
 
 function run_release($task, $args)
