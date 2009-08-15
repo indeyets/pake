@@ -83,7 +83,7 @@ class pakeRSync
         }
 
         pake_sh('rsync -az -e '.escapeshellarg($transport).' '
-                .implode(' ', $remote_paths).' '
+                .implode(' ', array_map('escapeshellarg', $remote_paths)).' '
                 .escapeshellarg($local_path)
         );
     }
