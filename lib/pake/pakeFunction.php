@@ -286,7 +286,7 @@ function pake_sh($cmd)
   return $content;
 }
 
-function pake_strip_php_comments($arg)
+function pake_strip_php_comments($arg, $target_dir = '')
 {
   /* T_ML_COMMENT does not exist in PHP 5.
    * The following three lines define it in order to
@@ -304,7 +304,7 @@ function pake_strip_php_comments($arg)
     if (!defined('T_DOC_COMMENT')) define('T_DOC_COMMENT', T_ML_COMMENT);
   }
 
-  $files = pakeApp::get_files_from_argument($arg);
+  $files = pakeApp::get_files_from_argument($arg, $target_dir);
 
   foreach ($files as $file)
   {
@@ -346,16 +346,13 @@ function pake_strip_php_comments($arg)
 
 function pake_format_action($section, $text, $size = null)
 {
-  if (pakeApp::get_instance()->get_verbose())
-  {
     $width = 9 + strlen(pakeColor::colorize('', 'INFO'));
-    return sprintf('>> %-'.$width.'s %s', pakeColor::colorize($section, 'INFO'), pakeApp::excerpt($text, $size))."\n";
-  }
+    return sprintf('>> %-'.$width.'s %s', pakeColor::colorize($section, 'INFO'), pakeApp::excerpt($text, $size));
 }
 
 function pake_echo_action($section, $text)
 {
-  echo pake_format_action($section, $text);
+  pake_echo(pake_format_action($section, $text));
 }
 
 function pake_excerpt($text)
@@ -376,13 +373,10 @@ function pake_echo($text)
 
 function pake_echo_comment($text)
 {
-  if (pakeApp::get_instance()->get_verbose())
-  {
-    echo sprintf(pakeColor::colorize('   # %s', 'COMMENT'), $text)."\n";
-  }
+  pake_echo(sprintf(pakeColor::colorize('   # %s', 'COMMENT'), $text));
 }
 
 function pake_echo_error($text)
 {
-    echo sprintf(pakeColor::colorize('   ! %s', 'ERROR'), $text)."\n";
+  pake_echo(sprintf(pakeColor::colorize('   ! %s', 'ERROR'), $text));
 }
