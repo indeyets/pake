@@ -43,6 +43,40 @@ class pakeFinder
   private $search_dir  = '';
 
   /**
+   * Constructor shouldn't be called manually
+   */
+  protected function __construct()
+  {
+  }
+
+  /**
+   * Factory, which prepares new pakeFinder objects
+   * Sets the type of elements to return.
+   *
+   * @param  string "directory" or "file" or "any" (for both file and directory)
+   * @return object new pakeFinder object
+   */
+  public static function type($name)
+  {
+    $finder = new pakeFinder();
+
+    if (strtolower(substr($name, 0, 3)) == 'dir')
+    {
+      $finder->type = 'directory';
+    }
+    else if (strtolower($name) == 'any')
+    {
+      $finder->type = 'any';
+    }
+    else
+    {
+      $finder->type = 'file';
+    }
+
+    return $finder;
+  }
+
+  /**
    * Sets maximum directory depth.
    *
    * Finder will descend at most $level levels of directories below the starting point.
@@ -75,32 +109,6 @@ class pakeFinder
   public function get_type()
   {
     return $this->type;
-  }
-
-  /**
-   * Sets the type of elements to returns.
-   *
-   * @param  string directory or file or any (for both file and directory)
-   * @return object new pakeFinder object
-   */
-  public static function type($name)
-  {
-    $finder = new pakeFinder();
-
-    if (strtolower(substr($name, 0, 3)) == 'dir')
-    {
-      $finder->type = 'directory';
-    }
-    else if (strtolower($name) == 'any')
-    {
-      $finder->type = 'any';
-    }
-    else
-    {
-      $finder->type = 'file';
-    }
-
-    return $finder;
   }
 
   /*
