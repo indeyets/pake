@@ -344,6 +344,13 @@ function pake_strip_php_comments($arg, $target_dir = '')
   }
 }
 
+
+function pake_input($question)
+{
+    echo $question."\n[>] ";
+    return fgets(STDIN);
+}
+
 function pake_format_action($section, $text, $size = null)
 {
     $width = 9 + strlen(pakeColor::colorize('', 'INFO'));
