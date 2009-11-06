@@ -348,7 +348,7 @@ function pake_strip_php_comments($arg, $target_dir = '')
 function pake_input($question)
 {
     echo $question."\n[>] ";
-    return fgets(STDIN);
+    return rtrim(fgets(STDIN), "\r\n");
 }
 
 function pake_format_action($section, $text, $size = null)
