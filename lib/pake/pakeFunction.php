@@ -345,10 +345,31 @@ function pake_strip_php_comments($arg, $target_dir = '')
 }
 
 
-function pake_input($question)
+function pake_input($question, $default = null)
 {
-    echo $question."\n[>] ";
-    return rtrim(fgets(STDIN), "\r\n");
+    echo $question."\n";
+
+    while (true) {
+        if (null === $default)
+            echo '[>] ';
+        else
+            echo '[> default="'.$default.'"] ';
+
+        $retval = rtrim(fgets(STDIN), "\r\n");
+
+        if ('' === $retval) {
+            if (null !== $default) {
+                $retval = $default;
+                break;
+            }
+
+            continue;
+        }
+
+        break;
+    }
+
+    return $retval;
 }
 
 function pake_format_action($section, $text, $size = null)
