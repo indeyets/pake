@@ -389,7 +389,12 @@ class pakeApp
   {
     if (!$size)
     {
-      $size = self::$MAX_LINE_SIZE;
+      $cols = getenv('COLUMNS');
+
+      if (false !== $cols)
+        $size = $cols - 13;
+      else
+        $size = self::$MAX_LINE_SIZE;
     }
 
     if (strlen($text) < $size)
