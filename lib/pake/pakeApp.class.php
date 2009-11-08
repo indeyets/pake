@@ -24,7 +24,7 @@ class pakeApp
 {
   const VERSION = '1.1.DEV';
 
-  private static $MAX_LINE_SIZE = 65;
+  public static $MAX_LINE_SIZE = 65;
   private static $PROPERTIES = array();
   private static $PAKEFILES = array('pakefile', 'Pakefile', 'pakefile.php', 'Pakefile.php');
   private static $PLUGINDIRS = array();
@@ -383,28 +383,6 @@ class pakeApp
     }
 
     return $files;
-  }
-
-  public static function excerpt($text, $size = null)
-  {
-    if (!$size)
-    {
-      $cols = getenv('COLUMNS');
-
-      if (false !== $cols)
-        $size = $cols - 13;
-      else
-        $size = self::$MAX_LINE_SIZE;
-    }
-
-    if (strlen($text) < $size)
-    {
-      return $text;
-    }
-
-    $subsize = floor(($size - 3) / 2);
-
-    return substr($text, 0, $subsize).pakeColor::colorize('...', 'INFO').substr($text, -$subsize);
   }
 
   /**

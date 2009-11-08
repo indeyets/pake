@@ -347,7 +347,7 @@ function pake_strip_php_comments($arg, $target_dir = '')
 
 function pake_input($question, $default = null)
 {
-    echo $question."\n";
+    pake_echo($question);
 
     while (true) {
         if (null === $default)
@@ -372,39 +372,65 @@ function pake_input($question, $default = null)
     return $retval;
 }
 
+function pake_select_input($question, array $options, $default = null)
+{
+    pake_echo($question);
+
+    $i = 1;
+    $options_strs = array();
+    foreach ($options as $option) {
+        $options_strs[] = $i++.'. '.$option;
+    }
+
+    pake_echo('options: '.implode(', ', $options_strs));
+}
+
 function pake_format_action($section, $text, $size = null)
 {
     $width = 9 + strlen(pakeColor::colorize('', 'INFO'));
-    return sprintf('>> %-'.$width.'s %s', pakeColor::colorize($section, 'INFO'), pakeApp::excerpt($text, $size));
+    return sprintf('>> %-'.$width.'s %s', pakeColor::colorize($section, 'INFO'), pake_excerpt($text, $size));
 }
 
 function pake_echo_action($section, $text)
 {
-  pake_echo(pake_format_action($section, $text));
+    if (pakeApp::get_instance()->get_verbose()) {
+        pake_echo(pake_format_action($section, $text));
+    }
 }
 
-function pake_excerpt($text)
+function pake_excerpt($text, $size = null)
 {
-  if (pakeApp::get_instance()->get_verbose())
-  {
-    echo pakeApp::excerpt($text)."\n";
-  }
+    if (null === $size) {
+        $cols = getenv('COLUMNS');
+
+        if (false !== $cols)
+            $size = $cols - 13;
+        else
+            $size = pakeApp::$MAX_LINE_SIZE;
+    }
+
+    if (strlen($text) < $size) {
+        return $text;
+    }
+
+    $subsize = floor(($size - 3) / 2);
+
+    return substr($text, 0, $subsize).pakeColor::colorize('...', 'INFO').substr($text, -$subsize);
 }
 
 function pake_echo($text)
 {
-  if (pakeApp::get_instance()->get_verbose())
-  {
     echo $text."\n";
-  }
 }
 
 function pake_echo_comment($text)
 {
-  pake_echo(sprintf(pakeColor::colorize('   # %s', 'COMMENT'), $text));
+    if (pakeApp::get_instance()->get_verbose()) {
+        pake_echo(sprintf(pakeColor::colorize('   # %s', 'COMMENT'), $text));
+    }
 }
 
 function pake_echo_error($text)
 {
-  pake_echo(sprintf(pakeColor::colorize('   ! %s', 'ERROR'), $text));
+    pake_echo(sprintf(pakeColor::colorize('   ! %s', 'ERROR'), $text));
 }

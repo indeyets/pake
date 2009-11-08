@@ -17,7 +17,9 @@ pake_task('foo');
 
 function run_foo($task, $args)
 {
-    throw new Exception('test');
+    $age = pake_input('How old are you?');
+    pake_echo_comment("You are ".$age);
+    // throw new Exception('test');
 }
 
 /* tasks */
