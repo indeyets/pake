@@ -355,7 +355,16 @@ function pake_input($question, $default = null)
         else
             echo '[> default="'.$default.'"] ';
 
-        $retval = rtrim(fgets(STDIN), "\r\n");
+        $fp = fopen('php://stdin', 'r');
+        $retval = fgets($fp);
+        fclose($fp);
+
+        if (false === $retval) {
+            echo "\n";
+            continue;
+        }
+
+        $retval = rtrim($retval, "\r\n");
 
         if ('' === $retval) {
             if (null !== $default) {
@@ -374,15 +383,66 @@ function pake_input($question, $default = null)
 
 function pake_select_input($question, array $options, $default = null)
 {
+    if (null !== $default) {
+        if (!is_numeric($default))
+            throw new UnexpectedValueException("Default is specified, but is not numeric");
+
+        if (!isset($options[$default]))
+            throw new UnexpectedValueException("Default is specified, but it is not one of options");
+    }
+
+
     pake_echo($question);
 
     $i = 1;
     $options_strs = array();
     foreach ($options as $option) {
-        $options_strs[] = $i++.'. '.$option;
+        $options_strs[] = '('.$i++.') '.$option;
     }
 
-    pake_echo('options: '.implode(', ', $options_strs));
+    pake_echo('  '.implode("\n  ", $options_strs));
+
+    while (true) {
+        if (null === $default)
+            echo '[>] ';
+        else
+            echo '[> default="'.($default + 1).'"] ';
+
+        $fp = fopen('php://stdin', 'r');
+        $retval = fgets($fp);
+        fclose($fp);
+
+        if (false === $retval) {
+            echo "\n";
+            continue;
+        }
+
+        $retval = rtrim($retval, "\r\n");
+
+        if ('' === $retval) {
+            if (null === $default) {
+                continue;
+            }
+
+            $retval = $options[$default];
+        } else {
+            if (!is_numeric($retval)) {
+                pake_echo_error("Just enter number");
+                continue;
+            }
+
+            if (!isset($options[$retval - 1])) {
+                pake_echo_error("There is no option ".$retval);
+                continue;
+            }
+
+            $retval = $options[$retval - 1];
+        }
+
+        break;
+    }
+
+    return $retval;
 }
 
 function pake_format_action($section, $text, $size = null)
