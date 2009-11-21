@@ -205,7 +205,7 @@ class pakeApp
         }
     }
 
-    // True if one of the files in RAKEFILES is in the current directory.
+    // True if one of the files in PAKEFILES is in the current directory.
     // If a match is found, it is copied into @pakefile.
     public function have_pakefile()
     {
@@ -222,17 +222,19 @@ class pakeApp
 
     public function load_pakefile()
     {
-        $here = getcwd();
+        $start = $here = getcwd();
         while (!$this->have_pakefile()) {
             chdir('..');
             if (getcwd() == $here || $this->nosearch) {
+                chdir($start);
                 throw new pakeException(sprintf('No pakefile found (looking for: %s)', join(', ', self::$PAKEFILES))."\n");
             }
 
             $here = getcwd();
         }
 
-        require_once($this->pakefile);
+        require($this->pakefile);
+        chdir($start);
     }
 
     // Do the option defined by +opt+ and +value+.
