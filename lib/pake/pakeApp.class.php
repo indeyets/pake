@@ -293,15 +293,19 @@ class pakeApp
     }
 
     // Display the program usage line.
-    public function usage()
+    public function usage($hint_about_help = true)
     {
-        echo self::$EXEC_NAME." [-f pakefile] {options} targets...\n".pakeColor::colorize("Try ".self::$EXEC_NAME." -H for more information", 'INFO')."\n";
+        echo self::$EXEC_NAME." [-f pakefile] {options} targets...\n";
+
+        if (true === $hint_about_help) {
+            echo pakeColor::colorize("Try ".self::$EXEC_NAME." -H for more information", 'INFO')."\n";
+        }
     }
 
-    // Display the rake command line help.
+    // Display the pake command line help.
     public function help()
     {
-        $this->usage();
+        $this->usage(false);
         echo "\n";
         echo "available options:";
         echo "\n";
