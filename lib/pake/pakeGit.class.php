@@ -20,6 +20,11 @@ class pakeGit
         $this->repository_path = $repository_path;
     }
 
+    public function getPath()
+    {
+        return $this->repository_path;
+    }
+
     public function add($files = null)
     {
         if (null === $files) {
