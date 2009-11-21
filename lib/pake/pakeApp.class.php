@@ -120,41 +120,20 @@ class pakeApp
         }
 
         // parsing out options and arguments
-        $args = $this->opt->get_arguments();
-        $task_name = array_shift($args);
+        list($task_name, $args, $options) = $this->parseTaskAndParameters();
 
-        $options = array();
-        for ($i = 0, $max = count($args); $i < $max; $i++) {
-            if (0 === strpos($args[$i], '--')) {
-                if (false !== $pos = strpos($args[$i], '=')) {
-                    $key = substr($args[$i], 2, $pos - 2);
-                    $value = substr($args[$i], $pos + 1);
-                } else {
-                    $key = substr($args[$i], 2);
-                    $value = true;
-                }
-
-                if ('[]' == substr($key, -2)) {
-                    if (!isset($options[$key])) {
-                        $options[$key] = array();
-                    }
-
-                    $options[$key][] = $value;
-                } else {
-                    $options[$key] = $value;
-                }
-
-                unset($args[$i]);
-            }
+        if (!$task_name) {
+            return $this->runDefaultTask();
+        } else {
+            $task_name = pakeTask::get_full_task_name($task_name);
+            return $this->initAndRunTask($task_name, $args, $options);
         }
-        $args = array_values($args);
+    }
 
+    protected function initAndRunTask($task_name, $args, $options)
+    {
         // generating abbreviations
         $abbreviated_tasks = pakeTask::get_abbreviated_tasknames();
-        $task_name = pakeTask::get_full_task_name($task_name);
-        if (!$task_name) {
-            $task_name = 'default';
-        }
 
         // does requested task correspond to full or abbreviated name?
         if (!array_key_exists($task_name, $abbreviated_tasks)) {
@@ -168,6 +147,51 @@ class pakeApp
         // init and run task
         $task = pakeTask::get($abbreviated_tasks[$task_name][0]);
         return $task->invoke($args, $options);
+    }
+
+    protected function runDefaultTask()
+    {
+        return $this->initAndRunTask('default', array(), array());
+    }
+
+    protected function parseTaskAndParameters()
+    {
+        $args = $this->opt->get_arguments();
+        $options = array();
+
+        if (count($args) == 0) {
+            $task_name = null;
+        } else {
+            $task_name = array_shift($args);
+
+            for ($i = 0, $max = count($args); $i < $max; $i++) {
+                if (0 === strpos($args[$i], '--')) {
+                    if (false !== $pos = strpos($args[$i], '=')) {
+                        $key = substr($args[$i], 2, $pos - 2);
+                        $value = substr($args[$i], $pos + 1);
+                    } else {
+                        $key = substr($args[$i], 2);
+                        $value = true;
+                    }
+
+                    if ('[]' == substr($key, -2)) {
+                        if (!isset($options[$key])) {
+                            $options[$key] = array();
+                        }
+
+                        $options[$key][] = $value;
+                    } else {
+                        $options[$key] = $value;
+                    }
+
+                    unset($args[$i]);
+                }
+            }
+
+            $args = array_values($args);
+        }
+
+        return array($task_name, $args, $options);
     }
 
     // Read and handle the command line options.
