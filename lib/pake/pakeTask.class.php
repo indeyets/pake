@@ -85,6 +85,11 @@ class pakeTask
     return $tasks;
   }
 
+  public static function get_abbreviated_tasknames()
+  {
+      return self::abbrev(array_keys(self::get_tasks()));
+  }
+
   public function get_property($name, $section = null)
   {
     $properties = pakeApp::get_instance()->get_properties();
@@ -285,10 +290,19 @@ class pakeTask
     return $task_name;
   }
 
+  /**
+   * removes classname and colons, if those are present
+   * abc => abc
+   * abc::def => def
+   *
+   * @param string $task_name 
+   * @return void
+   * @author Jimi Dini
+   */
   public static function get_mini_task_name($task_name)
   {
     $is_method_task = strpos($task_name, '::');
-    return ($is_method_task ? substr($task_name, $is_method_task + 2) : $task_name);
+    return ((false !== $is_method_task) ? substr($task_name, $is_method_task + 2) : $task_name);
   }
 
   public static function define_comment($comment)
@@ -306,5 +320,56 @@ class pakeTask
 
     $this->comment .= pakeTask::$last_comment;
     pakeTask::$last_comment = '';
+  }
+
+
+
+  /**
+   * gets array of words as input and returns array, where shortened words are keys and arrays of corresponding full-words are values.
+   * For example:
+   * input: array('abc', 'abd')
+   * output: array('a' => array('abc', 'abd'), 'ab' => array('abc', 'abd'), 'abc' => array('abc'), 'abd' => array('abd'))
+   *
+   * @param array $options
+   * @return array
+   * @author Jimi Dini
+   */
+  public static function abbrev(array $options)
+  {
+      $abbrevs = array();
+      $table = array();
+
+      foreach ($options as $option) {
+          $option = pakeTask::get_mini_task_name($option);
+
+          for ($len = (strlen($option)) - 1; $len > 0; --$len) {
+              $abbrev = substr($option, 0, $len);
+
+              if (!array_key_exists($abbrev, $table))
+                  $table[$abbrev] = 1;
+              else
+                  ++$table[$abbrev];
+
+              $seen = $table[$abbrev];
+              if ($seen == 1) {
+                  // we're the first word so far to have this abbreviation.
+                  $abbrevs[$abbrev] = array($option);
+              } elseif ($seen == 2) {
+                  // we're the second word to have this abbreviation, so we can't use it.
+                  //unset($abbrevs[$abbrev]);
+                  $abbrevs[$abbrev][] = $option;
+              } else {
+                  // we're the third word to have this abbreviation, so skip to the next word.
+                  continue;
+              }
+          }
+      }
+
+      // Non-abbreviations always get entered, even if they aren't unique
+      foreach ($options as $option) {
+          $abbrevs[$option] = array($option);
+      }
+
+      return $abbrevs;
   }
 }

@@ -150,7 +150,7 @@ class pakeApp
         $args = array_values($args);
 
         // generating abbreviations
-        $abbreviated_tasks = self::abbrev(array_keys(pakeTask::get_tasks()));
+        $abbreviated_tasks = pakeTask::get_abbreviated_tasknames();
         $task_name = pakeTask::get_full_task_name($task_name);
         if (!$task_name) {
             $task_name = 'default';
@@ -337,54 +337,5 @@ class pakeApp
                 echo "    $prerequisite\n";
             }
         }
-    }
-
-    /**
-     * gets array of words as input and returns array, where shortened words are keys and arrays of corresponding full-words are values.
-     * For example:
-     * input: array('abc', 'abd')
-     * output: array('a' => array('abc', 'abd'), 'ab' => array('abc', 'abd'), 'abc' => array('abc'), 'abd' => array('abd'))
-     *
-     * @param array $options
-     * @return array
-     * @author Jimi Dini
-     */
-    public static function abbrev(array $options)
-    {
-        $abbrevs = array();
-        $table = array();
-
-        foreach ($options as $option) {
-            $option = pakeTask::get_mini_task_name($option);
-
-            for ($len = (strlen($option)) - 1; $len > 0; --$len) {
-                $abbrev = substr($option, 0, $len);
-
-                if (!array_key_exists($abbrev, $table))
-                    $table[$abbrev] = 1;
-                else
-                    ++$table[$abbrev];
-
-                $seen = $table[$abbrev];
-                if ($seen == 1) {
-                    // we're the first word so far to have this abbreviation.
-                    $abbrevs[$abbrev] = array($option);
-                } elseif ($seen == 2) {
-                    // we're the second word to have this abbreviation, so we can't use it.
-                    //unset($abbrevs[$abbrev]);
-                    $abbrevs[$abbrev][] = $option;
-                } else {
-                    // we're the third word to have this abbreviation, so skip to the next word.
-                    continue;
-                }
-            }
-        }
-
-        // Non-abbreviations always get entered, even if they aren't unique
-        foreach ($options as $option) {
-            $abbrevs[$option] = array($option);
-        }
-
-        return $abbrevs;
     }
 }
