@@ -94,8 +94,17 @@ class pakeGit
         return new pakeGit($path);
     }
 
-    public static function clone_repository($src_url, $target_path)
+    public static function clone_repository($src_url, $target_path = null)
     {
+        if (null === $target_path) {
+            // trying to "guess" path
+            $target_path = basename($src_url);
+
+            // removing suffix
+            if (substr($target_path, -4) === '.git')
+                $target_path = substr($target_path, 0, -4);
+        }
+
         if (self::isRepository($target_path)) {
             throw new pakeException('"'.$target_path.'" directory is a Git repository already');
         }
