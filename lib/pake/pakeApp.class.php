@@ -26,9 +26,9 @@ class pakeApp
 
     public static $MAX_LINE_SIZE = 65;
     private static $PROPERTIES = array();
-    private static $PAKEFILES = array('pakefile', 'Pakefile', 'pakefile.php', 'Pakefile.php');
-    private static $PLUGINDIRS = array();
-    private static $OPTIONS = array(
+    protected static $PAKEFILES = array('pakefile', 'Pakefile', 'pakefile.php', 'Pakefile.php');
+    protected static $PLUGINDIRS = array();
+    protected static $OPTIONS = array(
         array('--dry-run',  '-n', pakeGetopt::NO_ARGUMENT,       "Do a dry run without executing actions."),
         array('--help',     '-H', pakeGetopt::NO_ARGUMENT,       "Display this help message."),
         array('--libdir',   '-I', pakeGetopt::REQUIRED_ARGUMENT, "Include LIBDIR in the search path for required modules."),
@@ -55,7 +55,7 @@ class pakeApp
     private $pakefile = '';
     private static $instance = null;
 
-    private function __construct()
+    protected function __construct()
     {
        self::$PLUGINDIRS[] = dirname(__FILE__).'/tasks';
     }
@@ -101,7 +101,7 @@ class pakeApp
     public function run($pakefile = null, $options = null, $load_pakefile = true)
     {
         if ($pakefile) {
-            pakeApp::$PAKEFILES = array($pakefile);
+            self::$PAKEFILES = array($pakefile);
         }
 
         $this->handle_options($options);
@@ -173,7 +173,7 @@ class pakeApp
     // Read and handle the command line options.
     public function handle_options($options = null)
     {
-        $this->opt = new pakeGetopt(pakeApp::$OPTIONS);
+        $this->opt = new pakeGetopt(self::$OPTIONS);
         $this->opt->parse($options);
         foreach ($this->opt->get_options() as $opt => $value) {
             $this->do_option($opt, $value);
@@ -185,7 +185,7 @@ class pakeApp
     public function have_pakefile()
     {
         $here = getcwd();
-        foreach (pakeApp::$PAKEFILES as $file) {
+        foreach (self::$PAKEFILES as $file) {
             if (file_exists($here.'/'.$file)) {
                 $this->pakefile = $here.'/'.$file;
                 return true;
@@ -201,7 +201,7 @@ class pakeApp
         while (!$this->have_pakefile()) {
             chdir('..');
             if (getcwd() == $here || $this->nosearch) {
-                throw new pakeException(sprintf('No pakefile found (looking for: %s)', join(', ', pakeApp::$PAKEFILES))."\n");
+                throw new pakeException(sprintf('No pakefile found (looking for: %s)', join(', ', self::$PAKEFILES))."\n");
             }
 
             $here = getcwd();
@@ -236,7 +236,7 @@ class pakeApp
                 $this->verbose = false;
                 break;
             case 'pakefile':
-                pakeApp::$PAKEFILES = array($value);
+                self::$PAKEFILES = array($value);
                 break;
             case 'require':
                 require $value;
@@ -255,7 +255,7 @@ class pakeApp
                 $this->verbose = true;
                 break;
             case 'version':
-                echo sprintf('pake version %s', pakeColor::colorize(pakeApp::VERSION, 'INFO'))."\n";
+                echo sprintf('pake version %s', pakeColor::colorize(self::VERSION, 'INFO'))."\n";
                 exit();
             default:
                 throw new pakeException(sprintf("Unknown option: %s", $opt));
@@ -276,7 +276,7 @@ class pakeApp
         echo "available options:";
         echo "\n";
 
-        foreach (pakeApp::$OPTIONS as $option) {
+        foreach (self::$OPTIONS as $option) {
             list($long, $short, $mode, $comment) = $option;
             if ($mode == pakeGetopt::REQUIRED_ARGUMENT) {
                 if (preg_match('/\b([A-Z]{2,})\b/', $comment, $match))
