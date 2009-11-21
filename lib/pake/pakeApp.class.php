@@ -53,11 +53,11 @@ class pakeApp
     private $show_tasks = false;
     private $show_prereqs = false;
     private $pakefile = '';
-    private static $instance = null;
+    protected static $instance = null;
 
     protected function __construct()
     {
-       self::$PLUGINDIRS[] = dirname(__FILE__).'/tasks';
+        self::$PLUGINDIRS[] = dirname(__FILE__).'/tasks';
     }
 
     public static function get_plugin_dirs()
