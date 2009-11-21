@@ -19,13 +19,12 @@ class pakeSimpletestTask
   public static function call_simpletest($task, $type = 'text', $dirs = array())
   {
     // remove E_STRICT because simpletest is not E_STRICT compatible
-    $old_error_reporting = ini_get('error_reporting');
-    if ($old_error_reporting & E_STRICT)
-    {
-      error_reporting($old_error_reporting ^ E_STRICT);
-    }
+    $old_error_reporting = error_reporting();
+    $new_error_reporting = $old_error_reporting;
 
-    set_include_path('test'.PATH_SEPARATOR.'lib'.PATH_SEPARATOR.'classes'.PATH_SEPARATOR.get_include_path());
+    if ($new_error_reporting & E_STRICT) {
+        $new_error_reporting = $new_error_reporting ^ E_STRICT;
+    }
 
     include_once('simpletest/unit_tester.php');
     include_once('simpletest/web_tester.php');
@@ -36,6 +35,8 @@ class pakeSimpletestTask
 
     require_once('simpletest/reporter.php');
     require_once('simpletest/mock_objects.php');
+
+    set_include_path('test'.PATH_SEPARATOR.'lib'.PATH_SEPARATOR.get_include_path());
 
     $base_test_dir = 'test';
     $test_dirs = array();
@@ -55,13 +56,14 @@ class pakeSimpletestTask
 
     $test = new GroupTest('Test suite in ('.implode(', ', $test_dirs).')');
     $files = pakeFinder::type('file')->name('*Test.php')->in($test_dirs);
-    foreach ($files as $file)
-    {
-      $test->addTestFile($file);
-    }
 
-    if (count($files))
+    if (count($files) > 0)
     {
+      foreach ($files as $file)
+      {
+        $test->addTestFile($file);
+      }
+
       ob_start();
       if ($type == 'html')
       {
@@ -97,8 +99,7 @@ class pakeSimpletestTask
     $type = 'text';
     if (array_key_exists(0, $args) && in_array($args[0], $types))
     {
-      $type = $args[0];
-      array_shift($args);
+      $type = array_shift($args);
     }
 
     $dirs = array();

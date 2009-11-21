@@ -1,7 +1,21 @@
 <?php
 
+// force usage of local pake
+if ($_SERVER['PHP_SELF'] != dirname(__FILE__).'/bin/pake.php') {
+    $php_exec = (isset($_SERVER['_']) ? $_SERVER['_'] : 'php');
+    $args = '';
+    if ($_SERVER['argc'] > 1) {
+        array_shift($_SERVER['argv']); // removing pake.php
+        $args_arr = array_map('escapeshellarg', $_SERVER['argv']);
+        $args = ' '.implode(' ', $args_arr);
+    }
+    pake_echo("oops… you're using installed pake. restarting with local version");
+    system(escapeshellarg($php_exec).' '.escapeshellarg(dirname(__FILE__).'/bin/pake.php').$args);
+    die();
+}
+
 /* registration */
-pake_import('simpletest');
+pake_import('simpletest', false);
 pake_import('pear');
 
 pake_desc('create a single file with all pake classes');
@@ -123,7 +137,7 @@ function run_release($task, $args)
 
     $version = $args[0];
 
-    pakeSimpletestTask::run_test($task, array());
+    pakeSimpletestTask::call_simpletest($task);
 
     if ($task->is_verbose())
         pake_echo('releasing pake version "'.$version.'"');
