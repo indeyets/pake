@@ -67,7 +67,12 @@ class pakeGit
 
     private function git_run($command)
     {
-        pake_sh('git '.escapeshellarg('--git-dir='.$this->repository_path.'/.git').' '.$command);
+        $cmd = 'git';
+        $cmd .= ' '.escapeshellarg('--git-dir='.$this->repository_path.'/.git');
+        $cmd .= ' '.escapeshellarg('--work-tree='.$this->repository_path);
+        $cmd .= ' '.$command;
+
+        pake_sh($cmd);
     }
 
     // new git-repo
