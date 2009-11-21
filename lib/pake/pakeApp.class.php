@@ -25,6 +25,7 @@ class pakeApp
     const VERSION = '1.1.DEV';
 
     public static $MAX_LINE_SIZE = 65;
+    protected static $EXEC_NAME = 'pake';
     private static $PROPERTIES = array();
     protected static $PAKEFILES = array('pakefile', 'Pakefile', 'pakefile.php', 'Pakefile.php');
     protected static $PLUGINDIRS = array();
@@ -279,17 +280,22 @@ class pakeApp
                 $this->verbose = true;
                 break;
             case 'version':
-                echo sprintf('pake version %s', pakeColor::colorize(self::VERSION, 'INFO'))."\n";
+                $this->showVersion();
                 exit();
             default:
                 throw new pakeException(sprintf("Unknown option: %s", $opt));
         }
     }
 
+    public function showVersion()
+    {
+        echo sprintf('pake version %s', pakeColor::colorize(self::VERSION, 'INFO'))."\n";
+    }
+
     // Display the program usage line.
     public function usage()
     {
-        echo "pake [-f pakefile] {options} targets...\n".pakeColor::colorize("Try pake -H for more information", 'INFO')."\n";
+        echo self::$EXEC_NAME." [-f pakefile] {options} targets...\n".pakeColor::colorize("Try ".self::$EXEC_NAME." -H for more information", 'INFO')."\n";
     }
 
     // Display the rake command line help.
@@ -323,7 +329,7 @@ class pakeApp
         }
         $width += strlen(pakeColor::colorize(' ', 'INFO'));
 
-        echo "available pake tasks:\n";
+        echo "available ".self::$EXEC_NAME." tasks:\n";
 
         // display tasks
         $has_alias = false;
@@ -346,7 +352,7 @@ class pakeApp
             foreach ($tasks as $name => $task) {
                 if ($task->get_alias()) {
                     $mini_name = pakeTask::get_mini_task_name($name);
-                    printf('  %-'.$width.'s = pake %s'."\n", pakeColor::colorize(pakeTask::get_mini_task_name($name), 'INFO'), $task->get_alias().($mini_name != $name ? ' ['.$name.']' : ''));
+                    printf('  %-'.$width.'s = '.self::$EXEC_NAME.' %s'."\n", pakeColor::colorize(pakeTask::get_mini_task_name($name), 'INFO'), $task->get_alias().($mini_name != $name ? ' ['.$name.']' : ''));
                 }
             }
         }
@@ -356,7 +362,7 @@ class pakeApp
     public function display_prerequisites()
     {
         foreach (pakeTask::get_tasks() as $name => $task) {
-            echo "pake ".pakeTask::get_mini_task_name($name)."\n";
+            echo self::$EXEC_NAME." ".pakeTask::get_mini_task_name($name)."\n";
             foreach ($task->get_prerequisites() as $prerequisite) {
                 echo "    $prerequisite\n";
             }
