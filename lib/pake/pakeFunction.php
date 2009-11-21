@@ -142,7 +142,7 @@ function pake_rename($origin, $target, $options = array())
 
 function pake_mirror($arg, $origin_dir, $target_dir, $options = array())
 {
-  $files = pakeApp::get_files_from_argument($arg, $origin_dir, true);
+  $files = pakeFinder::get_files_from_argument($arg, $origin_dir, true);
 
   foreach ($files as $file)
   {
@@ -167,7 +167,7 @@ function pake_mirror($arg, $origin_dir, $target_dir, $options = array())
 
 function pake_remove($arg, $target_dir)
 {
-  $files = array_reverse(pakeApp::get_files_from_argument($arg, $target_dir));
+  $files = array_reverse(pakeFinder::get_files_from_argument($arg, $target_dir));
 
   foreach ($files as $file)
   {
@@ -188,7 +188,7 @@ function pake_remove($arg, $target_dir)
 
 function pake_touch($arg, $target_dir)
 {
-  $files = pakeApp::get_files_from_argument($arg, $target_dir);
+  $files = pakeFinder::get_files_from_argument($arg, $target_dir);
 
   foreach ($files as $file)
   {
@@ -200,7 +200,7 @@ function pake_touch($arg, $target_dir)
 
 function pake_replace_tokens_to_dir($arg, $src_dir, $target_dir, $begin_token, $end_token, $tokens)
 {
-    $files = pakeApp::get_files_from_argument($arg, $src_dir, true);
+    $files = pakeFinder::get_files_from_argument($arg, $src_dir, true);
 
     foreach ($files as $file)
     {
@@ -257,7 +257,7 @@ function pake_chmod($arg, $target_dir, $mode, $umask = 0000)
   $current_umask = umask();
   umask($umask);
 
-  $files = pakeApp::get_files_from_argument($arg, $target_dir, true);
+  $files = pakeFinder::get_files_from_argument($arg, $target_dir, true);
 
   foreach ($files as $file)
   {
@@ -304,7 +304,7 @@ function pake_strip_php_comments($arg, $target_dir = '')
     if (!defined('T_DOC_COMMENT')) define('T_DOC_COMMENT', T_ML_COMMENT);
   }
 
-  $files = pakeApp::get_files_from_argument($arg, $target_dir);
+  $files = pakeFinder::get_files_from_argument($arg, $target_dir);
 
   foreach ($files as $file)
   {

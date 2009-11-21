@@ -47,7 +47,7 @@ class pakeArchive
             throw new pakeException("Only .zip, .tar, .tar.gz and .tar.bz2 archives are supported");
         }
 
-        $files = pakeApp::get_files_from_argument($arg, $origin_dir, true);
+        $files = pakeFinder::get_files_from_argument($arg, $origin_dir, true);
 
         pake_echo_action('archive+', $archive_file);
         try {
@@ -88,7 +88,7 @@ class pakeArchive
             throw new pakeException("Archive must have .phar extension");
         }
 
-        $files = pakeApp::get_files_from_argument($arg, $origin_dir, true);
+        $files = pakeFinder::get_files_from_argument($arg, $origin_dir, true);
         pake_echo_action('phar+', $archive_file);
         try {
             $arc = new Phar($archive_file);

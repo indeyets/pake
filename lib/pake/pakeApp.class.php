@@ -339,29 +339,6 @@ class pakeApp
         }
     }
 
-    public static function get_files_from_argument($arg, $target_dir = '', $relative = false)
-    {
-        $files = array();
-        if (is_array($arg)) {
-            $files = $arg;
-        } elseif (is_string($arg)) {
-            $files[] = $arg;
-        } elseif ($arg instanceof pakeFinder) {
-            $files = $arg->in($target_dir);
-        } else {
-            throw new pakeException('Wrong argument type (must be a list, a string or a pakeFinder object).');
-        }
-
-        if ($relative and $target_dir) {
-            $files = preg_replace('/^'.preg_quote(realpath($target_dir), '/').'/', '', $files);
-
-            // remove leading /
-            $files = array_map(create_function('$f', 'return 0 === strpos($f, DIRECTORY_SEPARATOR) ? substr($f, 1) : $f;'), $files);
-        }
-
-        return $files;
-    }
-
     /**
      * gets array of words as input and returns array, where shortened words are keys and arrays of corresponding full-words are values.
      * For example:

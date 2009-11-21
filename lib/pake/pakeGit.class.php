@@ -25,7 +25,7 @@ class pakeGit
         if (null === $files) {
             $files = array('--all');
         } else {
-            $files = pakeApp::get_files_from_argument($files, $this->repository_path, true);
+            $files = pakeFinder::get_files_from_argument($files, $this->repository_path, true);
         }
 
         $this->git_run('add '.implode(' ', array_map('escapeshellarg', $files)));
