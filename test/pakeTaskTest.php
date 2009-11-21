@@ -1,11 +1,11 @@
 <?php
 
-class pakeAppTest extends UnitTestCase
+class pakeTaskTest extends UnitTestCase
 {
   public function test_abbrev()
   {
     $words = array('start', 'stop', 'queue', 'quit');
-    $result = pakeApp::abbrev($words);
+    $result = pakeTask::abbrev($words);
   
     $expected = array(
       'st' => array('start', 'stop'),
@@ -20,4 +20,3 @@ class pakeAppTest extends UnitTestCase
     $this->assertEqual($expected, $result);
   }
 }
-?>
