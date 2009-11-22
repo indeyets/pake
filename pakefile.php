@@ -9,7 +9,7 @@ if ($_SERVER['PHP_SELF'] != dirname(__FILE__).'/bin/pake.php') {
         $args_arr = array_map('escapeshellarg', $_SERVER['argv']);
         $args = ' '.implode(' ', $args_arr);
     }
-    pake_echo("oops… you're using installed pake. restarting with local version");
+    pake_echo_comment("oops… you're using installed pake. restarting with local version");
     system(escapeshellarg($php_exec).' '.escapeshellarg(dirname(__FILE__).'/bin/pake.php').$args);
     die();
 }
@@ -93,7 +93,7 @@ function run_create_pear_package($task, $args)
     $version = $args[0];
 
     // create a pear package
-    echo 'create pear package for version "'.$version."\"\n";
+    pake_echo_comment('creating PEAR package.xml for version "'.$version.'"');
 
     pake_copy(getcwd().'/package.xml.tmpl', getcwd().'/package.xml', array('override' => true));
 
@@ -116,12 +116,14 @@ function run_create_pear_package($task, $args)
         '1.1.DEV' => "const VERSION = '$version';"
     ));
 
+    // run packager
     try {
-        pakePearTask::run_pear($task, $args);
+        pakePearTask::run_pear_package($task, $args);
     } catch (pakeException $e) {
     }
+
     pake_remove('package.xml', getcwd());
-    pake_replace_tokens('lib/pake/pakeApp.class.php', getcwd(), 'const VERSION = \'', '\';', array(
+    pake_replace_tokens('lib/pake/pakeApp.class.php', getcwd(), "const VERSION = '", "';", array(
         $version => "const VERSION = '1.1.DEV';"
     ));
 
@@ -140,7 +142,7 @@ function run_release($task, $args)
     pakeSimpletestTask::call_simpletest($task);
 
     if ($task->is_verbose())
-        pake_echo('releasing pake version "'.$version.'"');
+        pake_echo_comment('releasing pake version "'.$version.'"');
 
     array_unshift($args, $version);
 
