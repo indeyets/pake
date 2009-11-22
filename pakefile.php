@@ -9,8 +9,15 @@ if ($_SERVER['PHP_SELF'] != dirname(__FILE__).'/bin/pake.php') {
         $args_arr = array_map('escapeshellarg', $_SERVER['argv']);
         $args = ' '.implode(' ', $args_arr);
     }
+
+    $force_tty = '';
+    if (defined('PAKE_FORCE_TTY') or (DIRECTORY_SEPARATOR != '\\' and function_exists('posix_isatty') and @posix_isatty(STDOUT))) {
+        $force_tty = ' --force-tty';
+    }
+
     pake_echo_comment("oops… you're using installed pake. restarting with local version");
-    system(escapeshellarg($php_exec).' '.escapeshellarg(dirname(__FILE__).'/bin/pake.php').$args);
+    system(escapeshellarg($php_exec).' '.escapeshellarg(dirname(__FILE__).'/bin/pake.php').$force_tty.$args);
+
     die();
 }
 

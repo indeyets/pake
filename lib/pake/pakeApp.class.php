@@ -30,19 +30,20 @@ class pakeApp
     protected static $PAKEFILES = array('pakefile', 'Pakefile', 'pakefile.php', 'Pakefile.php');
     protected static $PLUGINDIRS = array();
     protected static $OPTIONS = array(
-        array('--dry-run',  '-n', pakeGetopt::NO_ARGUMENT,       "Do a dry run without executing actions."),
-        array('--help',     '-H', pakeGetopt::NO_ARGUMENT,       "Display this help message."),
-        array('--libdir',   '-I', pakeGetopt::REQUIRED_ARGUMENT, "Include LIBDIR in the search path for required modules."),
-        array('--nosearch', '-N', pakeGetopt::NO_ARGUMENT,       "Do not search parent directories for the pakefile."),
-        array('--prereqs',  '-P', pakeGetopt::NO_ARGUMENT,       "Display the tasks and dependencies, then exit."),
-        array('--quiet',    '-q', pakeGetopt::NO_ARGUMENT,       "Do not log messages to standard output."),
-        array('--pakefile', '-f', pakeGetopt::REQUIRED_ARGUMENT, "Use FILE as the pakefile."),
-        array('--require',  '-r', pakeGetopt::REQUIRED_ARGUMENT, "Require MODULE before executing pakefile."),
-        array('--tasks',    '-T', pakeGetopt::NO_ARGUMENT,       "Display the tasks and dependencies, then exit."),
-        array('--trace',    '-t', pakeGetopt::NO_ARGUMENT,       "Turn on invoke/execute tracing, enable full backtrace."),
-        array('--usage',    '-h', pakeGetopt::NO_ARGUMENT,       "Display usage."),
-        array('--verbose',  '-v', pakeGetopt::NO_ARGUMENT,       "Log message to standard output (default)."),
-        array('--version',  '-V', pakeGetopt::NO_ARGUMENT,       "Display the program version."),
+        array('--dry-run',   '-n', pakeGetopt::NO_ARGUMENT,       "Do a dry run without executing actions."),
+        array('--help',      '-H', pakeGetopt::NO_ARGUMENT,       "Display this help message."),
+        array('--libdir',    '-I', pakeGetopt::REQUIRED_ARGUMENT, "Include LIBDIR in the search path for required modules."),
+        array('--nosearch',  '-N', pakeGetopt::NO_ARGUMENT,       "Do not search parent directories for the pakefile."),
+        array('--prereqs',   '-P', pakeGetopt::NO_ARGUMENT,       "Display the tasks and dependencies, then exit."),
+        array('--quiet',     '-q', pakeGetopt::NO_ARGUMENT,       "Do not log messages to standard output."),
+        array('--pakefile',  '-f', pakeGetopt::REQUIRED_ARGUMENT, "Use FILE as the pakefile."),
+        array('--require',   '-r', pakeGetopt::REQUIRED_ARGUMENT, "Require MODULE before executing pakefile."),
+        array('--tasks',     '-T', pakeGetopt::NO_ARGUMENT,       "Display the tasks and dependencies, then exit."),
+        array('--trace',     '-t', pakeGetopt::NO_ARGUMENT,       "Turn on invoke/execute tracing, enable full backtrace."),
+        array('--usage',     '-h', pakeGetopt::NO_ARGUMENT,       "Display usage."),
+        array('--verbose',   '-v', pakeGetopt::NO_ARGUMENT,       "Log message to standard output (default)."),
+        array('--force-tty', '',   pakeGetopt::NO_ARGUMENT,       "Force coloured output"),
+        array('--version',   '-V', pakeGetopt::NO_ARGUMENT,       "Display the program version."),
     );
 
     private $opt = null;
@@ -280,6 +281,9 @@ class pakeApp
                 exit();
             case 'verbose':
                 $this->verbose = true;
+                break;
+            case 'force-tty':
+                define('PAKE_FORCE_TTY', true);
                 break;
             case 'version':
                 $this->showVersion();
