@@ -268,22 +268,75 @@ function pake_chmod($arg, $target_dir, $mode, $umask = 0000)
   umask($current_umask);
 }
 
-function pake_sh($cmd)
+function pake_which($cmd)
 {
-  $verbose = pakeApp::get_instance()->get_verbose();
-  pake_echo_action('exec ', $cmd);
+    if (!isset($_SERVER['PATH']))
+        throw new pakeException('PATH environment variable is not set');
 
-  ob_start();
-  passthru($cmd.' 2>&1', $return);
-  $content = ob_get_contents();
-  ob_end_clean();
+    $paths = explode(PATH_SEPARATOR, $_SERVER['PATH']);
 
-  if ($return > 0)
-  {
-    throw new pakeException(sprintf('Problem executing command %s', $verbose ? "\n".$content : ''));
-  }
+    foreach ($paths as $path) {
+        if (strlen($path) === 0) {
+            continue;
+        }
 
-  return $content;
+        $test = $path.'/'.$cmd;
+        if (file_exists($test) and is_executable($test)) {
+            return $test;
+        }
+    }
+
+    throw new pakeException('No options found');
+}
+
+function pake_sh($cmd, $interactive = false)
+{
+    $verbose = pakeApp::get_instance()->get_verbose();
+    pake_echo_action('exec ', $cmd);
+
+    if (false === $interactive) {
+        ob_start();
+    }
+
+    passthru($cmd.' 2>&1', $return);
+
+    if (false === $interactive) {
+        $content = ob_get_contents();
+        ob_end_clean();
+    }
+
+    if ($return > 0) {
+        throw new pakeException(sprintf('Problem executing command %s', $verbose ? "\n".$content : ''));
+    }
+
+    if (false === $interactive) {
+        return $content;
+    }
+}
+
+function pake_superuser_sh($cmd, $interactive)
+{
+    if (!isset($_SERVER['USER']))
+        throw new pakeException("Don't know how to run commands as superuser");
+
+    // we're superuser already
+    if ($_SERVER['USER'] === 'root')
+        return pake_sh($cmd, $interactive);
+
+    try {
+        $sudo = pake_which('sudo');
+        $cmd = escapeshellarg($sudo).' '.$cmd;
+    } catch (pakeException $e) {
+        try {
+            $su = pake_which('su');
+            $cmd = escapeshellarg($su).' root -c '.$cmd;
+        } catch (pakeException $e) {
+            // no "sudo" and no "su". bad
+            throw new pakeException("Don't know how to run commands as superuser");
+        }
+    }
+
+    pake_sh($cmd, true); // force interactive, as password will be requested
 }
 
 function pake_strip_php_comments($arg, $target_dir = '')
