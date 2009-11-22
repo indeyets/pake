@@ -38,4 +38,9 @@ class pakePearTask
 
         pake_echo_action('pear+', $archive);
     }
+
+    public static function install_pear_package($package)
+    {
+        pake_superuser_sh('pear install '.escapeshellarg($package), true);
+    }
 }
