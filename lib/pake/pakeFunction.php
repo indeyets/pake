@@ -336,7 +336,8 @@ function pake_superuser_sh($cmd, $interactive)
         }
     }
 
-    pake_sh($cmd, true); // force interactive, as password will be requested
+    pake_echo_comment('Next command will be run using superuser priveleges');
+    pake_sh($cmd, true); // force interactive, as password might be requested
 }
 
 function pake_strip_php_comments($arg, $target_dir = '')
