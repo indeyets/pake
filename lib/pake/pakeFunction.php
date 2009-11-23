@@ -301,12 +301,15 @@ function pake_sh($cmd, $interactive = false)
     passthru($cmd.' 2>&1', $return);
 
     if (false === $interactive) {
-        $content = ob_get_contents();
-        ob_end_clean();
-    }
+        $content = ob_get_clean();
 
-    if ($return > 0) {
-        throw new pakeException(sprintf('Problem executing command %s', $verbose ? "\n".$content : ''));
+        if ($return > 0) {
+            throw new pakeException(sprintf('Problem executing command %s', $verbose ? "\n".$content : ''));
+        }
+    } else {
+        if ($return > 0) {
+            throw new pakeException('Problem executing command');
+        }
     }
 
     if (false === $interactive) {
@@ -314,7 +317,7 @@ function pake_sh($cmd, $interactive = false)
     }
 }
 
-function pake_superuser_sh($cmd, $interactive)
+function pake_superuser_sh($cmd, $interactive = false)
 {
     if (!isset($_SERVER['USER']))
         throw new pakeException("Don't know how to run commands as superuser");
