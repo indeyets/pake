@@ -15,10 +15,12 @@ if ($_SERVER['PHP_SELF'] != dirname(__FILE__).'/bin/pake.php') {
         $force_tty = ' --force-tty';
     }
 
-    pake_echo_comment("oops… you're using installed pake. restarting with local version");
-    system(escapeshellarg($php_exec).' '.escapeshellarg(dirname(__FILE__).'/bin/pake.php').$force_tty.$args);
+    pake_echo_comment("oops… you're using installed pake. restarting with local version…");
+    pake_sh(escapeshellarg($php_exec).' '.escapeshellarg(dirname(__FILE__).'/bin/pake.php').$force_tty.$args, true);
 
     die();
+} else {
+    pake_echo_comment("using local version of pake. good!");
 }
 
 /* registration */
