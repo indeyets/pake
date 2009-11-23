@@ -49,7 +49,7 @@ class pakeArchive
 
         $files = pakeFinder::get_files_from_argument($arg, $origin_dir, true);
 
-        pake_echo_action('archive+', $archive_file);
+        pake_echo_action('file+', $archive_file);
         try {
             $arc = new PharData($archive_file);
             foreach ($files as $file) {
@@ -64,7 +64,7 @@ class pakeArchive
 
             if (Phar::NONE !== $compress) {
                 $new_name = substr($archive_file, 0, -4).$extension;
-                pake_echo_action('archive+', $new_name);
+                pake_echo_action('file+', $new_name);
                 $arc->compress($compress, $extension);
                 unset($arc);
                 pake_remove($archive_file, '/');
@@ -89,7 +89,7 @@ class pakeArchive
         }
 
         $files = pakeFinder::get_files_from_argument($arg, $origin_dir, true);
-        pake_echo_action('phar+', $archive_file);
+        pake_echo_action('file+', $archive_file);
         try {
             $arc = new Phar($archive_file);
             foreach ($files as $file) {
