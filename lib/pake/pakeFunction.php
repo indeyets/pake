@@ -332,6 +332,7 @@ function pake_superuser_sh($cmd, $interactive = false)
         try {
             $su = pake_which('su');
             $cmd = escapeshellarg($su).' root -c '.$cmd;
+            $interactive = true; // force interactive, as su asks for password on stdout
         } catch (pakeException $e) {
             // no "sudo" and no "su". bad
             throw new pakeException("Don't know how to run commands as superuser");
@@ -339,7 +340,7 @@ function pake_superuser_sh($cmd, $interactive = false)
     }
 
     pake_echo_comment('Next command will be run using superuser priveleges');
-    pake_sh($cmd, true); // force interactive, as password might be requested
+    pake_sh($cmd, $interactive);
 }
 
 function pake_strip_php_comments($arg, $target_dir = '')
