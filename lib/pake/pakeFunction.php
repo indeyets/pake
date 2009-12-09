@@ -102,30 +102,29 @@ function pake_mkdirs($path, $mode = 0777)
 */
 function pake_copy($origin_file, $target_file, $options = array())
 {
-  if (!array_key_exists('override', $options))
-  {
-    $options['override'] = false;
-  }
+    if (!array_key_exists('override', $options)) {
+        $options['override'] = false;
+    }
 
-  // we create target_dir if needed
-  if (!is_dir(dirname($target_file)))
-  {
-    pake_mkdirs(dirname($target_file));
-  }
+    // if origin is remote (http), we still override
+    $override = (stream_is_local($origin_file) or $options['override']);
 
-  $most_recent = false;
-  if (file_exists($target_file))
-  {
-    $stat_target = stat($target_file);
-    $stat_origin = stat($origin_file);
-    $most_recent = ($stat_origin['mtime'] > $stat_target['mtime']) ? true : false;
-  }
+    // we create target_dir if needed
+    if (!is_dir(dirname($target_file))) {
+        pake_mkdirs(dirname($target_file));
+    }
 
-  if ($options['override'] || !file_exists($target_file) || $most_recent)
-  {
-    pake_echo_action('file+', $target_file);
-    copy($origin_file, $target_file);
-  }
+    $most_recent = false;
+    if (false === $override and file_exists($target_file)) {
+        $stat_target = stat($target_file);
+        $stat_origin = stat($origin_file);
+        $most_recent = ($stat_origin['mtime'] > $stat_target['mtime']) ? true : false;
+    }
+
+    if ($override || !file_exists($target_file) || $most_recent) {
+        pake_echo_action('file+', $target_file);
+        copy($origin_file, $target_file);
+    }
 }
 
 function pake_rename($origin, $target, $options = array())
