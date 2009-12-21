@@ -19,7 +19,6 @@ function pake_autoloader($classname)
         $classes = array(
             'pakeException'     => PAKE_DIR.'/pakeException.class.php',
             'pakeYaml'          => PAKE_DIR.'/pakeYaml.class.php',
-            'pakeSpyc'          => PAKE_DIR.'/pakeYaml.class.php',
             'pakeGetopt'        => PAKE_DIR.'/pakeGetopt.class.php',
             'pakeGlobToRegex'   => PAKE_DIR.'/pakeGlobToRegex.class.php',
             'pakeFinder'        => PAKE_DIR.'/pakeFinder.class.php',
@@ -33,6 +32,11 @@ function pake_autoloader($classname)
             'pakeRSync'         => PAKE_DIR.'/pakeRSync.class.php',
             'pakeSSH'           => PAKE_DIR.'/pakeSSH.class.php',
             'pakeArchive'       => PAKE_DIR.'/pakeArchive.class.php',
+
+            'sfYaml'            => PAKE_DIR.'/sfYaml/sfYaml.php',
+            'sfYamlDumper'      => PAKE_DIR.'/sfYaml/sfYamlDumper.php',
+            'sfYamlInline'      => PAKE_DIR.'/sfYaml/sfYamlInline.php',
+            'sfYamlParser'      => PAKE_DIR.'/sfYaml/sfYamlParser.php',
         );
     }
 
