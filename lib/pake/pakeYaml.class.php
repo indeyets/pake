@@ -12,6 +12,9 @@
   {
     public static function load($input)
     {
+        if (!file_exists($input))
+            throw new pakeException('file not found: "'.$input.'"');
+
         $spyc = new pakeSpyc();
         $spyc->setting_use_syck_is_possible = true;
         return $spyc->loadFile($input);
