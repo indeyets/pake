@@ -57,17 +57,22 @@ class pakeYaml
         if (!is_writable($dir))
             throw new pakeException('Not enough rights to create file in "'.$dir.'"');
 
-        pake_echo_action('file+', $file);
         if (extension_loaded('yaml')) {
             // not yet implemented:
             // yaml_emit_file($file, $data);
 
             // so using this instead:
-            file_put_contents($file, yaml_emit($data));
+            if (false === file_put_contents($file, yaml_emit($data)))
+                throw new pakeException("Couldn't create file");
         } else {
+            sfYaml::setSpecVersion('1.1'); // more compatible
             $dumper = new sfYamlDumper();
-            file_put_contents($file, $dumper->dump($data));
+
+            if (false === file_put_contents($file, $dumper->dump($data)))
+                throw new pakeException("Couldn't create file");
         }
+
+        pake_echo_action('file+', $file);
     }
 
 
