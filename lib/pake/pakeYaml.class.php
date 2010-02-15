@@ -16,6 +16,7 @@ class pakeYaml
             return yaml_parse($input);
         }
 
+        sfYaml::setSpecVersion('1.1'); // more compatible
         $parser = new sfYamlParser();
         return $parser->parse($input);
     }
@@ -29,6 +30,7 @@ class pakeYaml
             return yaml_parse_file($file);
         }
 
+        sfYaml::setSpecVersion('1.1'); // more compatible
         $parser = new sfYamlParser();
         return $parser->parse(file_get_contents($file));
     }
@@ -39,6 +41,7 @@ class pakeYaml
             return yaml_emit($data);
         }
 
+        sfYaml::setSpecVersion('1.1'); // more compatible
         $dumper = new sfYamlDumper();
         return $dumper->dump($data);
     }
