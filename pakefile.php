@@ -115,15 +115,15 @@ function run_create_pear_package($task, $args)
         throw new pakeException('You must provide pake version to release (1.2.X for example).');
     }
 
+    $_root = dirname(__FILE__);
     $version = $args[0];
 
     // create a pear package
     pake_echo_comment('creating PEAR package.xml for version "'.$version.'"');
-
-    pake_copy(getcwd().'/package.xml.tmpl', getcwd().'/package.xml', array('override' => true));
+    pake_copy($_root.'/package.xml.tmpl', $_root.'/package.xml', array('override' => true));
 
     // add class files
-    $class_files = pakeFinder::type('file')->ignore_version_control()->not_name('/^pakeApp.class.php$/')->name('*.php')->relative()->in('lib');
+    $class_files = pakeFinder::type('file')->ignore_version_control()->not_name('/^pakeApp.class.php$/')->name('*.php')->relative()->in($_root.'/lib');
     $xml_classes = '';
     foreach ($class_files as $file) {
         $dir_name  = dirname($file);
@@ -143,10 +143,12 @@ function run_create_pear_package($task, $args)
 
     // run packager
     try {
-        pakePearTask::run_pear_package($task, $args);
+        pake_mkdirs($_root.'/target');
+        pakePearTask::package_pear_package($_root.'/package.xml', $_root.'/target');
     } catch (pakeException $e) {
     }
 
+    // cleanup
     pake_remove('package.xml', getcwd());
     pake_replace_tokens('lib/pake/pakeApp.class.php', getcwd(), "const VERSION = '", "';", array(
         $version => "const VERSION = '1.1.DEV';"
