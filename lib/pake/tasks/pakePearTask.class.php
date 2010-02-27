@@ -18,24 +18,42 @@ class pakePearTask
 
     public static function run_pear_package($task, $args)
     {
+        self::package_pear_package(getcwd().'/package.xml', getcwd());
+    }
+
+    public static function package_pear_package($package_xml_path, $target_dir)
+    {
+        if (!file_exists($package_xml_path)) {
+            throw new pakeException('"'.$package_xml_path.'" file does not exist');
+        }
+
+        pake_mkdirs($target_dir);
+
+        $current = getcwd();
+        chdir($target_dir);
+
         if (!class_exists('PEAR_Packager')) {
             @include('PEAR/Packager.php');
 
             if (!class_exists('PEAR_Packager')) {
                 // falling back to cli-call
-                $results = pake_sh('pear package');
+                $results = pake_sh('pear package '.escapeshellarg($package_xml_path));
                 if ($task->is_verbose()) {
                     echo $results;
                 }
+
+                chdir($current);
                 return;
             }
         }
 
         $packager = new PEAR_Packager();
         $packager->debug = 0; // silence output
-        $archive = $packager->package('package.xml', true);
+        $archive = $packager->package($package_xml_path, true);
 
-        pake_echo_action('file+', $archive);
+        pake_echo_action('file+', $target_dir.'/'.$archive);
+
+        chdir($current);
     }
 
     public static function install_pear_package($package, $channel = 'pear.php.net')
