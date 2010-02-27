@@ -143,7 +143,6 @@ function run_create_pear_package($task, $args)
 
     // run packager
     try {
-        pake_mkdirs($_root.'/target');
         pakePearTask::package_pear_package($_root.'/package.xml', $_root.'/target');
     } catch (pakeException $e) {
     }
