@@ -127,16 +127,29 @@ function pake_copy($origin_file, $target_file, $options = array())
     }
 }
 
-function pake_rename($origin, $target, $options = array())
+function pake_rename($origin, $target)
 {
-  // we check that target does not exist
-  if (is_readable($target))
-  {
-    throw new pakeException(sprintf('Cannot rename because the target "%" already exist.', $target));
-  }
+    // we check that target does not exist
+    if (file_exists($target)) {
+        throw new pakeException('Cannot rename because the target "'.$target.'" already exist.');
+    }
 
-  pake_echo_action('rename', $origin.' > '.$target);
-  rename($origin, $target);
+    if (!file_exists($origin) or !is_readable($origin)) {
+        throw new pakeException('Cannot rename because origin "'.$origin.'" does not exist (or not readable)');
+    }
+
+    if (!is_writable($origin)) {
+        throw new pakeException('Cannot rename because there are no enough rights to delete origin "'.$origin.'"');
+    }
+
+    if (copy($origin, $target)) {
+        if (unlink($origin)) {
+            pake_echo_action('rename', $origin.' → '.$target);
+        } else {
+            unlink($target);
+            throw new pakeException('Can not delete "'.$origin.'" file. Rename failed');
+        }
+    }
 }
 
 function pake_mirror($arg, $origin_dir, $target_dir, $options = array())
