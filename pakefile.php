@@ -2,8 +2,9 @@
 
 // force usage of local pake
 if ($_SERVER['PHP_SELF'] != dirname(__FILE__).'/bin/pake.php') {
-    $php_exec = (isset($_SERVER['_']) ? $_SERVER['_'] : 'php');
+    $php_exec = (isset($_SERVER['_']) and substr($_SERVER['_'], -4) != 'pake') ? $_SERVER['_'] : 'php';
     $args = '';
+
     if ($_SERVER['argc'] > 1) {
         array_shift($_SERVER['argv']); // removing pake.php
         $args_arr = array_map('escapeshellarg', $_SERVER['argv']);
@@ -53,14 +54,20 @@ function run_foo($task, $args)
  */
 function run_compact($task, $args)
 {
-    $plugins = $args;
+    $_root = dirname(__FILE__);
 
     // merge all files
     $content = '';
-    $files = pakeFinder::type('file')->name('*.class.php')->in(getcwd().'/lib/pake');
-    $files[] = getcwd().'/bin/pake.php';
-    foreach ($args as $plugin_name) {
-        $files[] = getcwd().'/lib/pake/tasks/pake'.$plugin_name.'Task.class.php';
+
+    $files = pakeFinder::type('file')->name('*.class.php')->maxdepth(0)->in($_root.'/lib/pake');
+    $files[] = $_root.'/bin/pake.php';
+
+    // adding sfYaml library
+    $files = array_merge($files, pakeFinder::type('file')->name('*.php')->in($_root.'/lib/pake/sfYaml'));
+
+    $plugins = $args;
+    foreach ($plugins as $plugin_name) {
+        $files[] = $_root.'/lib/pake/tasks/pake'.$plugin_name.'Task.class.php';
     }
 
     foreach ($files as $file) {
@@ -79,12 +86,21 @@ function run_compact($task, $args)
     // replace multiple new lines with a single newline
     $content = preg_replace(array("/\n\s+\n/s", "/\n+/s"), "\n", $content);
 
-    $content = "<?php\n".trim($content)."\n";
+    $content = "#!/usr/bin/env php\n<?php\n".trim($content)."\n";
 
-    file_put_contents(getcwd().'/bin/pake_runtime.php', $content);
+    $target_dir = $_root.'/target';
+    pake_mkdirs($target_dir);
+
+    $target = $target_dir.'/pake';
+    if (!file_put_contents($target, $content)) {
+        throw new pakeException('Failed to write to "'.$target.'"');
+    }
+    pake_echo_action('file+', $target);
 
     // strip all comments
-    pake_strip_php_comments(getcwd().'/bin/pake_runtime.php');
+    pake_strip_php_comments($target);
+
+    pake_chmod('pake', $target_dir, 0755);
 }
 
 function run_phar()
