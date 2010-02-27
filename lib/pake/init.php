@@ -37,6 +37,11 @@ function pake_autoloader($classname)
             'sfYamlDumper'      => PAKE_DIR.'/sfYaml/sfYamlDumper.php',
             'sfYamlInline'      => PAKE_DIR.'/sfYaml/sfYamlInline.php',
             'sfYamlParser'      => PAKE_DIR.'/sfYaml/sfYamlParser.php',
+
+            'GrowlPacket'               => PAKE_DIR.'/growl/GrowlPacket.class.php',
+            'GrowlRegistrationPacket'   => PAKE_DIR.'/growl/GrowlRegistrationPacket.class.php',
+            'GrowlNotificationPacket'   => PAKE_DIR.'/growl/GrowlNotificationPacket.class.php',
+            'GrowlStreamer'             => PAKE_DIR.'/growl/GrowlStreamer.class.php',
         );
     }
 
