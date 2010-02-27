@@ -84,17 +84,20 @@ function pake_file($name)
 
 function pake_mkdirs($path, $mode = 0777)
 {
-  if (is_dir($path)) {
+    if (is_dir($path)) {
+        return true;
+    }
+
+    if (file_exists($path)) {
+        throw new pakeException('Can not create directory at "'.$path.'" as place is already occupied by file');
+    }
+
+    if (!@mkdir($path, $mode, true)) {
+        throw new pakeException('Failed to create dir: "'.$path.'"');
+    }
+
+    pake_echo_action('dir+', $path);
     return true;
-  }
-
-  if (file_exists($path)) {
-    throw new pakeException('Can not create directory at "'.$path.'" as place is already occupied by file');
-  }
-
-  pake_echo_action('dir+', $path);
-
-  return @mkdir($path, $mode, true);
 }
 
 /*
