@@ -144,7 +144,7 @@ function pake_rename($origin, $target)
 
     if (copy($origin, $target)) {
         if (unlink($origin)) {
-            pake_echo_action('rename', $origin.' → '.$target);
+            pake_echo_action('rename', $origin.' -> '.$target);
         } else {
             unlink($target);
             throw new pakeException('Can not delete "'.$origin.'" file. Rename failed');
