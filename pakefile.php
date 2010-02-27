@@ -132,12 +132,12 @@ function run_create_pear_package($task, $args)
     }
 
     // replace tokens
-    pake_replace_tokens('package.xml', getcwd(), '##', '##', array(
+    pake_replace_tokens('package.xml', $_root, '##', '##', array(
         'PAKE_VERSION' => $version,
         'CURRENT_DATE' => date('Y-m-d'),
         'CLASS_FILES'  => $xml_classes,
     ));
-    pake_replace_tokens('lib/pake/pakeApp.class.php', getcwd(), 'const VERSION = \'', '\';', array(
+    pake_replace_tokens('lib/pake/pakeApp.class.php', $_root, 'const VERSION = \'', '\';', array(
         '1.1.DEV' => "const VERSION = '$version';"
     ));
 
@@ -148,8 +148,8 @@ function run_create_pear_package($task, $args)
     }
 
     // cleanup
-    pake_remove('package.xml', getcwd());
-    pake_replace_tokens('lib/pake/pakeApp.class.php', getcwd(), "const VERSION = '", "';", array(
+    pake_remove('package.xml', $_root);
+    pake_replace_tokens('lib/pake/pakeApp.class.php', $_root, "const VERSION = '", "';", array(
         $version => "const VERSION = '1.1.DEV';"
     ));
 
