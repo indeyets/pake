@@ -147,6 +147,10 @@ class pakeApp
     {
         pake_import('interactive');
 
+        pake_echo("=================================================================================");
+        pake_echo("Welcome to pake's interactive console. To get list of commands type \"?\" or \"help\"");
+        pake_echo("type \"quit\" or press ^D to exit");
+        pake_echo("=================================================================================");
         $this->showVersion();
         echo "\n";
 
@@ -155,7 +159,7 @@ class pakeApp
 
             if (false === $command) {
                 // Ctrl-D
-                pakeInteractiveTask::run_quit();
+                pakeInteractiveTask::run_quit_pake();
             }
 
             if ('' === $command) {
