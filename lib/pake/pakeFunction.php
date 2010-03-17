@@ -424,20 +424,11 @@ function pake_input($question, $default = null)
 
     while (true) {
         if (null === $default)
-            echo '[>] ';
+            $prompt = '[>] ';
         else
-            echo '[> default="'.$default.'"] ';
+            $prompt = '[> default="'.$default.'"] ';
 
-        $fp = fopen('php://stdin', 'r');
-        $retval = fgets($fp);
-        fclose($fp);
-
-        if (false === $retval) {
-            echo "\n";
-            continue;
-        }
-
-        $retval = rtrim($retval, "\r\n");
+        $retval = pakeInput::getString($prompt);
 
         if ('' === $retval) {
             if (null !== $default) {
@@ -477,20 +468,11 @@ function pake_select_input($question, array $options, $default = null)
 
     while (true) {
         if (null === $default)
-            echo '[>] ';
+            $prompt = '[>] ';
         else
-            echo '[> default="'.($default + 1).'"] ';
+            $prompt = '[> default="'.($default + 1).'"] ';
 
-        $fp = fopen('php://stdin', 'r');
-        $retval = fgets($fp);
-        fclose($fp);
-
-        if (false === $retval) {
-            echo "\n";
-            continue;
-        }
-
-        $retval = rtrim($retval, "\r\n");
+        $retval = pakeInput::getString($prompt);
 
         if ('' === $retval) {
             if (null === $default) {

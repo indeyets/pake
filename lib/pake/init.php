@@ -32,6 +32,7 @@ function pake_autoloader($classname)
             'pakeRSync'         => PAKE_DIR.'/pakeRSync.class.php',
             'pakeSSH'           => PAKE_DIR.'/pakeSSH.class.php',
             'pakeArchive'       => PAKE_DIR.'/pakeArchive.class.php',
+            'pakeInput'         => PAKE_DIR.'/pakeInput.class.php',
 
             'sfYaml'            => PAKE_DIR.'/sfYaml/sfYaml.php',
             'sfYamlDumper'      => PAKE_DIR.'/sfYaml/sfYamlDumper.php',

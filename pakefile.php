@@ -159,11 +159,11 @@ function run_create_pear_package($task, $args)
 
 function run_release($task, $args)
 {
-    if (!isset($args[0]) || !$args[0]) {
-        throw new pakeException('You must provide pake version to release (1.2.X for example).');
+    if (!empty($args[0])) {
+        $version = $args[0];
+    } else {
+        $version = pake_input('Please specify version');
     }
-
-    $version = $args[0];
 
     pakeSimpletestTask::call_simpletest($task);
 
