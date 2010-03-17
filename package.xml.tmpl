@@ -24,15 +24,22 @@
  <date>##CURRENT_DATE##</date>
  <version>
    <release>##PAKE_VERSION##</release>
-   <api>1.3.0</api>
+   <api>1.4.0</api>
  </version>
  <stability>
-  <release>beta</release>
+  <release>stable</release>
   <api>stable</api>
  </stability>
  <license uri="http://www.milkfarmsoft.com/bsd.php">BSD license</license>
  <notes>
-   -
+   - added "interactive mode" (pake -i)
+   - new helper: pakeMercurial
+   - updated sfYaml library
+   - use copy+unlink instead of rename in pake_rename() to workaround problem of moving files between volumes
+   - "pake compact" (developers-only) command works again
+   - added explicit pakePearTask::package_pear_package($file, $target) method
+   - fixed output-formatting (long texts in exceptions, etc.)
+   - various packaging fixes
  </notes>
 
  <contents>
@@ -94,9 +101,12 @@
       <name>mbstring</name>
     </extension>
     <extension>
+      <name>pcntl</name>
+    </extension>
+    <extension>
       <name>posix</name>
     </extension>
-   </optional>
+  </optional>
  </dependencies>
 
  <phprelease>
