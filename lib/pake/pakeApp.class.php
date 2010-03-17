@@ -122,7 +122,8 @@ class pakeApp
         }
 
         // parsing out options and arguments
-        list($task_name, $args, $options) = $this->parseTaskAndParameters();
+        $argv = $this->opt->get_arguments();
+        list($task_name, $args, $options) = $this->parseTaskAndParameters($argv);
 
         if (!$task_name) {
             return $this->runDefaultTask();
@@ -156,9 +157,8 @@ class pakeApp
         return $this->initAndRunTask('default', array(), array());
     }
 
-    protected function parseTaskAndParameters()
+    protected function parseTaskAndParameters(array $args)
     {
-        $args = $this->opt->get_arguments();
         $options = array();
 
         if (count($args) == 0) {
