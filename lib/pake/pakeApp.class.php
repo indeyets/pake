@@ -25,7 +25,7 @@ class pakeApp
     const VERSION = '1.1.DEV';
     const QUIT_INTERACTIVE = 0xDD;
 
-    public static $MAX_LINE_SIZE = 65;
+    public static $MAX_LINE_SIZE = 78;
     protected static $EXEC_NAME = 'pake';
     private static $PROPERTIES = array();
     protected static $PAKEFILES = array('pakefile', 'Pakefile', 'pakefile.php', 'Pakefile.php');
@@ -474,5 +474,12 @@ class pakeApp
                 echo "    $prerequisite\n";
             }
         }
+    }
+
+    public static function screenWidth()
+    {
+        $cols = getenv('COLUMNS');
+
+        return (false === $cols ? self::$MAX_LINE_SIZE : $cols);
     }
 }

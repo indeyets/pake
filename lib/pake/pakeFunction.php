@@ -502,8 +502,14 @@ function pake_select_input($question, array $options, $default = null)
 
 function pake_format_action($section, $text, $size = null)
 {
+    if (DIRECTORY_SEPARATOR != '\\' and (!function_exists('posix_isatty') or posix_isatty(STDOUT))) {
+        $text = pake_excerpt($text, $size);
+    } else {
+        // windows or pipes
+    }
+
     $width = 9 + strlen(pakeColor::colorize('', 'INFO'));
-    return sprintf('>> %-'.$width.'s %s', pakeColor::colorize($section, 'INFO'), pake_excerpt($text, $size));
+    return sprintf('>> %-'.$width.'s %s', pakeColor::colorize($section, 'INFO'), $text);
 }
 
 function pake_echo_action($section, $text)
@@ -516,12 +522,7 @@ function pake_echo_action($section, $text)
 function pake_excerpt($text, $size = null)
 {
     if (null === $size) {
-        $cols = getenv('COLUMNS');
-
-        if (false !== $cols)
-            $size = $cols - 13;
-        else
-            $size = pakeApp::$MAX_LINE_SIZE;
+        $size = pakeApp::screenWidth() - 13;
     }
 
     if (strlen($text) < $size) {
