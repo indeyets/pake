@@ -10,37 +10,37 @@
 
 function pake_import($name, $import_default_tasks = true)
 {
-  $class_name = 'pake'.ucfirst(strtolower($name)).'Task';
+    $class_name = 'pake'.ucfirst(strtolower($name)).'Task';
 
-  if (!class_exists($class_name)) {
-    // plugin available?
-    $plugin_path = '';
-    foreach (pakeApp::get_plugin_dirs() as $dir) {
-      if (file_exists($dir.'/'.$class_name.'.class.php')) {
-        $plugin_path = $dir.'/'.$class_name.'.class.php';
-        break;
-      }
+    if (!class_exists($class_name)) {
+        // plugin available?
+        $plugin_path = '';
+        foreach (pakeApp::get_plugin_dirs() as $dir) {
+            if (file_exists($dir.'/'.$class_name.'.class.php')) {
+                $plugin_path = $dir.'/'.$class_name.'.class.php';
+                break;
+            }
+        }
+
+        if (!$plugin_path) {
+            throw new pakeException(sprintf('Plugin "%s" does not exist.', $name));
+        }
+
+        require_once $plugin_path;
     }
 
-    if (!$plugin_path) {
-      throw new pakeException(sprintf('Plugin "%s" does not exist.', $name));
+    if ($import_default_tasks && is_callable($class_name, 'import_default_tasks')) {
+        call_user_func(array($class_name, 'import_default_tasks'));
     }
-
-    require_once $plugin_path;
-  }
-
-  if ($import_default_tasks && is_callable($class_name, 'import_default_tasks')) {
-    call_user_func(array($class_name, 'import_default_tasks'));
-  }
 }
 
 function pake_task($name)
 {
-  $args = func_get_args();
-  array_shift($args);
-  pakeTask::define_task($name, $args);
+    $args = func_get_args();
+    array_shift($args);
+    pakeTask::define_task($name, $args);
 
-  return $name;
+    return $name;
 }
 
 function pake_alias($alias, $name)

@@ -23,6 +23,7 @@
 class pakeApp
 {
     const VERSION = '1.1.DEV';
+    const QUIT_INTERACTIVE = 0xDD;
 
     public static $MAX_LINE_SIZE = 65;
     protected static $EXEC_NAME = 'pake';
@@ -30,20 +31,22 @@ class pakeApp
     protected static $PAKEFILES = array('pakefile', 'Pakefile', 'pakefile.php', 'Pakefile.php');
     protected static $PLUGINDIRS = array();
     protected static $OPTIONS = array(
-        array('--dry-run',   '-n', pakeGetopt::NO_ARGUMENT,       "Do a dry run without executing actions."),
-        array('--help',      '-H', pakeGetopt::NO_ARGUMENT,       "Display this help message."),
-        array('--libdir',    '-I', pakeGetopt::REQUIRED_ARGUMENT, "Include LIBDIR in the search path for required modules."),
-        array('--nosearch',  '-N', pakeGetopt::NO_ARGUMENT,       "Do not search parent directories for the pakefile."),
-        array('--prereqs',   '-P', pakeGetopt::NO_ARGUMENT,       "Display the tasks and dependencies, then exit."),
-        array('--quiet',     '-q', pakeGetopt::NO_ARGUMENT,       "Do not log messages to standard output."),
-        array('--pakefile',  '-f', pakeGetopt::REQUIRED_ARGUMENT, "Use FILE as the pakefile."),
-        array('--require',   '-r', pakeGetopt::REQUIRED_ARGUMENT, "Require MODULE before executing pakefile."),
-        array('--tasks',     '-T', pakeGetopt::NO_ARGUMENT,       "Display the tasks and dependencies, then exit."),
-        array('--trace',     '-t', pakeGetopt::NO_ARGUMENT,       "Turn on invoke/execute tracing, enable full backtrace."),
-        array('--usage',     '-h', pakeGetopt::NO_ARGUMENT,       "Display usage."),
-        array('--verbose',   '-v', pakeGetopt::NO_ARGUMENT,       "Log message to standard output (default)."),
-        array('--force-tty', '',   pakeGetopt::NO_ARGUMENT,       "Force coloured output"),
-        array('--version',   '-V', pakeGetopt::NO_ARGUMENT,       "Display the program version."),
+        array('--interactive', '-i', pakeGetopt::NO_ARGUMENT,       "Start pake in interactive (shell-like) mode."),
+        array('--dry-run',     '-n', pakeGetopt::NO_ARGUMENT,       "Do a dry run without executing actions."),
+        array('--help',        '-H', pakeGetopt::NO_ARGUMENT,       "Display this help message."),
+        array('--libdir',      '-I', pakeGetopt::REQUIRED_ARGUMENT, "Include LIBDIR in the search path for required modules."),
+        array('--nosearch',    '-N', pakeGetopt::NO_ARGUMENT,       "Do not search parent directories for the pakefile."),
+        array('--prereqs',     '-P', pakeGetopt::NO_ARGUMENT,       "Display the tasks and dependencies, then exit."),
+        array('--quiet',       '-q', pakeGetopt::NO_ARGUMENT,       "Do not log messages to standard output."),
+        array('--pakefile',    '-f', pakeGetopt::REQUIRED_ARGUMENT, "Use FILE as the pakefile."),
+        array('--require',     '-r', pakeGetopt::REQUIRED_ARGUMENT, "Require MODULE before executing pakefile."),
+        array('--import',      '',   pakeGetopt::REQUIRED_ARGUMENT, "Import pake-plugin before executing pakefile."),
+        array('--tasks',       '-T', pakeGetopt::NO_ARGUMENT,       "Display the tasks and dependencies, then exit."),
+        array('--trace',       '-t', pakeGetopt::NO_ARGUMENT,       "Turn on invoke/execute tracing, enable full backtrace."),
+        array('--usage',       '-h', pakeGetopt::NO_ARGUMENT,       "Display usage."),
+        array('--verbose',     '-v', pakeGetopt::NO_ARGUMENT,       "Log message to standard output (default)."),
+        array('--force-tty',   '',   pakeGetopt::NO_ARGUMENT,       "Force coloured output"),
+        array('--version',     '-V', pakeGetopt::NO_ARGUMENT,       "Display the program version."),
     );
 
     private $opt = null;
@@ -54,7 +57,9 @@ class pakeApp
     private $nowrite = false;
     private $show_tasks = false;
     private $show_prereqs = false;
+    private $interactive = false;
     private $pakefile = '';
+
     protected static $instance = null;
 
     protected function __construct()
@@ -121,15 +126,93 @@ class pakeApp
             return;
         }
 
+        if ($this->interactive) {
+            $this->runInteractiveSession();
+            return;
+        }
+
         // parsing out options and arguments
         $argv = $this->opt->get_arguments();
-        list($task_name, $args, $options) = $this->parseTaskAndParameters($argv);
+        list($task_name, $args, $options) = self::parseTaskAndParameters($argv);
 
         if (!$task_name) {
             return $this->runDefaultTask();
         } else {
             $task_name = pakeTask::get_full_task_name($task_name);
             return $this->initAndRunTask($task_name, $args, $options);
+        }
+    }
+
+    private function runInteractiveSession()
+    {
+        pake_import('interactive');
+
+        $this->showVersion();
+        echo "\n";
+
+        while (true) {
+            $command = pakeInput::getString('pake> ', false);
+
+            if (false === $command) {
+                // Ctrl-D
+                pakeInteractiveTask::run_quit();
+            }
+
+            if ('' === $command) {
+                continue;
+            }
+
+            $this->initAndRunTaskInSubprocess($command);
+        }
+    }
+
+    protected function initAndRunTaskInSubprocess($command)
+    {
+        if (function_exists('pcntl_fork')) {
+            // UNIX
+            $argv = explode(' ', $command);
+            list($task_name, $args, $options) = self::parseTaskAndParameters($argv);
+            $task_name = pakeTask::get_full_task_name($task_name);
+
+            $pid = pcntl_fork();
+            if ($pid == -1) {
+                die('could not fork');
+            }
+
+            if ($pid) {
+                // we are the parent
+                pcntl_wait($status);
+                $status = pcntl_wexitstatus($status);
+                if ($status == self::QUIT_INTERACTIVE) {
+                    exit(0);
+                }
+            } else {
+                try {
+                    $status = $this->initAndRunTask($task_name, $args, $options);
+                    if (true === $status)
+                        exit(0);
+                    exit($status);
+                } catch (pakeException $e) {
+                    pakeException::render($e);
+                    exit(1);
+                }
+            }
+        } else {
+            // WINDOWS
+            $php_exec = escapeshellarg((isset($_SERVER['_']) and substr($_SERVER['_'], -4) != 'pake') ? $_SERVER['_'] : 'php');
+
+            $force_tty = '';
+            if (defined('PAKE_FORCE_TTY') or (DIRECTORY_SEPARATOR != '\\' and function_exists('posix_isatty') and @posix_isatty(STDOUT))) {
+                $force_tty = ' --force-tty';
+            }
+
+            $pake_php = escapeshellarg($_SERVER['SCRIPT_NAME']);
+            $import_flag = ' --import=interactive';
+
+            system($php_exec.' '.$pake_php.$force_tty.$import_flag.' '.$command, $status);
+            if ($status == self::QUIT_INTERACTIVE) {
+                exit(0);
+            }
         }
     }
 
@@ -157,7 +240,7 @@ class pakeApp
         return $this->initAndRunTask('default', array(), array());
     }
 
-    protected function parseTaskAndParameters(array $args)
+    protected static function parseTaskAndParameters(array $args)
     {
         $options = array();
 
@@ -242,6 +325,9 @@ class pakeApp
     public function do_option($opt, $value)
     {
         switch ($opt) {
+            case 'interactive':
+                $this->interactive = true;
+                break;
             case 'dry-run':
                 $this->verbose = true;
                 $this->nowrite = true;
@@ -268,6 +354,9 @@ class pakeApp
                 break;
             case 'require':
                 require $value;
+                break;
+            case 'import':
+                pake_import($value);
                 break;
             case 'tasks':
                 $this->show_tasks = true;
@@ -322,8 +411,12 @@ class pakeApp
                 if (preg_match('/\b([A-Z]{2,})\b/', $comment, $match))
                     $long .= '='.$match[1];
             }
-            printf("  %-20s (%s)\n", pakeColor::colorize($long, 'INFO'), pakeColor::colorize($short, 'INFO'));
-            printf("      %s\n", $comment);
+
+            printf("  %-20s", pakeColor::colorize($long, 'INFO'));
+            if (!empty($short)) {
+                printf(" (%s)", pakeColor::colorize($short, 'INFO'));
+            }
+            printf("\n      %s\n", $comment);
         }
     }
 

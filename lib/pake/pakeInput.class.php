@@ -2,7 +2,7 @@
 
 class pakeInput
 {
-    public static function getString($prompt = '> ')
+    public static function getString($prompt = '> ', $retry_on_ctrld = true)
     {
         while (true) {
             echo $prompt;
@@ -11,10 +11,15 @@ class pakeInput
             $retval = fgets($fp);
             fclose($fp);
 
-            // Ctrl-D = retry
+            // Ctrl-D
             if (false === $retval) {
                 echo "\n";
-                continue;
+
+                if ($retry_on_ctrld) {
+                    continue;
+                }
+
+                return false;
             }
 
             return rtrim($retval, "\r\n");
