@@ -26,7 +26,7 @@ class pakeException extends Exception
 
     public static function render($e)
     {
-        $isatty = (DIRECTORY_SEPARATOR != '\\' and (!function_exists('posix_isatty') or posix_isatty(STDOUT)));
+        $isatty = (defined('PAKE_FORCE_TTY') or DIRECTORY_SEPARATOR != '\\' and (!function_exists('posix_isatty') or posix_isatty(STDOUT)));
 
         $title = '  ['.get_class($e).']  ';
         $len = self::strlen($title);
