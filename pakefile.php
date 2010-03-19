@@ -28,7 +28,7 @@ if ($_SERVER['PHP_SELF'] != dirname(__FILE__).'/bin/pake.php') {
 pake_import('simpletest', false);
 pake_import('pear');
 
-pake_desc('create a single file with all pake classes');
+pake_desc('create a single file with all pake classes. usage: pake compact [plugin1 [plugin2 […]]]');
 pake_task('compact');
 
 pake_desc('create an executable PHAR-archive of Pake');
@@ -56,12 +56,14 @@ function run_compact($task, $args)
 {
     $_root = dirname(__FILE__);
 
-    // merge all files
-    $content = '';
+    // core-files
+    $files = array(
+        $_root.'/lib/pake/init.php',
+        $_root.'/lib/pake/pakeFunction.php',
+    );
 
-    $files = pakeFinder::type('file')->name('*.class.php')->maxdepth(0)->in($_root.'/lib/pake');
-    $files[] = $_root.'/bin/pake.php';
-
+    // adding pake-classes library
+    $files = array_merge($files, pakeFinder::type('file')->name('*.class.php')->maxdepth(0)->in($_root.'/lib/pake'));
     // adding sfYaml library
     $files = array_merge($files, pakeFinder::type('file')->name('*.php')->in($_root.'/lib/pake/sfYaml'));
 
@@ -70,12 +72,17 @@ function run_compact($task, $args)
         $files[] = $_root.'/lib/pake/tasks/pake'.$plugin_name.'Task.class.php';
     }
 
+    // starter
+    $files[] = $_root.'/bin/pake.php';
+
+    // merge all files
+    $content = '';
     foreach ($files as $file) {
         $content .= file_get_contents($file);
     }
 
     // strip require_once statements
-    $content = preg_replace('/^\s*require_once[^;]+;/m', '', $content);
+    $content = preg_replace('/^\s*require(?:_once)?[^$;]+;/m', '', $content);
 
     // replace windows and mac format with unix format
     $content = str_replace(array("\r\n"), "\n", $content);
