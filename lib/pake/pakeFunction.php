@@ -201,6 +201,18 @@ function pake_remove($arg, $target_dir)
   }
 }
 
+// shortcut for common operation
+function pake_remove_dir($path)
+{
+    // remove contents
+    $finder = pakeFinder::type('any');
+    pake_remove($finder, $path);
+
+    // remove folder
+    $finder = pakeFinder::type('dir')->name(basename($path))->maxdepth(0);
+    pake_remove($finder, dirname($path));
+}
+
 function pake_touch($arg, $target_dir)
 {
   $files = pakeFinder::get_files_from_argument($arg, $target_dir);
