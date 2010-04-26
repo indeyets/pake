@@ -18,7 +18,8 @@ class pakePearTask
 
     public static function run_pear_package($task, $args)
     {
-        self::package_pear_package(getcwd().'/package.xml', getcwd());
+        $path = dirname(pakeApp::get_instance()->getPakefilePath());
+        self::package_pear_package($path.'/package.xml', $path);
     }
 
     public static function package_pear_package($package_xml_path, $target_dir)

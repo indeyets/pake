@@ -57,20 +57,18 @@ function pake_desc($comment)
 
 function pake_properties($property_file)
 {
-  $file = $property_file;
-  if (!pakeFinder::isPathAbsolute($file))
-  {
-    $file = getcwd().DIRECTORY_SEPARATOR.$property_file;
-  }
+    $app = pakeApp::get_instance();
+    $file = $property_file;
 
-  if (file_exists($file))
-  {
-    pakeApp::get_instance()->set_properties(parse_ini_file($file, true));
-  }
-  else
-  {
-    throw new pakeException('Properties file does not exist.');
-  }
+    if (!pakeFinder::isPathAbsolute($file)) {
+        $file = dirname($app->getPakefilePath()).'/'.$property_file;
+    }
+
+    if (!file_exists($file)) {
+        throw new pakeException('Properties file does not exist.');
+    }
+
+    $app->set_properties(parse_ini_file($file, true));
 }
 
 function pake_file($name)
