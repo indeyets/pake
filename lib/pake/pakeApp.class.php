@@ -105,6 +105,11 @@ class pakeApp
         return $this->dryrun;
     }
 
+    public function getPakefilePath()
+    {
+        return $this->pakefile;
+    }
+
     public function run($pakefile = null, $options = null, $load_pakefile = true)
     {
         if ($pakefile) {
