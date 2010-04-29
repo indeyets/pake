@@ -68,7 +68,7 @@ class pakeYaml
             sfYaml::setSpecVersion('1.1'); // more compatible
             $dumper = new sfYamlDumper();
 
-            if (false === file_put_contents($file, $dumper->dump($data)))
+            if (false === file_put_contents($file, $dumper->dump($data, 1)))
                 throw new pakeException("Couldn't create file");
         }
 
