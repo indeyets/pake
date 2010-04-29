@@ -311,7 +311,7 @@ function pake_which($cmd)
         }
     }
 
-    throw new pakeException('No options found');
+    throw new pakeException('Can not find "'.$cmd.'" executable');
 }
 
 function pake_sh($cmd, $interactive = false)
