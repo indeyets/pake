@@ -10,12 +10,14 @@
 class pakePhpExtensionTask
 {
     public static $tasks = array(
-        'clean' =>          array('Clean all temporary files', array()),
+        'clean' =>          array('Clean all temporary files', array('pakePhpExtensionTask::_clean_build', 'pakePhpExtensionTask::_clean_config')),
         'configure' =>      array(null, array()),
         'build' =>          array(null, array('pakePhpExtensionTask::configure')),
-        'install' =>        array('configure, build and install extension', array('pakePhpExtensionTask::build')),
-        'reconfigure' =>    array('reconfigure (needed if you change config.m4 file)', array('pakePhpExtensionTask::clean', 'pakePhpExtensionTask::configure')),
+        'install' =>        array('configure, build and install extension. (options: --with-phpize, --with-php-config)', array('pakePhpExtensionTask::build')),
+        'reconfigure' =>    array('reconfigure. needed if you change config.m4 file (options: --with-phpize, --with-php-config)', array('pakePhpExtensionTask::_clean_build', 'pakePhpExtensionTask::configure')),
         'test' =>           array('run tests', array('pakePhpExtensionTask::build')),
+        '_clean_build' =>   array(null, array()),
+        '_clean_config' =>  array(null, array()),
     );
 
     public static function import_default_tasks()
@@ -28,13 +30,48 @@ class pakePhpExtensionTask
         }
     }
 
-    public static function run_configure()
+    public static function run_configure($task, $args, $long_args)
     {
+        $dir = dirname(pakeApp::get_instance()->getPakefilePath());
+        $cfg_file = $dir.'/'.__CLASS__.'.yaml';
+
+        $need_to_write = true;
+
+        if (isset($long_args['with-phpize'])) {
+            $phpize = $long_args['with-phpize'];
+        } elseif (file_exists($cfg_file)) {
+            $cfg_data = pakeYaml::loadFile($cfg_file);
+            $phpize = $cfg_data['phpize'];
+            $need_to_write = false;
+        } else {
+            $phpize = pake_which('phpize');
+        }
+
+        if (!file_exists($phpize))
+            throw new pakeException('"'.$phpize.'" is not available');
+
+        if (isset($long_args['with-php-config'])) {
+            $php_config = $long_args['with-php-config'];
+            $need_to_write = true;
+        } elseif (isset($cfg_data)) {
+            $php_config = $cfg_data['php_config'];
+        } else {
+            $php_config = dirname($phpize).'/php-config';
+            $need_to_write = true;
+        }
+
+        if (!file_exists($php_config))
+            throw new pakeException('"'.$php_config.'" is not available');
+
         if (!file_exists('configure'))
-            pake_sh('phpize');
+            pake_sh(escapeshellarg($phpize));
 
         if (!file_exists('Makefile')) {
-            pake_sh(realpath('configure'));
+            pake_sh(escapeshellarg(realpath('configure')).' '.escapeshellarg('--with-php-config='.$php_config));
+        }
+
+        if ($need_to_write) {
+            pakeYaml::emitFile(array('phpize' => $phpize, 'php_config' => $php_config), $cfg_file);
         }
     }
 
@@ -50,13 +87,40 @@ class pakePhpExtensionTask
         pake_superuser_sh('make install');
     }
 
-    public static function run_clean()
+    public static function run_clean() {}
+    public static function run__clean_build()
     {
+        $dir = dirname(pakeApp::get_instance()->getPakefilePath());
+        $cfg_file = $dir.'/'.__CLASS__.'.yaml';
+
         if (file_exists('Makefile'))
             pake_sh('make distclean');
 
-        if (file_exists('configure'))
-            pake_sh('phpize --clean');
+        if (file_exists('configure')) {
+            if (isset($long_args['with-phpize'])) {
+                $phpize = $long_args['with-phpize'];
+            } elseif (file_exists($cfg_file)) {
+                $cfg_data = pakeYaml::loadFile($cfg_file);
+                $phpize = $cfg_data['phpize'];
+            } else {
+                $phpize = pake_which('phpize');
+            }
+
+            if (!file_exists($phpize))
+                throw new pakeException('"'.$phpize.'" is not available');
+
+            pake_sh(escapeshellarg($phpize).' --clean');
+        }
+    }
+
+    public static function run__clean_config()
+    {
+        $dir = dirname(pakeApp::get_instance()->getPakefilePath());
+        $cfg_file = $dir.'/'.__CLASS__.'.yaml';
+
+        if (file_exists($cfg_file)) {
+            pake_remove($cfg_file, '');
+        }
     }
 
     public static function run_test($task)
