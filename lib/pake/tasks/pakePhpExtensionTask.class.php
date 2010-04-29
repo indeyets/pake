@@ -88,7 +88,7 @@ class pakePhpExtensionTask
     }
 
     public static function run_clean() {}
-    public static function run__clean_build()
+    public static function run__clean_build($task, $args, $long_args)
     {
         $dir = dirname(pakeApp::get_instance()->getPakefilePath());
         $cfg_file = $dir.'/'.__CLASS__.'.yaml';
