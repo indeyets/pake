@@ -4,9 +4,15 @@
  * @package    pake
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @copyright  2004-2005 Fabien Potencier <fabien.potencier@symfony-project.com>
+ * @copyright  2010 Alexey Zakhlestin <indeyets@gmail.com>
  * @license    see the LICENSE file included in the distribution
- * @version    SVN: $Id$
  */
+
+function pake_require_version($version)
+{
+    if (version_compare(pakeApp::VERSION, $version, '<'))
+        throw new pakeException('Pake '.$version.' or newer is required. Please upgrade');
+}
 
 function pake_import($name, $import_default_tasks = true)
 {
