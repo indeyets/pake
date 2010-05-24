@@ -114,7 +114,7 @@ function pake_copy($origin_file, $target_file, $options = array())
     }
 
     // if origin is remote (http), we still override
-    $override = (stream_is_local($origin_file) or $options['override']);
+    $override = (!stream_is_local($origin_file) or $options['override']);
 
     // we create target_dir if needed
     if (!is_dir(dirname($target_file))) {
