@@ -149,6 +149,14 @@ function pake_rename($origin, $target)
         throw new pakeException('Cannot rename because there are no enough rights to delete origin "'.$origin.'"');
     }
 
+    // for directories we try to use rename, as we don't have much choice
+    // (we could try to use pake_mirror, but that sounds like overkill)
+    if (is_dir($origin)) {
+        rename($origin, $target);
+        return;
+    }
+
+    // for files, we use copy+unlink, instead. it's more reliable than php's rename()
     if (copy($origin, $target)) {
         if (unlink($origin)) {
             pake_echo_action('rename', $origin.' -> '.$target);
