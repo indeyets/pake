@@ -38,6 +38,7 @@ pake_desc('release a new pake version');
 pake_task('release');
 
 pake_task('foo');
+pake_task('create_package_xml');
 
 function run_foo($task, $args)
 {
@@ -122,6 +123,41 @@ function run_create_pear_package($task, $args)
         throw new pakeException('You must provide pake version to release (1.2.X for example).');
     }
 
+    run_create_package_xml($task, $args);
+
+    $_root = dirname(__FILE__);
+    $version = $args[0];
+
+    pake_replace_tokens('lib/pake/pakeApp.class.php', $_root, 'const VERSION = \'', '\';', array(
+        '1.1.DEV' => "const VERSION = '$version';"
+    ));
+
+    // run packager
+    try {
+        pakePearTask::package_pear_package($_root.'/package.xml', $_root.'/target');
+    } catch (pakeException $e) {
+    }
+
+    // cleanup
+    pake_remove('package.xml', $_root);
+    pake_replace_tokens(
+        'lib/pake/pakeApp.class.php', $_root,        // file
+        "const VERSION = '", "';",                   // dividers
+        array(                                       // tokens
+            $version => "const VERSION = '1.1.DEV';"
+        )
+    );
+
+    if (isset($e))
+        throw $e;
+}
+
+function run_create_package_xml($task, $args)
+{
+    if (!isset($args[0]) || !$args[0]) {
+        throw new pakeException('You must provide pake version to release (1.2.X for example).');
+    }
+
     $_root = dirname(__FILE__);
     $version = $args[0];
 
@@ -144,24 +180,6 @@ function run_create_pear_package($task, $args)
         'CURRENT_DATE' => date('Y-m-d'),
         'CLASS_FILES'  => $xml_classes,
     ));
-    pake_replace_tokens('lib/pake/pakeApp.class.php', $_root, 'const VERSION = \'', '\';', array(
-        '1.1.DEV' => "const VERSION = '$version';"
-    ));
-
-    // run packager
-    try {
-        pakePearTask::package_pear_package($_root.'/package.xml', $_root.'/target');
-    } catch (pakeException $e) {
-    }
-
-    // cleanup
-    pake_remove('package.xml', $_root);
-    pake_replace_tokens('lib/pake/pakeApp.class.php', $_root, "const VERSION = '", "';", array(
-        $version => "const VERSION = '1.1.DEV';"
-    ));
-
-    if (isset($e))
-        throw $e;
 }
 
 function run_release($task, $args)
@@ -170,14 +188,13 @@ function run_release($task, $args)
         $version = $args[0];
     } else {
         $version = pake_input('Please specify version');
+        array_unshift($args, $version);
     }
 
     pakeSimpletestTask::call_simpletest($task);
 
     if ($task->is_verbose())
         pake_echo_comment('releasing pake version "'.$version.'"');
-
-    array_unshift($args, $version);
 
     run_create_pear_package($task, $args);
 }
