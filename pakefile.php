@@ -25,7 +25,7 @@ if ($_SERVER['PHP_SELF'] != dirname(__FILE__).'/bin/pake.php') {
 }
 
 /* registration */
-pake_import('simpletest', false);
+pake_import('simpletest');
 pake_import('pear');
 
 pake_desc('create a single file with all pake classes. usage: pake compact [plugin1 [plugin2 […]]]');
