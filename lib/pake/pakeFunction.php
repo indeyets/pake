@@ -16,7 +16,7 @@ function pake_require_version($version)
 
 function pake_import($name, $import_default_tasks = true)
 {
-    $class_name = 'pake'.ucfirst(strtolower($name)).'Task';
+    $class_name = 'pake'.ucfirst($name).'Task';
 
     if (!class_exists($class_name)) {
         // plugin available?
