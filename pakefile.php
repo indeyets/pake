@@ -56,6 +56,12 @@ function run_foo($task, $args)
 function run_compact($task, $args)
 {
     $_root = dirname(__FILE__);
+    $options = pakeYaml::loadFile($_root.'/options.yaml');
+    $version = $options['version'];
+
+    pake_replace_tokens('lib/pake/pakeApp.class.php', $_root, 'const VERSION = \'', '\';', array(
+        '1.1.DEV' => "const VERSION = '$version';"
+    ));
 
     // core-files
     $files = array(
@@ -81,6 +87,14 @@ function run_compact($task, $args)
     foreach ($files as $file) {
         $content .= file_get_contents($file);
     }
+
+    pake_replace_tokens(
+        'lib/pake/pakeApp.class.php', $_root,        // file
+        "const VERSION = '", "';",                   // dividers
+        array(                                       // tokens
+            $version => "const VERSION = '1.1.DEV';"
+        )
+    );
 
     // strip require_once statements
     $content = preg_replace('/^\s*require(?:_once)?[^$;]+;/m', '', $content);
@@ -117,16 +131,13 @@ function run_phar()
     pakeArchive::createPharArchive($finder, dirname(__FILE__), 'pake.phar', 'phar-stub.php', null, true);
 }
 
-function run_create_pear_package($task, $args)
+function run_create_pear_package()
 {
-    if (!isset($args[0]) || !$args[0]) {
-        throw new pakeException('You must provide pake version to release (1.2.X for example).');
-    }
-
-    run_create_package_xml($task, $args);
+    run_create_package_xml();
 
     $_root = dirname(__FILE__);
-    $version = $args[0];
+    $options = pakeYaml::loadFile($_root.'/options.yaml');
+    $version = $options['version'];
 
     pake_replace_tokens('lib/pake/pakeApp.class.php', $_root, 'const VERSION = \'', '\';', array(
         '1.1.DEV' => "const VERSION = '$version';"
@@ -152,14 +163,11 @@ function run_create_pear_package($task, $args)
         throw $e;
 }
 
-function run_create_package_xml($task, $args)
+function run_create_package_xml()
 {
-    if (!isset($args[0]) || !$args[0]) {
-        throw new pakeException('You must provide pake version to release (1.2.X for example).');
-    }
-
     $_root = dirname(__FILE__);
-    $version = $args[0];
+    $options = pakeYaml::loadFile($_root.'/options.yaml');
+    $version = $options['version'];
 
     // create a pear package
     pake_echo_comment('creating PEAR package.xml for version "'.$version.'"');
@@ -182,19 +190,16 @@ function run_create_package_xml($task, $args)
     ));
 }
 
-function run_release($task, $args)
+function run_release($task)
 {
-    if (!empty($args[0])) {
-        $version = $args[0];
-    } else {
-        $version = pake_input('Please specify version');
-        array_unshift($args, $version);
-    }
+    $_root = dirname(__FILE__);
+    $options = pakeYaml::loadFile($_root.'/options.yaml');
+    $version = $options['version'];
 
     pakeSimpletestTask::call_simpletest($task);
 
     if ($task->is_verbose())
         pake_echo_comment('releasing pake version "'.$version.'"');
 
-    run_create_pear_package($task, $args);
+    run_create_pear_package();
 }
