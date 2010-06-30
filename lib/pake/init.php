@@ -34,6 +34,7 @@ function pake_autoloader($classname)
             'pakeArchive'       => PAKE_DIR.'/pakeArchive.class.php',
             'pakeInput'         => PAKE_DIR.'/pakeInput.class.php',
             'pakeMercurial'     => PAKE_DIR.'/pakeMercurial.class.php',
+            'pakeHttp'          => PAKE_DIR.'/pakeHttp.class.php',
 
             'sfYaml'            => PAKE_DIR.'/sfYaml/sfYaml.php',
             'sfYamlDumper'      => PAKE_DIR.'/sfYaml/sfYamlDumper.php',
