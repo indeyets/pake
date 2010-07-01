@@ -39,6 +39,7 @@ pake_task('release');
 
 pake_task('foo');
 pake_task('create_package_xml');
+pake_task('obs');
 
 function run_foo($task, $args)
 {
@@ -202,4 +203,19 @@ function run_release($task)
         pake_echo_comment('releasing pake version "'.$version.'"');
 
     run_create_pear_package();
+}
+
+function run_obs($task)
+{
+    run_release($task);
+
+    $_root = dirname(__FILE__);
+    $options = pakeYaml::loadFile($_root.'/options.yaml');
+    $version = $options['version'];
+
+    $target = $_root.'/target';
+
+    pake_sh('gunzip '.escapeshellarg($target.'/pake-'.$version.'.tgz'));
+    pake_sh('tar -r -f '.escapeshellarg($target.'/pake-'.$version.'.tar').' -C '.escapeshellarg($_root).' debian');
+    pake_sh('gzip '.escapeshellarg($target.'/pake-'.$version.'.tar'));
 }
