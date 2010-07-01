@@ -1,0 +1,20 @@
+Source: php-pake
+Section: devel
+Priority: optional
+Maintainer: Piotr Pokora <piotrek.pokora@gmail.com>
+Build-Depends-Indep: php-pear
+Build-Depends: debhelper (>= 5) 
+Standards-Version: 3.8.3
+Homepage: http://github.com/indeyets/pake
+
+Package: php-pake
+Architecture: all
+Depends: php-pear (>= 5.2.0-8)
+Suggests:
+Replaces: php5-pake 
+Description: Pake, make like utility written in PHP.
+ Pake supports tasks with prerequisites. Pake can be bundled with your 
+ application as a single phar archive (or even as a single PHP file), 
+ end users don’t need to install Pake on their systems.
+ Pake can be used for compiling projects from different pieces, 
+ generating code, preprocessing templates and deploying projects.

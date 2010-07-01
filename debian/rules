@@ -1,0 +1,86 @@
+#!/usr/bin/make -f
+
+DEB_VERSION := $(shell dpkg-parsechangelog | egrep '^Version:' | cut -f 2 -d ' ')
+DEB_NOEPOCH_VERSION := $(shell echo $(DEB_VERSION) | cut -d: -f2-)
+DEB_UPSTREAM_VERSION := $(shell echo $(DEB_NOEPOCH_VERSION) | sed 's/-[^-]*$$//')
+
+PEAR ?= /usr/bin/pear
+pear_pkg = $(shell ls |grep pake)
+package = php-pake
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	touch configure-stamp
+
+build: build-stamp
+
+build-stamp: configure-stamp
+	dh_testdir
+	touch build-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+	if [ -f $(pear_pkg)/package.xml ]; then \
+        rm $(pear_pkg)/package.xml; \
+	fi
+	dh_clean build-stamp configure-stamp
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k 
+	dh_installdirs
+
+	# Add here commands to install the package into debian/package.
+	cp package.xml $(pear_pkg)/package.xml;
+	$(PEAR)  \
+		-c debian/pearrc \
+		-d include_path=/usr/share/php \
+		-d php_bin=/usr/bin/php \
+		-d bin_dir=/usr/bin \
+		-d php_dir=/usr/share/php \
+		-d data_dir=/usr/share/php/data \
+		-d doc_dir=/usr/share/php/docs \
+		-d test_dir=/usr/share/php/tests \
+		install -O -n -f -P debian/$(package) $(pear_pkg)/package.xml
+
+	# remove unwanted files
+		rm -f debian/$(package)/usr/share/php/.filemap;
+		rm -f debian/$(package)/usr/share/php/.lock;
+		rm -rf debian/$(package)/usr/share/php/.channels;
+		rm -rf debian/$(package)/usr/share/php/.depdblock;
+		rm -rf debian/$(package)/usr/share/php/.depdb;
+		rm -rf debian/$(package)/usr/share/php/.registry
+		rm -rf debian/$(package)/tmp
+
+	# remove duplicated files, these files are in /usr/share/doc/package
+		rm -rf debian/$(package)/usr/share/php/tests \
+			debian/$(package)/usr/share/php/docs
+
+# Build architecture-dependent files here.
+binary-arch: build install
+# We have nothing to do by default.
+
+# Build architecture-independent files here.
+binary-indep: build install
+	dh_testdir
+	dh_testroot
+	dh_installdocs
+	dh_installexamples
+	dh_installchangelogs 
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install configure
+
+get-orig-source:
+	wget http://github.com/downloads/indeyets/pake/pake-${DEB_UPSTREAM_VERSION}.tgz \
+	    -O php-pake_${DEB_UPSTREAM_VERSION}.orig.tar.gz
+
