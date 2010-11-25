@@ -536,10 +536,10 @@ function pake_format_action($section, $text, $size = null)
     return sprintf('>> %-'.$width.'s %s', pakeColor::colorize($section, 'INFO'), $text);
 }
 
-function pake_echo_action($section, $text)
+function pake_echo_action($section, $text, $size = null)
 {
     if (pakeApp::get_instance()->get_verbose()) {
-        pake_echo(pake_format_action($section, $text));
+        pake_echo(pake_format_action($section, $text, $size));
     }
 }
 
