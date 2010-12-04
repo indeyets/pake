@@ -32,10 +32,7 @@ class pakeColor
   static function colorize($text = '', $parameters = array(), $stream = STDOUT)
   {
     // disable colors if not supported (windows or non tty console)
-    if (!defined('PAKE_FORCE_TTY')
-        and (DIRECTORY_SEPARATOR == '\\' || !function_exists('posix_isatty') || !@posix_isatty($stream))
-    )
-    {
+    if (!pakeApp::isTTY()) {
       return $text;
     }
 

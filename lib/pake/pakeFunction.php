@@ -526,7 +526,7 @@ function pake_select_input($question, array $options, $default = null)
 
 function pake_format_action($section, $text, $size = null)
 {
-    if (DIRECTORY_SEPARATOR != '\\' and (!function_exists('posix_isatty') or posix_isatty(STDOUT))) {
+    if (pakeApp::isTTY()) {
         $text = pake_excerpt($text, $size);
     } else {
         // windows or pipes

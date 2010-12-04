@@ -207,11 +207,11 @@ class pakeApp
                 }
             }
         } else {
-            // WINDOWS
+            // WINDOWS or missing PCNTL functions
             $php_exec = escapeshellarg((isset($_SERVER['_']) and substr($_SERVER['_'], -4) != 'pake') ? $_SERVER['_'] : 'php');
 
             $force_tty = '';
-            if (defined('PAKE_FORCE_TTY') or (DIRECTORY_SEPARATOR != '\\' and function_exists('posix_isatty') and @posix_isatty(STDOUT))) {
+            if (pakeApp::isTTY()) {
                 $force_tty = ' --force-tty';
             }
 
@@ -486,5 +486,10 @@ class pakeApp
         $cols = getenv('COLUMNS');
 
         return (false === $cols ? self::$MAX_LINE_SIZE : $cols);
+    }
+
+    public static function isTTY()
+    {
+        return defined('PAKE_FORCE_TTY') or (DIRECTORY_SEPARATOR != '\\' and function_exists('posix_isatty') and @posix_isatty(STDOUT));
     }
 }
