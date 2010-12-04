@@ -80,7 +80,7 @@ class pakeException extends Exception
         if ($pake->get_trace()) {
             fwrite(STDERR, "exception trace:\n");
 
-            $trace = $this->trace($e);
+            $trace = self::trace($e);
             for ($i = 0, $count = count($trace); $i < $count; $i++) {
                 $class = (isset($trace[$i]['class']) ? $trace[$i]['class'] : '');
                 $type = (isset($trace[$i]['type']) ? $trace[$i]['type'] : '');
