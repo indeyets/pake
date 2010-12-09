@@ -39,7 +39,7 @@ class pakeApp
         array('--prereqs',     '-P', pakeGetopt::NO_ARGUMENT,       "Display the tasks and dependencies, then exit."),
         array('--quiet',       '-q', pakeGetopt::NO_ARGUMENT,       "Do not log messages to standard output."),
         array('--pakefile',    '-f', pakeGetopt::REQUIRED_ARGUMENT, "Use FILE as the pakefile."),
-        array('--require',     '-r', pakeGetopt::REQUIRED_ARGUMENT, "Require MODULE before executing pakefile."),
+        array('--require',     '-r', pakeGetopt::REQUIRED_ARGUMENT, "Require php-FILE before executing pakefile."),
         array('--import',      '',   pakeGetopt::REQUIRED_ARGUMENT, "Import pake-plugin before executing pakefile."),
         array('--tasks',       '-T', pakeGetopt::NO_ARGUMENT,       "Display the tasks and dependencies, then exit."),
         array('--trace',       '-t', pakeGetopt::NO_ARGUMENT,       "Turn on invoke/execute tracing, enable full backtrace."),
