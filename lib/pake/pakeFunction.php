@@ -526,10 +526,8 @@ function pake_select_input($question, array $options, $default = null)
 
 function pake_format_action($section, $text, $size = null)
 {
-    if (pakeApp::isTTY()) {
+    if (pakeApp::get_instance()->shouldDoExcerpts()) {
         $text = pake_excerpt($text, $size);
-    } else {
-        // windows or pipes
     }
 
     $width = 9 + strlen(pakeColor::colorize('', 'INFO'));

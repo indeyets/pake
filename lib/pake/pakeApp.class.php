@@ -46,6 +46,7 @@ class pakeApp
         array('--usage',       '-h', pakeGetopt::NO_ARGUMENT,       "Display usage."),
         array('--verbose',     '-v', pakeGetopt::NO_ARGUMENT,       "Log message to standard output (default)."),
         array('--force-tty',   '',   pakeGetopt::NO_ARGUMENT,       "Force coloured output"),
+        array('--full-width',  '',   pakeGetopt::NO_ARGUMENT,       "Force full width of output"),
         array('--version',     '-V', pakeGetopt::NO_ARGUMENT,       "Display the program version."),
     );
 
@@ -59,6 +60,7 @@ class pakeApp
     private $show_prereqs = false;
     private $interactive = false;
     private $pakefile = '';
+    private $full_width = false;
 
     protected static $instance = null;
 
@@ -383,6 +385,9 @@ class pakeApp
             case 'force-tty':
                 define('PAKE_FORCE_TTY', true);
                 break;
+            case 'full-width':
+                $this->full_width = true;
+                break;
             case 'version':
                 $this->showVersion();
                 exit();
@@ -479,6 +484,11 @@ class pakeApp
                 echo "    $prerequisite\n";
             }
         }
+    }
+
+    public function shouldDoExcerpts()
+    {
+        return self::isTTY() and $this->full_width === false;
     }
 
     public static function screenWidth()
