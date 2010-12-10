@@ -441,6 +441,21 @@ function pake_strip_php_comments($arg, $target_dir = '')
   }
 }
 
+function pake_write_file($fname, $contents, $overwrite = false)
+{
+    if (false === $overwrite and file_exists($fname)) {
+        throw new pakeException('File "'.$fname.'" already exists');
+    }
+
+    $res = file_put_contents($fname, $contents, LOCK_EX);
+
+    if ($res === false) {
+        throw new pakeException("Couldn't write {$fname} file");
+    }
+
+    pake_echo_action("file+", $fname);
+}
+
 
 function pake_input($question, $default = null)
 {
