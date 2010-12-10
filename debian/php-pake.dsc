@@ -1,6 +1,6 @@
 Format: 1.0  
 Source: php-pake 
-Version: 1.4.3
+Version: 1.4.4
 Binary: php-pake
 Maintainer: Piotr Pokora <piotrek.pokora@gmail.com>  
 Architecture: all
