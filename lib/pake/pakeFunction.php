@@ -526,8 +526,11 @@ function pake_select_input($question, array $options, $default = null)
 
 function pake_format_action($section, $text, $size = null)
 {
+    $longest_action = 12; // 'svn checkout'
+
     if (pakeApp::get_instance()->shouldDoExcerpts()) {
-        $text = pake_excerpt($text, $size);
+        $offset = $longest_action + 4; // + '>> ' + ' '
+        $text = pake_excerpt($text, $size, $offset);
     }
 
     $width = 9 + strlen(pakeColor::colorize('', 'INFO'));
@@ -541,10 +544,10 @@ function pake_echo_action($section, $text)
     }
 }
 
-function pake_excerpt($text, $size = null)
+function pake_excerpt($text, $size = null, $offset = 0)
 {
     if (null === $size) {
-        $size = pakeApp::screenWidth() - 13;
+        $size = pakeApp::screenWidth() - $offset;
     }
 
     if (strlen($text) < $size) {
