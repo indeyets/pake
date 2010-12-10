@@ -1,3 +1,9 @@
+php-pake (1.4.5-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Alexey Zakhlestin <indeyets@gmail.com>  Thu, 10 Dec 2010 17:40:02 +0300
+
 php-pake (1.4.4-1) unstable; urgency=low
 
   * New upstream version
