@@ -13,26 +13,32 @@ class pakeYaml
     public static function loadString($input)
     {
         if (extension_loaded('yaml')) {
-            return yaml_parse($input);
+            $retval = yaml_parse($input);
+
+            if (false === $retval) {
+                throw new pakeException("empty yaml document");
+            }
+        } else {
+            sfYaml::setSpecVersion('1.1'); // more compatible
+            $parser = new sfYamlParser();
+            $retval = $parser->parse($input);
+
+            if (null === $retval) {
+                throw new pakeException("empty yaml document");
+            }
         }
 
-        sfYaml::setSpecVersion('1.1'); // more compatible
-        $parser = new sfYamlParser();
-        return $parser->parse($input);
+        return $retval;
     }
 
     public static function loadFile($file)
     {
-        if (!file_exists($file))
-            throw new pakeException('file not found: "'.$file.'"');
-
-        if (extension_loaded('yaml')) {
-            return yaml_parse_file($file);
+        $string = file_get_contents($file);
+        if (FALSE === $string) {
+            throw new pakeException("Couldn't read yaml-file at: ".$file);
         }
 
-        sfYaml::setSpecVersion('1.1'); // more compatible
-        $parser = new sfYamlParser();
-        return $parser->parse(file_get_contents($file));
+        return self::loadString($string);
     }
 
     public static function emitString($data)
