@@ -83,7 +83,7 @@ class pakePearTask
             if ($need_sudo) {
                 pake_superuser_sh('pear channel-discover '.escapeshellarg($channel));
             } else {
-                $this->nativePearDiscover($channel);
+                self::nativePearDiscover($channel);
             }
         }
 
@@ -92,13 +92,13 @@ class pakePearTask
         if ($need_sudo) {
             pake_superuser_sh('pear install '.escapeshellarg($channel.'/'.$package), true);
         } else {
-            $this->nativePearInstall($package, $channel);
+            self::nativePearInstall($package, $channel);
         }
     }
 
 
     // helpers
-    private function nativePearDiscover($channel)
+    private static function nativePearDiscover($channel)
     {
         if (!class_exists('PEAR_Command')) {
             @include 'PEAR/command.php'; // loads frontend, among other things
@@ -125,7 +125,7 @@ class pakePearTask
         }
     }
 
-    private function nativePearInstall($package, $channel)
+    private static function nativePearInstall($package, $channel)
     {
         if (!class_exists('PEAR_Command')) {
             @include 'PEAR/command.php'; // loads frontend, among other things
