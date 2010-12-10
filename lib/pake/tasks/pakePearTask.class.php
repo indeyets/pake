@@ -101,7 +101,7 @@ class pakePearTask
     private static function nativePearDiscover($channel)
     {
         if (!class_exists('PEAR_Command')) {
-            @include 'PEAR/command.php'; // loads frontend, among other things
+            @include 'PEAR/Command.php'; // loads frontend, among other things
             if (!class_exists('PEAR_Command')) {
                 throw new pakeException('PEAR subsystem is unavailable (not in include_path?)');
             }
@@ -128,7 +128,7 @@ class pakePearTask
     private static function nativePearInstall($package, $channel)
     {
         if (!class_exists('PEAR_Command')) {
-            @include 'PEAR/command.php'; // loads frontend, among other things
+            @include 'PEAR/Command.php'; // loads frontend, among other things
             if (!class_exists('PEAR_Command')) {
                 throw new pakeException('PEAR subsystem is unavailable (not in include_path?)');
             }
