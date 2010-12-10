@@ -59,24 +59,18 @@ class pakePearTask
 
     public static function install_pear_package($package, $channel = 'pear.php.net')
     {
-        if (!class_exists('PEAR_Config')) {
-            @include 'PEAR/Registry.php'; // loads config, among other things
-            if (!class_exists('PEAR_Config')) {
-                throw new pakeException('PEAR subsystem is unavailable (not in include_path?)');
-            }
-        }
-
-        $cfg = PEAR_Config::singleton();
-        $registry = $cfg->getRegistry();
+        self::initPearClasses();
 
         // 1. check if package is installed
-        if ($registry->_packageExists($package, $channel)) {
+        if (self::isInstalled($package, $channel)) {
             return true;
         }
 
+        $cfg = PEAR_Config::singleton();
         $need_sudo = (!is_writable($cfg->get('download_dir')) or !is_writable($cfg->get('php_dir')));
 
         // 2. if not installed, discover channel
+        $registry = $cfg->getRegistry();
         if (!$registry->_channelExists($channel, true)) {
             // sudo discover channel
             pake_echo_action('pear', 'discovering channel '.$channel);
@@ -96,16 +90,31 @@ class pakePearTask
         }
     }
 
+    public static function install_from_file($file, $package_name, $channel = '__uri')
+    {
+        if (self::isInstalled($package_name, $channel)) {
+            return true;
+        }
+
+        // otherwise, let's install it!
+        $pear = escapeshellarg(pake_which('pear'));
+        pake_superuser_sh($pear.' install '.escapeshellarg($file));
+    }
+
+    public static function isInstalled($package, $channel)
+    {
+        self::initPearClasses();
+
+        $cfg = PEAR_Config::singleton();
+        $registry = $cfg->getRegistry();
+
+        return $registry->_packageExists($package, $channel);
+    }
 
     // helpers
     private static function nativePearDiscover($channel)
     {
-        if (!class_exists('PEAR_Command')) {
-            @include 'PEAR/Command.php'; // loads frontend, among other things
-            if (!class_exists('PEAR_Command')) {
-                throw new pakeException('PEAR subsystem is unavailable (not in include_path?)');
-            }
-        }
+        self::initPearClasses();
 
         $front = PEAR_Frontend::singleton('PEAR_Frontend_CLI');
 
@@ -127,12 +136,7 @@ class pakePearTask
 
     private static function nativePearInstall($package, $channel)
     {
-        if (!class_exists('PEAR_Command')) {
-            @include 'PEAR/Command.php'; // loads frontend, among other things
-            if (!class_exists('PEAR_Command')) {
-                throw new pakeException('PEAR subsystem is unavailable (not in include_path?)');
-            }
-        }
+        self::initPearClasses();
 
         $front = PEAR_Frontend::singleton('PEAR_Frontend_CLI');
 
@@ -144,6 +148,24 @@ class pakePearTask
         ob_end_clean(); // we don't need output
         if ($result instanceof PEAR_Error) {
             throw new pakeException($result->getMessage());
+        }
+    }
+
+
+    private static function initPearClasses()
+    {
+        if (!class_exists('PEAR_Config')) {
+            @include 'PEAR/Registry.php'; // loads config, among other things
+            if (!class_exists('PEAR_Config')) {
+                throw new pakeException('PEAR subsystem is unavailable (not in include_path?)');
+            }
+        }
+
+        if (!class_exists('PEAR_Command')) {
+            @include 'PEAR/Command.php'; // loads frontend, among other things
+            if (!class_exists('PEAR_Command')) {
+                throw new pakeException('PEAR subsystem is unavailable (not in include_path?)');
+            }
         }
     }
 }
