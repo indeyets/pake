@@ -24,7 +24,7 @@
  <date>##CURRENT_DATE##</date>
  <version>
    <release>##PAKE_VERSION##</release>
-   <api>1.4.5</api>
+   <api>1.5.0</api>
  </version>
  <stability>
   <release>beta</release>
@@ -122,6 +122,25 @@
  </phprelease>
 
  <changelog>
+  <release>
+    <date>2010-12-17</date>
+    <version>
+      <release>1.5.0</release>
+      <api>1.5.0</api>
+    </version>
+    <stability>
+     <release>stable</release>
+     <api>stable</api>
+    </stability>
+    <license uri="http://www.milkfarmsoft.com/bsd.php">BSD license</license>
+    <notes>
+        - PEAR helper: new methods: install_from_file(), isInstalled()
+        - pakeYaml::loadFile() can handle arbitrary URLs supported by PHP now
+        - pakeYaml will throw exception on empty documents now
+        - new helper: pake_write_file($name, $contents, $overwrite = false)
+        - new helper: pakeMySQL (supports creation and dropping of databases. more in next versions)
+    </notes>
+  </release>
   <release>
    <date>2010-12-10</date>
    <version>
