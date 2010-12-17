@@ -16,12 +16,14 @@ class pakePearTask
         pake_task('pakePearTask::pear_package');
     }
 
+    // tasks
     public static function run_pear_package($task, $args)
     {
         $path = dirname(pakeApp::get_instance()->getPakefilePath());
         self::package_pear_package($path.'/package.xml', $path);
     }
 
+    // API
     public static function package_pear_package($package_xml_path, $target_dir)
     {
         if (!file_exists($package_xml_path)) {
@@ -57,23 +59,25 @@ class pakePearTask
         chdir($current);
     }
 
-    public static function install_pear_package($package, $channel = 'pear.php.net')
+    public static function install_pear_package($package, $channel = 'pear.php.net', $upgrade_if_installed = true)
     {
         self::initPearClasses();
-
-        // 1. check if package is installed
-        if (self::isInstalled($package, $channel)) {
-            return true;
-        }
 
         $cfg = PEAR_Config::singleton();
         $need_sudo = (!is_writable($cfg->get('download_dir')) or !is_writable($cfg->get('php_dir')));
 
-        // 2. if not installed, discover channel
         $registry = $cfg->getRegistry();
-        if (!$registry->_channelExists($channel, true)) {
-            // sudo discover channel
-            pake_echo_action('pear', 'discovering channel '.$channel);
+        if ($registry->_channelExists($channel, true)) {
+            if ($upgrade_if_installed === true) {
+                // 1. update channel-info
+                if ($need_sudo) {
+                    pake_superuser_sh('pear channel-update '.escapeshellarg($channel));
+                } else {
+                    self::nativePearChannelUpdate($channel);
+                }
+            }
+        } else {
+            // 2. or discover channel
             if ($need_sudo) {
                 pake_superuser_sh('pear channel-discover '.escapeshellarg($channel));
             } else {
@@ -81,12 +85,22 @@ class pakePearTask
             }
         }
 
-        // 3. install package
-        pake_echo_action('pear', 'installing '.$channel.'/'.$package);
-        if ($need_sudo) {
-            pake_superuser_sh('pear install '.escapeshellarg($channel.'/'.$package), true);
+        if (self::isInstalled($package, $channel)) {
+            if ($upgrade_if_installed === true) {
+                // 3. upgrade package
+                if ($need_sudo) {
+                    pake_superuser_sh('pear upgrade '.escapeshellarg($channel.'/'.$package), true);
+                } else {
+                    self::nativePearUpgrade($package, $channel);
+                }
+            }
         } else {
-            self::nativePearInstall($package, $channel);
+            // 4. or install it
+            if ($need_sudo) {
+                pake_superuser_sh('pear install '.escapeshellarg($channel.'/'.$package), true);
+            } else {
+                self::nativePearInstall($package, $channel);
+            }
         }
     }
 
@@ -114,6 +128,8 @@ class pakePearTask
     // helpers
     private static function nativePearDiscover($channel)
     {
+        pake_echo_action('pear', 'discovering channel '.$channel);
+
         self::initPearClasses();
 
         $front = PEAR_Frontend::singleton('PEAR_Frontend_CLI');
@@ -134,8 +150,34 @@ class pakePearTask
         }
     }
 
+    private static function nativePearChannelUpdate($channel)
+    {
+        pake_echo_action('pear', 'updating channel info '.$channel);
+
+        self::initPearClasses();
+
+        $front = PEAR_Frontend::singleton('PEAR_Frontend_CLI');
+
+        $cfg = PEAR_Config::singleton();
+        $cmd = PEAR_Command::factory('channel-update', $cfg);
+
+        ob_start();
+        $result = $cmd->doUpdate('channel-update', array(), array($channel));
+        ob_end_clean(); // we don't need output
+        if ($result instanceof PEAR_Error) {
+            $msg = $result->getMessage();
+            $pos = strpos($msg, ' (');
+            if (false !== $pos) {
+                $msg = substr($msg, 0, $pos);
+            }
+            throw new pakeException($msg);
+        }
+    }
+
     private static function nativePearInstall($package, $channel)
     {
+        pake_echo_action('pear', 'installing '.$channel.'/'.$package);
+
         self::initPearClasses();
 
         $front = PEAR_Frontend::singleton('PEAR_Frontend_CLI');
@@ -145,6 +187,25 @@ class pakePearTask
 
         ob_start();
         $result = $cmd->doInstall('install', array(), array($channel.'/'.$package));
+        ob_end_clean(); // we don't need output
+        if ($result instanceof PEAR_Error) {
+            throw new pakeException($result->getMessage());
+        }
+    }
+
+    private static function nativePearUpgrade($package, $channel)
+    {
+        pake_echo_action('pear', 'upgrading '.$channel.'/'.$package);
+
+        self::initPearClasses();
+
+        $front = PEAR_Frontend::singleton('PEAR_Frontend_CLI');
+
+        $cfg = PEAR_Config::singleton();
+        $cmd = PEAR_Command::factory('upgrade', $cfg);
+
+        ob_start();
+        $result = $cmd->doInstall('upgrade', array(), array($channel.'/'.$package));
         ob_end_clean(); // we don't need output
         if ($result instanceof PEAR_Error) {
             throw new pakeException($result->getMessage());
