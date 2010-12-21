@@ -53,9 +53,19 @@ class pakeGit
         return $this;
     }
 
-    public function pull()
+    public function pull($remote = null, $branch = null)
     {
-        $this->git_run('pull -q');
+        $cmd = 'pull -q';
+
+        if (null !== $remote) {
+            $cmd .= ' '.escapeshellarg($remote);
+
+            if (null !== $branch) {
+                $cmd .= ' '.escapeshellarg($branch);
+            }
+        }
+
+        $this->git_run($cmd);
 
         return $this;
     }
