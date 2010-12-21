@@ -24,15 +24,17 @@
  <date>##CURRENT_DATE##</date>
  <version>
    <release>##PAKE_VERSION##</release>
-   <api>1.5.0</api>
+   <api>1.5.1</api>
  </version>
  <stability>
-  <release>beta</release>
+  <release>stable</release>
   <api>stable</api>
  </stability>
  <license uri="http://www.milkfarmsoft.com/bsd.php">BSD license</license>
  <notes>
-     -
+     - in install_pear_package: update channel + upgrade package by default (can be disabled)
+     - git does not respect --work-tree in some commands. adding workaround
+     - support for optional explicit remote/branch parameters in pakeGit::pull()
  </notes>
 
  <contents>
