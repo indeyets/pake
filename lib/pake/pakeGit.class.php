@@ -9,6 +9,7 @@
 
 class pakeGit
 {
+    static $needs_work_tree_workaround = false;
     private $repository_path;
 
     public function __construct($repository_path)
@@ -67,12 +68,24 @@ class pakeGit
 
     private function git_run($command)
     {
-        $cmd = 'git';
-        $cmd .= ' '.escapeshellarg('--git-dir='.$this->repository_path.'/.git');
-        $cmd .= ' '.escapeshellarg('--work-tree='.$this->repository_path);
-        $cmd .= ' '.$command;
+        if (self::$needs_work_tree_workaround === true) {
+            $cmd = '(cd '.escapeshellarg($this->repository_path).' && git '.$command.')';
+        } else {
+            $cmd = 'git';
+            $cmd .= ' '.escapeshellarg('--git-dir='.$this->repository_path.'/.git');
+            $cmd .= ' '.escapeshellarg('--work-tree='.$this->repository_path);
+            $cmd .= ' '.$command;
+        }
 
-        pake_sh($cmd);
+        try {
+            pake_sh($cmd);
+        } catch (pakeException $e) {
+            if (strpos($e->getMessage(), 'cannot be used without a working tree') !== false) {
+                pake_echo_error('Your version of git is buggy. Using workaround');
+                self::$needs_work_tree_workaround = true;
+                $this->git_run($command);
+            }
+        }
     }
 
     // new git-repo
