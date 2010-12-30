@@ -30,15 +30,35 @@ class pakeHttp
             'ignore_errors' => true,
         );
 
-        if (isset($_SERVER['http_proxy'])) {
-            $parsed = parse_url($_SERVER['http_proxy']);
+        $parsed_url = parse_url($url);
 
-            if (is_array($parsed) and $parsed['scheme'] == 'http' and isset($parsed['host']) and isset($parsed['port'])) {
-                $_options['proxy'] = 'tcp://'.$parsed['host'].':'.$parsed['port'];
-                $_options['request_fulluri'] = true;
-                pake_echo_comment('(using HTTP proxy: '.$parsed['host'].':'.$parsed['port'].')');
-            } else {
-                pake_echo_error('"http_proxy" environment variable is set to the wrong value. expecting http://host:port');
+        $proxy_var_name = null;
+
+        if ($parsed_url['scheme'] == 'http') {
+            $proxy_var_name = 'http_proxy';
+        } elseif ($parsed_url['scheme'] == 'https') {
+            if (isset($_SERVER['https_proxy'])) {
+                $proxy_var_name = 'https_proxy';
+            } elseif (isset($_SERVER['HTTPS_PROXY'])) {
+                $proxy_var_name = 'HTTPS_PROXY';
+            }
+        }
+
+        if (null !== $proxy_var_name) {
+            if (isset($_SERVER[$proxy_var_name])) {
+                $parsed_proxy_str = parse_url($_SERVER[$proxy_var_name]);
+
+                if (is_array($parsed_proxy_str) and
+                    $parsed_proxy_str['scheme'] == 'http' and
+                    isset($parsed_proxy_str['host']) and
+                    isset($parsed_proxy_str['port'])
+                ) {
+                    $_options['proxy'] = 'tcp://'.$parsed_proxy_str['host'].':'.$parsed_proxy_str['port'];
+                    $_options['request_fulluri'] = true;
+                    pake_echo_comment('(using proxy: '.$parsed_proxy_str['host'].':'.$parsed_proxy_str['port'].')');
+                } else {
+                    pake_echo_error('"'.$proxy_var_name.'" environment variable is set to the wrong value. expecting http://host:port');
+                }
             }
         }
 
