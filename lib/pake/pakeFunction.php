@@ -640,9 +640,12 @@ function pake_vsprintf($format, $argv, $encoding=null)
     while ($format !== "") {
         // Split the format in two parts: $pre and $post by the first %-directive
         // We get also the matched groups
-        list($pre, $sign, $filler, $align, $size, $precision, $type, $post) =
-            preg_split("!\%(\+?)('.|[0 ]|)(-?)([1-9][0-9]*|)(\.[1-9][0-9]*|)([%a-zA-Z])!u",
-                       $format, 2, PREG_SPLIT_DELIM_CAPTURE);
+        $format_pieces = preg_split("!\%(\+?)('.|[0 ]|)(-?)([1-9][0-9]*|)(\.[1-9][0-9]*|)([%a-zA-Z])!u", $format, 2, PREG_SPLIT_DELIM_CAPTURE);
+        if (count($format_pieces) == 1) {
+            // didn't find format
+            break;
+        }
+        list($pre, $sign, $filler, $align, $size, $precision, $type, $post) = $format_pieces;
 
         $newformat .= mb_convert_encoding($pre, $encoding, 'UTF-8');
 
