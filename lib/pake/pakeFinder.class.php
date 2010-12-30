@@ -264,11 +264,11 @@ class pakeFinder
     {
       if (is_array($args[$i]) && !method_exists($args[$i][0], $args[$i][1]))
       {
-        throw new pakeException(sprintf("Method %s does not exist for object %s.", $args[$i][1], $args[$i][0]));
+        throw new pakeException('Method '.$args[$i][1].' does not exist for object '.$args[$i][0]);
       }
       else if (!is_array($args[$i]) && !function_exists($args[$i]))
       {
-        throw new pakeException(sprintf("Function %s does not exist.", $args[$i]));
+        throw new pakeException('Function '.$args[$i].' does not exist.');
       }
 
       $this->execs[] = $args[$i];

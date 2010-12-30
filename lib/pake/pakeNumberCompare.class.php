@@ -64,7 +64,7 @@ class pakeNumberCompare
   {
     if (!preg_match('{^([<>]=?)?(.*?)([kmg]i?)?$}i', $this->test, $matches))
     {
-      throw new pakeException(sprintf('Don\'t understand "%s" as a test.', $this->test));
+      throw new pakeException('Don\'t understand "'.$this->test.'" as a test.');
     }
 
     $target = array_key_exists(2, $matches) ? $matches[2] : '';

@@ -36,7 +36,7 @@ class pakeGetopt
     {
       if (!$option[0])
       {
-        throw new pakeException(sprintf("pakeGetopt: You must define a long option name! for option %s (%s).", $option[1], $option[3]));
+        throw new pakeException('pakeGetopt: You must define a long option name! for option '.$option[1].' ('.$option[3].').');
       }
 
       $this->add_option($option[0], $option[1], $option[2], $option[3]);
@@ -150,7 +150,7 @@ class pakeGetopt
       /* option exists? */
       if (!array_key_exists($opt, $this->short_options))
       {
-        throw new pakeException(sprintf("pakeGetopt: unrecognized option -%s.", $opt));
+        throw new pakeException('pakeGetopt: unrecognized option -'.$opt.'.');
       }
 
       /* required or optional argument? */
@@ -171,7 +171,7 @@ class pakeGetopt
           }
           else
           {
-            throw new pakeException(sprintf("pakeGetopt: option -%s requires an argument", $opt));
+            throw new pakeException('pakeGetopt: option -'.$opt.' requires an argument');
           }
         }
       }
@@ -213,7 +213,7 @@ class pakeGetopt
     /* option exists? */
     if (!array_key_exists($opt, $this->long_options))
     {
-      throw new pakeException(sprintf("pakeGetopt: unrecognized option --%s.", $opt));
+      throw new pakeException('pakeGetopt: unrecognized option --'.$opt.'.');
     }
 
     /* required or optional argument? */
@@ -226,7 +226,7 @@ class pakeGetopt
       }
       else
       {
-        throw new pakeException(sprintf("pakeGetopt: option --%s requires an argument.", $opt));
+        throw new pakeException('pakeGetopt: option --'.$opt.' requires an argument.');
       }
     }
     else if ($this->long_options[$opt]['mode'] == self::OPTIONAL_ARGUMENT)

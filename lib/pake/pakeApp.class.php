@@ -322,7 +322,7 @@ class pakeApp
             chdir('..');
             if (getcwd() == $here || $this->nosearch) {
                 chdir($start);
-                throw new pakeException(sprintf('No pakefile found (looking for: %s)', join(', ', self::$PAKEFILES))."\n");
+                throw new pakeException('No pakefile found (looking for: '.join(', ', self::$PAKEFILES).')');
             }
 
             $here = getcwd();
@@ -392,19 +392,19 @@ class pakeApp
                 $this->showVersion();
                 exit();
             default:
-                throw new pakeException(sprintf("Unknown option: %s", $opt));
+                throw new pakeException('Unknown option: '.$opt);
         }
     }
 
     public function showVersion()
     {
-        echo sprintf('pake version %s', pakeColor::colorize(self::VERSION, 'INFO'))."\n";
+        echo pake_sprintf('pake version %s', pakeColor::colorize(self::VERSION, 'INFO'))."\n";
     }
 
     // Display the program usage line.
     public function usage($hint_about_help = true)
     {
-        echo self::$EXEC_NAME." [-f pakefile] {options} targets...\n";
+        echo self::$EXEC_NAME." [-f pakefile] {options} targets…\n";
 
         if (true === $hint_about_help) {
             echo pakeColor::colorize("Try ".self::$EXEC_NAME." -H for more information", 'INFO')."\n";
@@ -444,7 +444,7 @@ class pakeApp
             if ($w > $width)
                 $width = $w;
         }
-        $width += strlen(pakeColor::colorize(' ', 'INFO'));
+        $width += mb_strlen(pakeColor::colorize(' ', 'INFO'));
 
         echo "available ".self::$EXEC_NAME." tasks:\n";
 

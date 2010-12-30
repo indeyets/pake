@@ -88,7 +88,7 @@ class pakeException extends Exception
                 $file = isset($trace[$i]['file']) ? $trace[$i]['file'] : 'n/a';
                 $line = isset($trace[$i]['line']) ? $trace[$i]['line'] : 'n/a';
 
-                fwrite(STDERR, sprintf(" %s%s%s at %s:%s\n", $class, $type, $function, pakeColor::colorize($file, 'INFO', STDERR), pakeColor::colorize($line, 'INFO', STDERR)));
+                fwrite(STDERR, pake_sprintf(" %s%s%s at %s:%s\n", $class, $type, $function, pakeColor::colorize($file, 'INFO', STDERR), pakeColor::colorize($line, 'INFO', STDERR)));
             }
         }
 

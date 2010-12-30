@@ -73,7 +73,7 @@ class pakeTask
     {
       if (!array_key_exists($name, $tasks))
       {
-        throw new pakeException(sprintf('Task "%s" cannot be cloned to "%s" because it does not exist.', $name, $alias));
+        throw new pakeException('Task "'.$name.'" cannot be cloned to "'.$alias.'" because it does not exist.');
       }
 
       $alias_task = clone $tasks[$name];
@@ -98,7 +98,7 @@ class pakeTask
     {
       if (!array_key_exists($section, $properties) || !array_key_exists($name, $properties[$section]))
       {
-        throw new pakeException(sprintf('Property "%s/%s" does not exist.', $section, $name));
+        throw new pakeException('Property "'.$section.'/'.$name.'" does not exist.');
       }
       else
       {
@@ -109,7 +109,7 @@ class pakeTask
     {
       if (!array_key_exists($name, $properties))
       {
-        throw new pakeException(sprintf('Property "%s" does not exist.', $name));
+        throw new pakeException('Property "'.$name.'" does not exist.');
       }
       else
       {
@@ -176,7 +176,7 @@ class pakeTask
       }
       else
       {
-        throw new pakeException(sprintf('Prerequisite "%s" does not exist.', $prerequisite));
+        throw new pakeException('Prerequisite "'.$prerequisite.'" does not exist.');
       }
     }
 
@@ -207,7 +207,7 @@ class pakeTask
       $function = array(substr($function, 0, $pos), preg_replace('/\-/', '_', 'run_'.strtolower(substr($function, $pos + 2))));
       if (!is_callable($function))
       {
-        throw new pakeException(sprintf('Task "%s" is defined but with no action defined.', $function[1]));
+        throw new pakeException('Task "'.$function[1].'" is defined but with no action defined.');
       }
     }
     else
@@ -215,7 +215,7 @@ class pakeTask
       $function = preg_replace('/\-/', '_', 'run_'.strtolower($function));
       if (!function_exists($function))
       {
-        throw new pakeException(sprintf('Task "%s" is defined but with no action defined.', $this->name));
+        throw new pakeException('Task "'.$this->name.'" is defined but with no action defined.');
       }
     }
 
@@ -270,7 +270,7 @@ class pakeTask
     $task_name = self::get_full_task_name($task_name);
     if (!array_key_exists($task_name, $tasks))
     {
-      throw new pakeException(sprintf('Task "%s" is not defined.', $task_name));
+      throw new pakeException('Task "'.$task_name.'" is not defined.');
     }
 
     return $tasks[$task_name];
