@@ -85,14 +85,14 @@ class pakeHttp
         }
 
         $context = stream_context_create(array('http' => $options));
+
+        pake_echo_action('HTTP '.$method, $url);
         $stream = @fopen($url, 'r', false, $context);
 
         if (false === $stream) {
             $err = error_get_last();
             throw new pakeException('HTTP request failed: '.$err['message']);
         }
-
-        pake_echo_action('HTTP '.$method, $url);
 
         $meta = stream_get_meta_data($stream);
         $response = stream_get_contents($stream);
@@ -104,6 +104,8 @@ class pakeHttp
 
         if ($status > 400)
             throw new pakeException('http request returned: '.$status);
+
+        pake_echo_action('…', 'got '.strlen($response).' bytes');
 
         return $response;
     }

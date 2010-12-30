@@ -57,6 +57,8 @@ function pake_exception_default_handler($exception)
 }
 set_exception_handler('pake_exception_default_handler');
 
+mb_internal_encoding('utf-8');
+
 // fix php behavior if using cgi php
 // from http://www.sitepoint.com/article/php-command-line-1/3
 if (false !== strpos(PHP_SAPI, 'cgi'))

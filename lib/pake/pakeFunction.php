@@ -29,7 +29,7 @@ function pake_import($name, $import_default_tasks = true)
         }
 
         if (!$plugin_path) {
-            throw new pakeException(sprintf('Plugin "%s" does not exist.', $name));
+            throw new pakeException('Plugin "'.$name.'" does not exist.');
         }
 
         require_once $plugin_path;
@@ -187,7 +187,7 @@ function pake_mirror($arg, $origin_dir, $target_dir, $options = array())
     }
     else
     {
-      throw new pakeException(sprintf('Unable to determine "%s" type', $file));
+      throw new pakeException('Unable to determine "'.$file.'" type');
     }
   }
 }
@@ -331,7 +331,7 @@ function pake_which($cmd)
 function pake_sh($cmd, $interactive = false)
 {
     $verbose = pakeApp::get_instance()->get_verbose();
-    pake_echo_action('exec ', $cmd);
+    pake_echo_action('exec', $cmd);
 
     if (false === $interactive) {
         ob_start();
@@ -343,7 +343,7 @@ function pake_sh($cmd, $interactive = false)
         $content = ob_get_clean();
 
         if ($return > 0) {
-            throw new pakeException(sprintf('Problem executing command %s', $verbose ? "\n".$content : ''));
+            throw new pakeException('Problem executing command'.($verbose ? "\n".$content : ''));
         }
     } else {
         if ($return > 0) {
@@ -566,8 +566,8 @@ function pake_format_action($section, $text, $size = null)
         $text = pake_excerpt($text, $size, $offset);
     }
 
-    $width = 9 + strlen(pakeColor::colorize('', 'INFO'));
-    return sprintf('>> %-'.$width.'s %s', pakeColor::colorize($section, 'INFO'), $text);
+    $width = $longest_action + mb_strlen(pakeColor::colorize('', 'INFO'));
+    return pake_sprintf('>> %-'.$width.'s %s', pakeColor::colorize($section, 'INFO'), $text);
 }
 
 function pake_echo_action($section, $text)
@@ -583,13 +583,13 @@ function pake_excerpt($text, $size = null, $offset = 0)
         $size = pakeApp::screenWidth() - $offset;
     }
 
-    if (strlen($text) < $size) {
+    if (mb_strlen($text) < $size) {
         return $text;
     }
 
-    $subsize = floor(($size - 3) / 2);
+    $subsize = floor(($size - 1) / 2); // "1" for ellipsis
 
-    return substr($text, 0, $subsize).pakeColor::colorize('...', 'INFO').substr($text, -$subsize);
+    return mb_substr($text, 0, $subsize).pakeColor::colorize('…', 'INFO').mb_substr($text, -$subsize);
 }
 
 function pake_echo($text)
@@ -600,11 +600,94 @@ function pake_echo($text)
 function pake_echo_comment($text)
 {
     if (pakeApp::get_instance()->get_verbose()) {
-        pake_echo(sprintf(pakeColor::colorize('   # %s', 'COMMENT'), $text));
+        pake_echo(pake_sprintf(pakeColor::colorize('   # %s', 'COMMENT'), $text));
     }
 }
 
 function pake_echo_error($text)
 {
-    pake_echo(sprintf(pakeColor::colorize('   ! %s', 'ERROR'), $text));
+    pake_echo(pake_sprintf(pakeColor::colorize('   ! %s', 'ERROR'), $text));
+}
+
+
+/**
+ * @author viktor at textalk dot com
+ **/
+function pake_sprintf($format)
+{
+    $argv = func_get_args();
+    array_shift($argv);
+    return pake_vsprintf($format, $argv);
+}
+
+/**
+ * Works with all encodings in format and arguments.
+ * Supported: Sign, padding, alignment, width and precision.
+ * Not supported: Argument swapping.
+ * @author viktor at textalk dot com
+ **/
+function pake_vsprintf($format, $argv, $encoding=null)
+{
+    if (is_null($encoding))
+        $encoding = mb_internal_encoding();
+
+    // Use UTF-8 in the format so we can use the u flag in preg_split
+    $format = mb_convert_encoding($format, 'UTF-8', $encoding);
+
+    $newformat = ""; // build a new format in UTF-8
+    $newargv = array(); // unhandled args in unchanged encoding
+
+    while ($format !== "") {
+        // Split the format in two parts: $pre and $post by the first %-directive
+        // We get also the matched groups
+        list($pre, $sign, $filler, $align, $size, $precision, $type, $post) =
+            preg_split("!\%(\+?)('.|[0 ]|)(-?)([1-9][0-9]*|)(\.[1-9][0-9]*|)([%a-zA-Z])!u",
+                       $format, 2, PREG_SPLIT_DELIM_CAPTURE);
+
+        $newformat .= mb_convert_encoding($pre, $encoding, 'UTF-8');
+
+        if ($type == '') {
+            // didn't match. do nothing. this is the last iteration.
+        } elseif ($type == '%') {
+            // an escaped %
+            $newformat .= '%%';
+        } elseif ($type == 's') {
+            $arg = array_shift($argv);
+            $arg = mb_convert_encoding($arg, 'UTF-8', $encoding);
+            $padding_pre = '';
+            $padding_post = '';
+
+            // truncate $arg
+            if ($precision !== '') {
+                $precision = intval(substr($precision,1));
+                if ($precision > 0 && mb_strlen($arg,$encoding) > $precision)
+                    $arg = mb_substr($precision,0,$precision,$encoding);
+            }
+
+            // define padding
+            if ($size > 0) {
+                $arglen = mb_strlen($arg, $encoding);
+                if ($arglen < $size) {
+                    if ($filler === '')
+                        $filler = ' ';
+                    if ($align == '-')
+                        $padding_post = str_repeat($filler, $size - $arglen);
+                    else
+                        $padding_pre = str_repeat($filler, $size - $arglen);
+                }
+            }
+
+            // escape % and pass it forward
+            $newformat .= $padding_pre . str_replace('%', '%%', $arg) . $padding_post;
+        } else {
+            // another type, pass forward
+            $newformat .= "%$sign$filler$align$size$precision$type";
+            $newargv[] = array_shift($argv);
+        }
+
+        $format = strval($post);
+    }
+    // Convert new format back from UTF-8 to the original encoding
+    $newformat = mb_convert_encoding($newformat, $encoding, 'UTF-8');
+    return vsprintf($newformat, $newargv);
 }
