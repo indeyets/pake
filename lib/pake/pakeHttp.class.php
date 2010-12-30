@@ -30,6 +30,18 @@ class pakeHttp
             'ignore_errors' => true,
         );
 
+        if (isset($_SERVER['http_proxy'])) {
+            $parsed = parse_url($_SERVER['http_proxy']);
+
+            if (is_array($parsed) and $parsed['scheme'] == 'http' and isset($parsed['host']) and isset($parsed['port'])) {
+                $_options['proxy'] = 'tcp://'.$parsed['host'].':'.$parsed['port'];
+                $_options['request_fulluri'] = true;
+                pake_echo_comment('(using HTTP proxy: '.$parsed['host'].':'.$parsed['port'].')');
+            } else {
+                pake_echo_error('"http_proxy" environment variable is set to the wrong value. expecting http://host:port');
+            }
+        }
+
         if (null !== $body) {
             if (is_array($body)) {
                 $body = http_build_query($body);
@@ -53,10 +65,11 @@ class pakeHttp
         }
 
         $context = stream_context_create(array('http' => $options));
-        $stream = fopen($url, 'r', false, $context);
+        $stream = @fopen($url, 'r', false, $context);
 
         if (false === $stream) {
-            throw new pakeException('HTTP request failed');
+            $err = error_get_last();
+            throw new pakeException('HTTP request failed: '.$err['message']);
         }
 
         pake_echo_action('HTTP '.$method, $url);
