@@ -86,7 +86,7 @@ function run_compact($task, $args)
     // merge all files
     $content = '';
     foreach ($files as $file) {
-        $content .= file_get_contents($file);
+        $content .= pake_read_file($file);
     }
 
     pake_replace_tokens(

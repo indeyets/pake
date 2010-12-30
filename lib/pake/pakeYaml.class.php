@@ -33,12 +33,7 @@ class pakeYaml
 
     public static function loadFile($file)
     {
-        $string = file_get_contents($file);
-        if (FALSE === $string) {
-            throw new pakeException("Couldn't read yaml-file at: ".$file);
-        }
-
-        return self::loadString($string);
+        return self::loadString(pake_read_file($file));
     }
 
     public static function emitString($data)

@@ -244,7 +244,7 @@ function pake_replace_tokens_to_dir($arg, $src_dir, $target_dir, $begin_token, $
     foreach ($files as $file)
     {
       $replaced = false;
-      $content = file_get_contents($src_dir.DIRECTORY_SEPARATOR.$file);
+      $content = pake_read_file($src_dir.'/'.$file);
       foreach ($tokens as $key => $value)
       {
         $content = str_replace($begin_token.$key.$end_token, $value, $content, $count);
@@ -407,7 +407,7 @@ function pake_strip_php_comments($arg, $target_dir = '')
   {
     if (!is_file($file)) continue;
 
-    $source = file_get_contents($file);
+    $source = pake_read_file($file);
     $output = '';
 
     $tokens = token_get_all($source);
@@ -454,6 +454,24 @@ function pake_write_file($fname, $contents, $overwrite = false)
     }
 
     pake_echo_action("file+", $fname);
+}
+
+function pake_read_file($file_or_url)
+{
+    $is_http_url = (substr($file_or_url, 0, 7) == 'http://' or substr($file_or_url, 0, 8) == 'https://');
+
+    if ($is_http_url) {
+        return pakeHttp::get($file_or_url);
+    }
+
+    $retval = @file_get_contents($file_or_url);
+
+    if (false === $retval) {
+        $err = error_get_last();
+        throw new pakeException("Couldn't get file: ".$err['message']);
+    }
+
+    return $retval;
 }
 
 
