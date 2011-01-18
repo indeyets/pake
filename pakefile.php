@@ -175,12 +175,30 @@ function run_create_package_xml()
     pake_copy($_root.'/package.xml.tmpl', $_root.'/package.xml', array('override' => true));
 
     // add class files
-    $class_files = pakeFinder::type('file')->ignore_version_control()->not_name('/^pakeApp.class.php$/')->name('*.php')->relative()->in($_root.'/lib');
+    $class_files = pakeFinder::type('file')->ignore_version_control()
+                                           ->not_name('/^pakeApp.class.php$/')
+                                           ->name('*.php')
+                                           ->maxdepth(0)
+                                           ->relative()
+                                           ->in($_root.'/lib/pake');
+
+    $task_files = pakeFinder::type('file')->ignore_version_control()
+                                          ->name('*.php')
+                                          ->relative()
+                                          ->in($_root.'/lib/pake/tasks');
+
+    $renames = '';
     $xml_classes = '';
+    $task_classes = '';
+
     foreach ($class_files as $file) {
-        $dir_name  = dirname($file);
-        $file_name = basename($file);
-        $xml_classes .= '<file role="php" baseinstalldir="'.$dir_name.'" install-as="'.$file_name.'" name="lib/'.$file.'"/>'."\n";
+        $xml_classes .= '<file role="php" name="'.$file.'"/>'."\n";
+        $renames .= '<install as="pake/'.$file.'" name="lib/pake/'.$file.'"/>'."\n";
+    }
+
+    foreach ($task_files as $file) {
+        $task_classes .= '<file role="php" name="'.$file.'"/>'."\n";
+        $renames .= '<install as="pake/tasks/'.$file.'" name="lib/pake/tasks/'.$file.'"/>'."\n";
     }
 
     // replace tokens
@@ -188,6 +206,8 @@ function run_create_package_xml()
         'PAKE_VERSION' => $version,
         'CURRENT_DATE' => date('Y-m-d'),
         'CLASS_FILES'  => $xml_classes,
+        'TASK_FILES'   => $task_classes,
+        'RENAMES'      => $renames,
     ));
 }
 
