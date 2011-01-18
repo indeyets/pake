@@ -47,12 +47,19 @@
                 <tasks:replace type="pear-config" from="@BIN-DIR@" to="bin_dir"/>
                 <tasks:replace type="pear-config" from="@PEAR-DIR@" to="php_dir"/>
             </file>
-            <file role="php" baseinstalldir="/" install-as="pake.php" name="bin/pake.php"/>
-            <file role="php" baseinstalldir="pake" install-as="pakeApp.class.php" name="lib/pake/pakeApp.class.php">
+            <file role="php" baseinstalldir="/" name="bin/pake.php"/>
+            <file role="php" baseinstalldir="pake" name="lib/pake/pakeApp.class.php">
                 <tasks:replace type="package-info" from="1.0.DEV" to="version"/>
             </file>
 
-            ##CLASS_FILES##
+            <dir name="lib">
+                <dir name="pake">
+                    ##CLASS_FILES##
+                    <dir name="tasks">
+                        ##TASK_FILES##
+                    </dir>
+                </dir>
+            </dir>
 
             <file role="doc" baseinstalldir="pake" name="LICENSE"/>
         </dir>
@@ -113,6 +120,9 @@
         </installconditions>
         <filelist>
             <install as="pake.bat" name="bin/pake.bat"/>
+            <install as="pake.php" name="bin/pake.php"/>
+            <install as="pake/pakeApp.class.php" name="lib/pake/pakeApp.class.php"/>
+            ##RENAMES##
             <ignore name="bin/pake.sh"/>
         </filelist>
     </phprelease>
@@ -120,6 +130,9 @@
     <phprelease>
         <filelist>
             <install as="pake" name="bin/pake.sh"/>
+            <install as="pake.php" name="bin/pake.php"/>
+            <install as="pake/pakeApp.class.php" name="lib/pake/pakeApp.class.php"/>
+            ##RENAMES##
             <ignore name="bin/pake.bat"/>
         </filelist>
     </phprelease>
