@@ -66,6 +66,7 @@ class pakeMySQL
     private function cliCommandPrefix()
     {
         return escapeshellarg($this->db)
+                .' --force'
                 .' '.escapeshellarg('--host='.$this->more['host'])
                 .' '.escapeshellarg('--port='.$this->more['port'])
                 .' '.escapeshellarg('--user='.$this->more['login'])
