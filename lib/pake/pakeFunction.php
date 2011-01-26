@@ -379,7 +379,7 @@ function pake_superuser_sh($cmd, $interactive = false)
         }
     }
 
-    pake_echo_comment('Next command will be run using superuser priveleges');
+    pake_echo_comment('Next command will be run using superuser privileges');
     pake_sh($cmd, $interactive);
 }
 
