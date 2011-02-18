@@ -48,12 +48,12 @@
                 <tasks:replace type="pear-config" from="@PEAR-DIR@" to="php_dir"/>
             </file>
             <file role="php" baseinstalldir="/" name="bin/pake.php"/>
-            <file role="php" baseinstalldir="pake" name="lib/pake/pakeApp.class.php">
-                <tasks:replace type="package-info" from="1.0.DEV" to="version"/>
-            </file>
 
             <dir name="lib">
                 <dir name="pake">
+                    <file role="php" name="pakeApp.class.php">
+                        <tasks:replace type="package-info" from="1.0.DEV" to="version"/>
+                    </file>
                     ##CLASS_FILES##
                     <dir name="tasks">
                         ##TASK_FILES##
