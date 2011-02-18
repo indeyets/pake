@@ -58,6 +58,13 @@
                     <dir name="tasks">
                         ##TASK_FILES##
                     </dir>
+
+                    <dir name="sfYaml">
+                        <file role="php" name="sfYaml.php"/>
+                        <file role="php" name="sfYamlDumper.php"/>
+                        <file role="php" name="sfYamlInline.php"/>
+                        <file role="php" name="sfYamlParser.php"/>
+                    </dir>
                 </dir>
             </dir>
 
@@ -122,6 +129,10 @@
             <install as="pake.bat" name="bin/pake.bat"/>
             <install as="pake.php" name="bin/pake.php"/>
             <install as="pake/pakeApp.class.php" name="lib/pake/pakeApp.class.php"/>
+            <install as="pake/sfYaml/sfYaml.php" name="lib/pake/sfYaml/sfYaml.php"/>
+            <install as="pake/sfYaml/sfYamlDumper.php" name="lib/pake/sfYaml/sfYamlDumper.php"/>
+            <install as="pake/sfYaml/sfYamlInline.php" name="lib/pake/sfYaml/sfYamlInline.php"/>
+            <install as="pake/sfYaml/sfYamlParser.php" name="lib/pake/sfYaml/sfYamlParser.php"/>
             ##RENAMES##
             <ignore name="bin/pake.sh"/>
         </filelist>
@@ -132,6 +143,10 @@
             <install as="pake" name="bin/pake.sh"/>
             <install as="pake.php" name="bin/pake.php"/>
             <install as="pake/pakeApp.class.php" name="lib/pake/pakeApp.class.php"/>
+            <install as="pake/sfYaml/sfYaml.php" name="lib/pake/sfYaml/sfYaml.php"/>
+            <install as="pake/sfYaml/sfYamlDumper.php" name="lib/pake/sfYaml/sfYamlDumper.php"/>
+            <install as="pake/sfYaml/sfYamlInline.php" name="lib/pake/sfYaml/sfYamlInline.php"/>
+            <install as="pake/sfYaml/sfYamlParser.php" name="lib/pake/sfYaml/sfYamlParser.php"/>
             ##RENAMES##
             <ignore name="bin/pake.bat"/>
         </filelist>
