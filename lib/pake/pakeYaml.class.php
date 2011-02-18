@@ -1,9 +1,5 @@
 <?php
 
-require 'SymfonyComponents/YAML/sfYaml.php';
-require 'SymfonyComponents/YAML/sfYamlParser.php';
-require 'SymfonyComponents/YAML/sfYamlDumper.php';
-
 /**
  * @package    pake
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
