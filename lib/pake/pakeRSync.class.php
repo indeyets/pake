@@ -19,7 +19,7 @@ class pakeRSync
 
         pake_mkdirs($target_path);
 
-        pake_sh('rsync -az '.escapeshellarg($src_path).' '.escapeshellarg($target_path));
+        pake_sh(escapeshellarg(pake_which('rsync')).' -az '.escapeshellarg($src_path).' '.escapeshellarg($target_path));
     }
 
     /**
@@ -53,7 +53,7 @@ class pakeRSync
 
         array_walk($src, array('self', 'throwIfPathDoesNotExists'));
 
-        pake_sh('rsync -az -e '.escapeshellarg($transport).' '
+        pake_sh(escapeshellarg(pake_which('rsync')).' -az -e '.escapeshellarg($transport).' '
                 .implode(' ', array_map('escapeshellarg', $src)).' '
                 .escapeshellarg("{$rsync_login}{$server_host}:{$remote_path}")
         );
@@ -82,7 +82,7 @@ class pakeRSync
             $remote_path = $rsync_login.$server_host.':'.$remote_path;
         }
 
-        pake_sh('rsync -az -e '.escapeshellarg($transport).' '
+        pake_sh(escapeshellarg(pake_which('rsync')).' -az -e '.escapeshellarg($transport).' '
                 .implode(' ', array_map('escapeshellarg', $remote_paths)).' '
                 .escapeshellarg($local_path)
         );
