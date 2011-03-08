@@ -79,7 +79,7 @@ class pakePhpExtensionTask
 
     public static function run_build()
     {
-        pake_sh('make', true);
+        pake_sh(escapeshellarg(pake_which('make')), true);
     }
 
     public static function run_install()
@@ -94,7 +94,7 @@ class pakePhpExtensionTask
         $cfg_file = $dir.'/'.__CLASS__.'.yaml';
 
         if (file_exists('Makefile'))
-            pake_sh('make distclean');
+            pake_sh(escapeshellarg(pake_which('make')).' distclean');
 
         if (file_exists('configure')) {
             if (isset($long_args['with-phpize'])) {
@@ -133,7 +133,7 @@ class pakePhpExtensionTask
         }
 
         pake_echo_comment('Running test-suite. This can take awhile…');
-        pake_sh('make test NO_INTERACTION=1'.$php_cgi);
+        pake_sh(escapeshellarg(pake_which('make')).' test NO_INTERACTION=1'.$php_cgi);
         pake_echo_comment('Done');
 
         $path = dirname(pakeApp::get_instance()->getPakefilePath()).'/tests';
