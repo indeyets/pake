@@ -34,7 +34,7 @@ class pakeSubversion
                 throw new pakeException('Couldn\'t checkout "'.$src_url.'" repository');
             }
         } else {
-            pake_sh('svn checkout '.escapeshellarg($src_url).' '.escapeshellarg($target_path));
+            pake_sh(escapeshellarg(pake_which('svn')).' checkout '.escapeshellarg($src_url).' '.escapeshellarg($target_path));
         }
     }
 
@@ -52,7 +52,7 @@ class pakeSubversion
                 throw new pakeException('Couldn\'t update "'.$path.'" repository');
             }
         } else {
-            pake_sh('svn update '.escapeshellarg($path));
+            pake_sh(escapeshellarg(pake_which('svn')).' update '.escapeshellarg($path));
         }
     }
 
@@ -70,7 +70,7 @@ class pakeSubversion
                 throw new pakeException('Couldn\'t export "'.$src_url.'" repository');
             }
         } else {
-            pake_sh('svn export '.escapeshellarg($src_url).' '.escapeshellarg($target_path));
+            pake_sh(escapeshellarg(pake_which('svn')).' export '.escapeshellarg($src_url).' '.escapeshellarg($target_path));
         }
     }
 }
