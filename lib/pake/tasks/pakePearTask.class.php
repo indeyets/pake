@@ -40,7 +40,7 @@ class pakePearTask
 
             if (!class_exists('PEAR_Packager')) {
                 // falling back to cli-call
-                $results = pake_sh('pear package '.escapeshellarg($package_xml_path));
+                $results = pake_sh(escapeshellarg(pake_which('pear')).' package '.escapeshellarg($package_xml_path));
                 if (pakeApp::get_instance()->get_verbose()) {
                     echo $results;
                 }
