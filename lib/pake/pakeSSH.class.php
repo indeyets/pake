@@ -26,7 +26,7 @@ class pakeSSH
 
         array_walk($src, array('self', 'throwIfPathDoesNotExists'));
 
-        pake_sh('scp -rC '
+        pake_sh(escapeshellarg(pake_which('scp')).' -rC '
                 .implode(' ', array_map('escapeshellarg', $src)).' '
                 .escapeshellarg($this->login.'@'.$this->host.':'.$remote_path)
         );
@@ -44,7 +44,7 @@ class pakeSSH
             $remote_path = $this->login.'@'.$this->host.':'.$remote_path;
         }
 
-        pake_sh('scp -rC '
+        pake_sh(escapeshellarg(pake_which('scp')).' -rC '
                 .implode(' ', array_map('escapeshellarg', $src)).' '
                 .escapeshellarg($local_path)
         );
@@ -52,7 +52,7 @@ class pakeSSH
 
     public function execute($command)
     {
-        return pake_sh('ssh -C '.escapeshellarg($this->login.'@'.$this->host).' '.escapeshellarg($command));
+        return pake_sh(escapeshellarg(pake_which('ssh')).' -C '.escapeshellarg($this->login.'@'.$this->host).' '.escapeshellarg($command));
     }
 
     // internal helpers follow
