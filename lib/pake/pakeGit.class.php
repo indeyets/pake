@@ -78,10 +78,12 @@ class pakeGit
 
     private function git_run($command)
     {
+        $git = escapeshellarg(pake_which('git'));
+
         if (self::$needs_work_tree_workaround === true) {
-            $cmd = '(cd '.escapeshellarg($this->repository_path).' && git '.$command.')';
+            $cmd = '(cd '.escapeshellarg($this->repository_path).' && '.$git.' '.$command.')';
         } else {
-            $cmd = 'git';
+            $cmd = $git;
             $cmd .= ' '.escapeshellarg('--git-dir='.$this->repository_path.'/.git');
             $cmd .= ' '.escapeshellarg('--work-tree='.$this->repository_path);
             $cmd .= ' '.$command;
@@ -110,7 +112,7 @@ class pakeGit
         elseif (is_int($shared))
             $shared = sprintf("%o", $shared);
 
-        $cmd = 'git init -q';
+        $cmd = escapeshellarg(pake_which('git')).' init -q';
 
         if (null !== $template_path) {
             $cmd .= ' '.escapeshellarg('--template='.$template_path);
@@ -146,7 +148,7 @@ class pakeGit
             throw new pakeException('"'.$target_path.'" directory already exists. Can not clone git-repository there');
         }
 
-        pake_sh('git clone -q '.escapeshellarg($src_url).' '.escapeshellarg($target_path));
+        pake_sh(escapeshellarg(pake_which('git')).' clone -q '.escapeshellarg($src_url).' '.escapeshellarg($target_path));
 
         return new pakeGit($target_path);
     }
