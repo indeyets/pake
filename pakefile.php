@@ -235,7 +235,7 @@ function run_obs($task)
 
     $target = $_root.'/target';
 
-    pake_sh('gunzip '.escapeshellarg($target.'/pake-'.$version.'.tgz'));
-    pake_sh('tar -r -f '.escapeshellarg($target.'/pake-'.$version.'.tar').' -C '.escapeshellarg($_root).' debian');
-    pake_sh('gzip '.escapeshellarg($target.'/pake-'.$version.'.tar'));
+    pake_sh(escapeshellarg(pake_which('gunzip')).' '.escapeshellarg($target.'/pake-'.$version.'.tgz'));
+    pake_sh(escapeshellarg(pake_which('tar')).' -r -f '.escapeshellarg($target.'/pake-'.$version.'.tar').' -C '.escapeshellarg($_root).' debian');
+    pake_sh(escapeshellarg(pake_which('gzip')).' '.escapeshellarg($target.'/pake-'.$version.'.tar'));
 }
