@@ -67,7 +67,7 @@ class pakeMercurial
 
     private function hg_run($command)
     {
-        $cmd = 'hg -q';
+        $cmd = escapeshellarg(pake_which('hg')).' -q';
         $cmd .= ' --cwd '.escapeshellarg($this->repository_path);
         $cmd .= ' '.$command;
 
@@ -79,7 +79,7 @@ class pakeMercurial
     {
         pake_mkdirs($path);
 
-        pake_sh('hg init -q '.escapeshellarg($path));
+        pake_sh(escapeshellarg(pake_which('hg')).' init -q '.escapeshellarg($path));
 
         return new pakeMercurial($path);
     }
@@ -104,7 +104,7 @@ class pakeMercurial
         }
 
         pake_mkdirs($target_path);
-        pake_sh('hg clone -q '.escapeshellarg($src_url).' '.escapeshellarg($target_path));
+        pake_sh(escapeshellarg(pake_which('hg')).' clone -q '.escapeshellarg($src_url).' '.escapeshellarg($target_path));
 
         return new pakeMercurial($target_path);
     }
