@@ -320,7 +320,7 @@ function pake_which($cmd)
         }
 
         $test = $path.'/'.$cmd;
-        if (file_exists($test) and !is_dir($test) and is_executable($test)) {
+        if (file_exists($test) and is_executable($test)) {
             return $test;
         }
     }
