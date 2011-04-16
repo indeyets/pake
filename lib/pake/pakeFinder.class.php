@@ -341,48 +341,68 @@ class pakeFinder
     private function search_in($dir, $depth = 0)
     {
         if ($depth > $this->maxdepth) {
+            // we're too deep already
             return array();
         }
 
         if (is_link($dir) && !$this->follow_link) {
+            // we're not allowed to follow links
+            return array();
+        }
+
+        if (!is_dir($dir)) {
+            // we can't search for files inside of file
             return array();
         }
 
         $files = array();
 
-        if (is_dir($dir)) {
-            $current_dir = opendir($dir);
-            while (false !== $entryname = readdir($current_dir)) {
-                if ($entryname == '.' || $entryname == '..') {
-                    continue;
+        // iterating over directory contents
+        $current_dir = opendir($dir);
+        while (false !== $entryname = readdir($current_dir)) {
+            if ($entryname == '.' || $entryname == '..') {
+                continue;
+            }
+
+            $current_entry = $dir.DIRECTORY_SEPARATOR.$entryname;
+
+            if (is_link($current_entry) && !$this->follow_link) {
+                // we're not allowed to follow links
+                continue;
+            }
+
+            if (is_dir($current_entry)) {
+                if (($this->type == 'directory' || $this->type == 'any')
+                        && ($depth >= $this->mindepth)
+                        && !$this->is_discarded($dir, $entryname)
+                        && $this->matches_names($dir, $entryname)
+                        && $this->exec_ok($dir, $entryname)
+                ) {
+                    $files[] = realpath($current_entry);
                 }
 
-                $current_entry = $dir . DIRECTORY_SEPARATOR . $entryname;
-                if (is_link($current_entry) && !$this->follow_link) {
-                    continue;
+                // if dir-name is not "pruned", dive deeper
+                if (!$this->is_pruned($dir, $entryname)) {
+                    $files = array_merge($files, $this->search_in($current_entry, $depth + 1));
                 }
-
-                if (is_dir($current_entry)) {
-                    if (($this->type == 'directory' || $this->type == 'any') && ($depth >= $this->mindepth) && !$this->is_discarded($dir, $entryname) && $this->match_names($dir, $entryname) && $this->exec_ok($dir, $entryname)) {
-                        $files[] = realpath($current_entry);
-                    }
-
-                    if (!$this->is_pruned($dir, $entryname)) {
-                        $files = array_merge($files, $this->search_in($current_entry, $depth + 1));
-                    }
-                } else {
-                    if (($this->type != 'directory' || $this->type == 'any') && ($depth >= $this->mindepth) && !$this->is_discarded($dir, $entryname) && $this->match_names($dir, $entryname) && $this->size_ok($dir, $entryname) && $this->exec_ok($dir, $entryname)) {
-                        $files[] = realpath($current_entry);
-                    }
+            } else {
+                if (($this->type == 'file' || $this->type == 'any')
+                        && ($depth >= $this->mindepth)
+                        && !$this->is_discarded($dir, $entryname)
+                        && $this->matches_names($dir, $entryname)
+                        && $this->size_is_ok($dir, $entryname)
+                        && $this->exec_ok($dir, $entryname)
+                ) {
+                    $files[] = realpath($current_entry);
                 }
             }
-            closedir($current_dir);
         }
+        closedir($current_dir);
 
         return $files;
     }
 
-    private function match_names($dir, $entry)
+    private function matches_names($dir, $entry)
     {
         if (!count($this->names)) {
             return true;
@@ -422,7 +442,7 @@ class pakeFinder
         }
     }
 
-    private function size_ok($dir, $entry)
+    private function size_is_ok($dir, $entry)
     {
         if (!count($this->sizes)) {
             return true;
