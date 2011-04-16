@@ -388,8 +388,10 @@ class pakeFinder
             return true;
         }
 
-        // we must match one "not_name" rules to be ko
         $one_not_name_rule = false;
+        $one_name_rule = false;
+
+        // at first, we filter out those which match ->not_name()
         foreach ($this->names as $args) {
             list($not, $regex) = $args;
             if ($not) {
@@ -400,8 +402,7 @@ class pakeFinder
             }
         }
 
-        $one_name_rule = false;
-        // we must match one "name" rules to be ok
+        // then, we choose those which match ->name()
         foreach ($this->names as $args) {
             list($not, $regex) = $args;
             if (!$not) {
@@ -412,11 +413,9 @@ class pakeFinder
             }
         }
 
-        if ($one_not_name_rule && $one_name_rule) {
-            return false;
-        } elseif ($one_not_name_rule) {
-            return true;
-        } elseif ($one_name_rule) {
+        // finally, we decide what to do with the rest
+        if ($one_name_rule) {
+            // there is at least one ->name() rule which didn't match
             return false;
         } else {
             return true;
