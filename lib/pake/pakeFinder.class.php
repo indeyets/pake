@@ -31,6 +31,7 @@ class pakeFinder
 {
     private $type = 'file';
     private $patterns = array();
+    private $not_patterns = array();
     private $names = array();
     private $prunes = array();
     private $discards = array();
@@ -138,6 +139,35 @@ class pakeFinder
     }
 
     /**
+     * converts ant-pattern to PCRE regex
+     *
+     * @param string $pattern 
+     * @return string
+     */
+    private function pattern_to_regex($pattern)
+    {
+        if (substr($pattern, -1) == '/') {
+            $pattern .= '**';
+        }
+
+        $regex = '|^';
+        foreach (explode('/', $pattern) as $i => $piece) {
+            if ($i > 0) {
+                $regex .= preg_quote('/', '|');
+            }
+
+            if ('**' == $piece) {
+                $regex .= '.*';
+            } else {
+                $regex .= str_replace(array('?', '*'), array('[^/]', '[^/]*'), $piece);
+            }
+        }
+        $regex .= '$|';
+
+        return $regex;
+    }
+
+    /**
      * Mimics ant pattern matching.
      *
      * @see http://ant.apache.org/manual/dirtasks.html#patterns
@@ -148,26 +178,26 @@ class pakeFinder
     {
         $patterns = func_get_args();
 
-        foreach (func_get_args() as $_pattern) {
-            if (substr($_pattern, -1) == '/') {
-                $_pattern .= '**';
-            }
+        foreach (func_get_args() as $pattern) {
+            $this->patterns[] = $this->pattern_to_regex($pattern);
+        }
 
-            $regex = '|^';
-            foreach (explode('/', $_pattern) as $i => $piece) {
-                if ($i > 0) {
-                    $regex .= preg_quote('/', '|');
-                }
+        return $this;
+    }
 
-                if ('**' == $piece) {
-                    $regex .= '.*';
-                } else {
-                    $regex .= str_replace(array('?', '*'), array('[^/]', '[^/]*'), $piece);
-                }
-            }
-            $regex .= '$|';
+    /**
+     * Mimics ant pattern matching. (negative match)
+     *
+     * @see http://ant.apache.org/manual/dirtasks.html#patterns
+     * @param  list   a list of patterns
+     * @return object current pakeFinder object
+     */
+    public function not_pattern()
+    {
+        $patterns = func_get_args();
 
-            $this->patterns[] = $regex;
+        foreach (func_get_args() as $pattern) {
+            $this->not_patterns[] = $this->pattern_to_regex($pattern);
         }
 
         return $this;
@@ -449,17 +479,25 @@ class pakeFinder
         // patterns are always "relative"
         $full_name = substr($full_name, strlen($this->search_dir) + 1);
 
-        if (count($this->patterns) == 0) {
-            return true;
+        // match negative patterns
+        foreach ($this->not_patterns as $regex) {
+            if (preg_match($regex, $full_name) == 1) {
+                return false;
+            }
         }
 
+        // match positive patterns
         foreach ($this->patterns as $regex) {
             if (preg_match($regex, $full_name) == 1) {
                 return true;
             }
         }
 
-        return false;
+        if (count($this->patterns) > 0) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private function matches_names($dir, $entry)

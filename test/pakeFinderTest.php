@@ -308,20 +308,26 @@ class pakeFinderTest extends UnitTestCase
     return true;
   }
 
-  public function test_pattern()
-  {
-      $files = pakeFinder::type('file')->pattern('dir1/*/*')->in($this->dir);
-      $this->assertEqual(4, count($files));
+    public function test_pattern()
+    {
+        $files = pakeFinder::type('file')->pattern('dir1/*/*')->in($this->dir);
+        $this->assertEqual(4, count($files));
 
-      $files = pakeFinder::type('dir')->pattern('dir1/*/*')->in($this->dir);
-      $this->assertEqual(2, count($files));
+        $files = pakeFinder::type('dir')->pattern('dir1/*/*')->in($this->dir);
+        $this->assertEqual(2, count($files));
 
-      $files = pakeFinder::type('any')->pattern('dir1/**/file41')->in($this->dir);
-      $this->assertEqual(1, count($files));
+        $files = pakeFinder::type('any')->pattern('dir1/**/file41')->in($this->dir);
+        $this->assertEqual(1, count($files));
 
-      $files = pakeFinder::type('any')->pattern('dir1/**/dir3/')->in($this->dir);
-      $this->assertEqual(1, count($files));
-  }
+        $files = pakeFinder::type('any')->pattern('dir1/**/dir3/')->in($this->dir);
+        $this->assertEqual(1, count($files));
+
+        $files = pakeFinder::type('any')->pattern('dir1/**/*')->in($this->dir);
+        $this->assertEqual(8, count($files));
+
+        $files = pakeFinder::type('any')->pattern('dir1/**/*')->not_pattern('dir1/*/dir?')->in($this->dir);
+        $this->assertEqual(6, count($files));
+    }
 
 }
 
