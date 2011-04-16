@@ -30,6 +30,7 @@
 class pakeFinder
 {
     private $type = 'file';
+    private $patterns = array();
     private $names = array();
     private $prunes = array();
     private $discards = array();
@@ -134,6 +135,42 @@ class pakeFinder
         }
 
         return $list;
+    }
+
+    /**
+     * Mimics ant pattern matching.
+     *
+     * @see http://ant.apache.org/manual/dirtasks.html#patterns
+     * @param  list   a list of patterns
+     * @return object current pakeFinder object
+     */
+    public function pattern()
+    {
+        $patterns = func_get_args();
+
+        foreach (func_get_args() as $_pattern) {
+            if (substr($_pattern, -1) == '/') {
+                $_pattern .= '**';
+            }
+
+            $regex = '|^';
+            foreach (explode('/', $_pattern) as $i => $piece) {
+                if ($i > 0) {
+                    $regex .= preg_quote('/', '|');
+                }
+
+                if ('**' == $piece) {
+                    $regex .= '.*';
+                } else {
+                    $regex .= str_replace(array('?', '*'), array('[^/]', '[^/]*'), $piece);
+                }
+            }
+            $regex .= '$|';
+
+            $this->patterns[] = $regex;
+        }
+
+        return $this;
     }
 
     /**
@@ -375,6 +412,7 @@ class pakeFinder
                 if (($this->type == 'directory' || $this->type == 'any')
                         && ($depth >= $this->mindepth)
                         && !$this->is_discarded($dir, $entryname)
+                        && $this->matches_patterns($dir, $entryname)
                         && $this->matches_names($dir, $entryname)
                         && $this->exec_ok($dir, $entryname)
                 ) {
@@ -389,6 +427,7 @@ class pakeFinder
                 if (($this->type == 'file' || $this->type == 'any')
                         && ($depth >= $this->mindepth)
                         && !$this->is_discarded($dir, $entryname)
+                        && $this->matches_patterns($dir, $entryname)
                         && $this->matches_names($dir, $entryname)
                         && $this->size_is_ok($dir, $entryname)
                         && $this->exec_ok($dir, $entryname)
@@ -400,6 +439,27 @@ class pakeFinder
         closedir($current_dir);
 
         return $files;
+    }
+
+    private function matches_patterns($dir, $entry)
+    {
+        // patterns always use posix-style paths
+        $full_name = str_replace(DIRECTORY_SEPARATOR, '/', $dir.'/'.$entry);
+
+        // patterns are always "relative"
+        $full_name = substr($full_name, strlen($this->search_dir) + 1);
+
+        if (count($this->patterns) == 0) {
+            return true;
+        }
+
+        foreach ($this->patterns as $regex) {
+            if (preg_match($regex, $full_name) == 1) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function matches_names($dir, $entry)
