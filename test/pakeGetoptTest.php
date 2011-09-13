@@ -17,7 +17,7 @@ class pakeGetoptTest extends UnitTestCase
     }
     catch (pakeException $e)
     {
-      $this->assertWantedPattern('/You cannot get a value for a NO_ARGUMENT/', $e->getMessage());
+      $this->assertPattern('/You cannot get a value for a NO_ARGUMENT/', $e->getMessage());
     }
 
     $g->parse('-t');
@@ -29,7 +29,7 @@ class pakeGetoptTest extends UnitTestCase
     }
     catch (pakeException $e)
     {
-      $this->assertWantedPattern('/unrecognized option \-v/', $e->getMessage());
+      $this->assertPattern('/unrecognized option \-v/', $e->getMessage());
     }
   }
 
@@ -70,7 +70,7 @@ class pakeGetoptTest extends UnitTestCase
     }
     catch (pakeException $e)
     {
-      $this->assertWantedPattern('/requires an argument/', $e->getMessage());
+      $this->assertPattern('/requires an argument/', $e->getMessage());
     }
 
     $g->parse('--test=Toto');

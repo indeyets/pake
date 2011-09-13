@@ -28,7 +28,7 @@ class pakeSimpletestTask
 
     include_once('simpletest/unit_tester.php');
     include_once('simpletest/web_tester.php');
-    if (!class_exists('GroupTest'))
+    if (!class_exists('TestSuite'))
     {
       throw new pakeException('You must install SimpleTest to use this task.');
     }
@@ -54,14 +54,14 @@ class pakeSimpletestTask
       $test_dirs[] = $base_test_dir;
     }
 
-    $test = new GroupTest('Test suite in ('.implode(', ', $test_dirs).')');
+    $test = new TestSuite('Test suite in ('.implode(', ', $test_dirs).')');
     $files = pakeFinder::type('file')->name('*Test.php')->in($test_dirs);
 
     if (count($files) > 0)
     {
       foreach ($files as $file)
       {
-        $test->addTestFile($file);
+        $test->addFile($file);
       }
 
       ob_start();
