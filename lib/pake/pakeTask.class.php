@@ -13,9 +13,11 @@ class pakeTask
   protected static $TASKS = array();
   protected static $ALIAS = array();
   protected static $last_comment = '';
+  protected static $last_help = '';
   protected $prerequisites = array();
   protected $name = '';
   protected $comment = '';
+  protected $help = '';
   protected $already_invoked = false;
   protected $trace = null;
   protected $verbose = null;
@@ -26,6 +28,7 @@ class pakeTask
   {
     $this->name = $task_name;
     $this->comment = '';
+    $this->help = '';
     $this->prerequisites = array();
     $this->already_invoked = false;
     $pake = pakeApp::get_instance();
@@ -125,6 +128,11 @@ class pakeTask
   {
     return $this->comment;
   }
+
+    public function get_help()
+    {
+        return $this->help;
+    }
 
   // Format the trace flags for display.
   private function format_trace_flags()
@@ -235,6 +243,7 @@ class pakeTask
   {
      $task = pakeTask::lookup($name, 'pakeTask');
      $task->add_comment();
+     $task->set_help();
      $task->enhance($deps);
   }
 
@@ -301,6 +310,11 @@ class pakeTask
     pakeTask::$last_comment = $comment;
   }
 
+    public static function define_help($help)
+    {
+        pakeTask::$last_help = $help;
+    }
+
     public function add_comment()
     {
         if (self::$last_comment) {
@@ -319,6 +333,22 @@ class pakeTask
         }
 
         $this->comment .= $comment_to_add;
+    }
+
+    public function set_help()
+    {
+        if (self::$last_help) {
+            $help_to_add = self::$last_help;
+            self::$last_help = '';
+        } else {
+            $descriptions = pakePHPDoc::getDescriptions($this->getCallable());
+            $help_to_add = $descriptions[1];
+        }
+
+        if (empty($help_to_add))
+            return;
+
+        $this->help = $help_to_add;
     }
 
 

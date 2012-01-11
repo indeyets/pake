@@ -33,7 +33,6 @@ class pakeApp
     protected static $OPTIONS = array(
         array('--interactive', '-i', pakeGetopt::NO_ARGUMENT,       "Start pake in interactive (shell-like) mode."),
         array('--dry-run',     '-n', pakeGetopt::NO_ARGUMENT,       "Do a dry run without executing actions."),
-        array('--help',        '-H', pakeGetopt::NO_ARGUMENT,       "Display this help message."),
         array('--libdir',      '-I', pakeGetopt::REQUIRED_ARGUMENT, "Include LIBDIR in the search path for required modules."),
         array('--nosearch',    '-N', pakeGetopt::NO_ARGUMENT,       "Do not search parent directories for the pakefile."),
         array('--prereqs',     '-P', pakeGetopt::NO_ARGUMENT,       "Display the tasks and dependencies, then exit."),
@@ -119,6 +118,10 @@ class pakeApp
         }
 
         $this->handle_options($options);
+
+        // register help task
+        pake_task('pakeApp::help');
+
         if ($load_pakefile) {
             $this->load_pakefile();
         }
@@ -407,7 +410,9 @@ class pakeApp
         echo self::$EXEC_NAME." [-f pakefile] {options} targets…\n";
 
         if (true === $hint_about_help) {
-            echo pakeColor::colorize("Try ".self::$EXEC_NAME." -H for more information", 'INFO')."\n";
+            echo 'Try "';
+            echo pakeColor::colorize(self::$EXEC_NAME.' help', 'INFO');
+            echo '" for more information'."\n";
         }
     }
 
@@ -473,6 +478,10 @@ class pakeApp
                 }
             }
         }
+
+        echo "\n".'Try "';
+        echo pakeColor::colorize(self::$EXEC_NAME.' help taskname', 'INFO');
+        echo '" to get detailed information about task'."\n\n";
     }
 
     // Display the tasks and prerequisites
@@ -501,5 +510,37 @@ class pakeApp
     public static function isTTY()
     {
         return defined('PAKE_FORCE_TTY') or (DIRECTORY_SEPARATOR != '\\' and function_exists('posix_isatty') and @posix_isatty(STDOUT));
+    }
+
+
+    /**
+     * show documentation; use "pake help taskname" to see detailed documentation on task
+     *
+     * @param string $task 
+     * @param string $args 
+     * @return bool
+     * @author Alexey Zakhlestin
+     */
+    public static function run_help($task, $args)
+    {
+        if (count($args) == 0) {
+            self::get_instance()->help();
+            return;
+        }
+
+        $victim_name = $args[0];
+        foreach (pakeTask::get_tasks() as $name => $task) {
+            if ($victim_name == $name or $victim_name == pakeTask::get_mini_task_name($name)) {
+                $victim = $task;
+                break;
+            }
+        }
+
+        $title = 'Documentation for "'.$victim_name.'" task';
+
+        pake_echo($title);
+        pake_echo(str_repeat('=', mb_strlen($title)));
+        pake_echo($victim->get_comment()."\n");
+        pake_echo($victim->get_help());
     }
 }

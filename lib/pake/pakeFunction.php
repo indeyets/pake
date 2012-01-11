@@ -4,7 +4,7 @@
  * @package    pake
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @copyright  2004-2005 Fabien Potencier <fabien.potencier@symfony-project.com>
- * @copyright  2010 Alexey Zakhlestin <indeyets@gmail.com>
+ * @copyright  2010–2012 Alexey Zakhlestin <indeyets@gmail.com>
  * @license    see the LICENSE file included in the distribution
  */
 
@@ -59,6 +59,11 @@ function pake_alias($alias, $name)
 function pake_desc($comment)
 {
   pakeTask::define_comment($comment);
+}
+
+function pake_help($help)
+{
+    pakeTask::define_help($help);
 }
 
 function pake_properties($property_file)
