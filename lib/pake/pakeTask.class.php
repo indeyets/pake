@@ -189,27 +189,30 @@ class pakeTask
     }
 
     // action to run
-    $function = ($this->get_alias() ? $this->get_alias() : $this->get_name());
-    if ($pos = strpos($function, '::'))
-    {
-      $function = array(substr($function, 0, $pos), preg_replace('/\-/', '_', 'run_'.strtolower(substr($function, $pos + 2))));
-      if (!is_callable($function))
-      {
-        throw new pakeException('Task "'.$function[1].'" is defined but with no action defined.');
-      }
-    }
-    else
-    {
-      $function = preg_replace('/\-/', '_', 'run_'.strtolower($function));
-      if (!function_exists($function))
-      {
-        throw new pakeException('Task "'.$this->name.'" is defined but with no action defined.');
-      }
-    }
+    $function = $this->getCallable();
 
     // execute action
     return call_user_func_array($function, array($this, $args, $options));
   }
+
+    private function getCallable()
+    {
+        $function = ($this->get_alias() ? $this->get_alias() : $this->get_name());
+
+        if ($pos = strpos($function, '::')) {
+            $function = array(substr($function, 0, $pos), preg_replace('/\-/', '_', 'run_'.strtolower(substr($function, $pos + 2))));
+            if (!is_callable($function)) {
+                throw new pakeException('Task "'.$function[1].'" is defined but with no action defined.');
+            }
+        } else {
+            $function = preg_replace('/\-/', '_', 'run_'.strtolower($function));
+            if (!function_exists($function)) {
+                throw new pakeException('Task "'.$this->name.'" is defined but with no action defined.');
+            }
+        }
+
+        return $function;
+    }
 
   public function is_needed()
   {
