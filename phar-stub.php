@@ -7,5 +7,8 @@ define('PAKE_DIR', $phar_name.'/lib/pake');
 
 require PAKE_DIR.'/init.php';
 
-$pake = pakeApp::get_instance();
-$pake->run();
+$retval = pakeApp::get_instance()->run();
+
+if (false === $retval) {
+    exit(1);
+}

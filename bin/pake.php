@@ -12,8 +12,10 @@ else
 
 require 'pake/init.php';
 
-if (basename(__FILE__) == basename($_SERVER['SCRIPT_NAME']))
-{
-  $pake = pakeApp::get_instance();
-  $pake->run();
+if (basename(__FILE__) == basename($_SERVER['SCRIPT_NAME'])) {
+    $retval = pakeApp::get_instance()->run();
+
+    if (false === $retval) {
+        exit(1);
+    }
 }
