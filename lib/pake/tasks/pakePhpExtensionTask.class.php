@@ -154,6 +154,8 @@ class pakePhpExtensionTask
 
             pake_echo('     '.$phpt_file.' ('.rtrim($description).')');
         }
+
+        return false;
     }
 
     private static function _get_php_executable()
