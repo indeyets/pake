@@ -3,7 +3,7 @@
 /**
  * @package    pake
  * @author     Alexey Zakhlestin <indeyets@gmail.com>
- * @copyright  2009 Alexey Zakhlestin <indeyets@gmail.com>
+ * @copyright  2009–2012 Alexey Zakhlestin <indeyets@gmail.com>
  * @copyright  2004-2005 Fabien Potencier <fabien.potencier@symfony-project.com>
  * @license    see the LICENSE file included in the distribution
  */
@@ -36,6 +36,7 @@ function pake_autoloader($classname)
             'pakeMercurial'     => PAKE_DIR.'/pakeMercurial.class.php',
             'pakeHttp'          => PAKE_DIR.'/pakeHttp.class.php',
             'pakeMySQL'         => PAKE_DIR.'/pakeMySQL.class.php',
+            'pakePHPDoc'        => PAKE_DIR.'/pakePHPDoc.class.php',
 
             'sfYaml'            => PAKE_DIR.'/sfYaml/sfYaml.php',
             'sfYamlDumper'      => PAKE_DIR.'/sfYaml/sfYamlDumper.php',
