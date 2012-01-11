@@ -24,7 +24,13 @@ class pakePHPDoc
      */
     public static function getDescriptions($function_name)
     {
-        $reflection = new ReflectionFunction($function_name);
+        if (is_string($function_name))
+            $reflection = new ReflectionFunction($function_name);
+        elseif (is_array($function_name))
+            $reflection = new ReflectionMethod($function_name[0], $function_name[1]);
+        else
+            throw new LogicException();
+
         $comment = $reflection->getDocComment();
 
         $short_desc = '';
