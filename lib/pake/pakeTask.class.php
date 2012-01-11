@@ -301,18 +301,25 @@ class pakeTask
     pakeTask::$last_comment = $comment;
   }
 
-  public function add_comment()
-  {
-    if (!pakeTask::$last_comment) return;
-    if ($this->comment)
+    public function add_comment()
     {
-      $this->comment .= ' / ';
+        if (self::$last_comment) {
+            $comment_to_add = self::$last_comment;
+            self::$last_comment = '';
+        } else {
+            $descriptions = pakePHPDoc::getDescriptions($this->getCallable());
+            $comment_to_add = $descriptions[0];
+        }
+
+        if (empty($comment_to_add))
+            return;
+
+        if ($this->comment) {
+            $this->comment .= ' / ';
+        }
+
+        $this->comment .= $comment_to_add;
     }
-
-    $this->comment .= pakeTask::$last_comment;
-    pakeTask::$last_comment = '';
-  }
-
 
 
   /**
