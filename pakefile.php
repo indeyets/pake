@@ -28,19 +28,23 @@ if ($_SERVER['PHP_SELF'] != dirname(__FILE__).'/bin/pake.php') {
 pake_import('simpletest');
 pake_import('pear');
 
-pake_desc('create a single file with all pake classes. usage: pake compact [plugin1 [plugin2 […]]]');
 pake_task('compact');
-
-pake_desc('create an executable PHAR-archive of Pake');
 pake_task('phar');
-
-pake_desc('release a new pake version');
 pake_task('release');
-
-pake_task('foo');
 pake_task('create_package_xml');
 pake_task('obs');
 
+pake_task('foo');
+
+
+/**
+ * Demo-task
+ *
+ * @param string $task
+ * @param string $args
+ * @return bool
+ * @author Alexey Zakhlestin
+ */
 function run_foo($task, $args)
 {
     $age = pake_input('How old are you?');
@@ -50,9 +54,14 @@ function run_foo($task, $args)
 
 /* tasks */
 /**
+ * create a single file with all pake classes; usage: pake compact [plugin1 [plugin2 […]]]
+ *
  * To be able to include a plugin in pake_runtime.php, you have to use include_once for external dependencies
  * and require_once for internal dependencies (for other included PI or pake classes) because we strip 
  * all require_once statements
+ *
+ * @return bool
+ * @author Alexey Zakhlestin
  */
 function run_compact($task, $args)
 {
@@ -126,6 +135,12 @@ function run_compact($task, $args)
     pake_chmod('pake', $target_dir, 0755);
 }
 
+/**
+ * create an executable PHAR-archive of Pake
+ *
+ * @return bool
+ * @author Alexey Zakhlestin
+ */
 function run_phar()
 {
     $finder = pakeFinder::type('any')->ignore_version_control()->name('phar-stub.php', '*.class.php', 'init.php', 'pakeFunction.php');
@@ -211,6 +226,13 @@ function run_create_package_xml()
     ));
 }
 
+/**
+ * release a new pake version
+ *
+ * @param string $task
+ * @return bool
+ * @author Alexey Zakhlestin
+ */
 function run_release($task)
 {
     $_root = dirname(__FILE__);
