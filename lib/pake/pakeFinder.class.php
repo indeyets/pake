@@ -55,7 +55,7 @@ class pakeFinder
      * Sets the type of elements to return.
      *
      * @param  string "directory" or "file" or "any" (for both file and directory)
-     * @return object new pakeFinder object
+     * @return pakeFinder
      */
     public static function type($name)
     {
@@ -79,8 +79,8 @@ class pakeFinder
      *
      * Finder will descend at most $level levels of directories below the starting point.
      *
-     * @param  integer level
-     * @return object current pakeFinder object
+     * @param  integer $level
+     * @return pakeFinder
      */
     public function maxdepth($level)
     {
@@ -94,8 +94,8 @@ class pakeFinder
      *
      * Finder will start applying tests at level $level.
      *
-     * @param  integer level
-     * @return object current pakeFinder object
+     * @param  integer $level
+     * @return pakeFinder
      */
     public function mindepth($level)
     {
@@ -171,8 +171,7 @@ class pakeFinder
      * Mimics ant pattern matching.
      *
      * @see http://ant.apache.org/manual/dirtasks.html#patterns
-     * @param  list   a list of patterns
-     * @return object current pakeFinder object
+     * @return pakeFinder
      */
     public function pattern()
     {
@@ -189,8 +188,7 @@ class pakeFinder
      * Mimics ant pattern matching. (negative match)
      *
      * @see http://ant.apache.org/manual/dirtasks.html#patterns
-     * @param  list   a list of patterns
-     * @return object current pakeFinder object
+     * @return pakeFinder
      */
     public function not_pattern()
     {
@@ -212,8 +210,7 @@ class pakeFinder
      * $finder->name('/\.php$/') // same as above
      * $finder->name('test.php')
      *
-     * @param  list   a list of patterns, globs or strings
-     * @return object current pakeFinder object
+     * @return pakeFinder
      */
     public function name()
     {
@@ -227,8 +224,7 @@ class pakeFinder
      * Adds rules that files must not match.
      *
      * @see    ->name()
-     * @param  list   a list of patterns, globs or strings
-     * @return object current pakeFinder object
+     * @return pakeFinder
      */
     public function not_name()
     {
@@ -245,8 +241,7 @@ class pakeFinder
      * $finder->size('<= 1Ki');
      * $finder->size(4);
      *
-     * @param  list   a list of comparison strings
-     * @return object current pakeFinder object
+     * @return pakeFinder
      */
     public function size()
     {
@@ -261,8 +256,7 @@ class pakeFinder
     /**
      * Traverses no further.
      *
-     * @param  list   a list of patterns, globs to match
-     * @return object current pakeFinder object
+     * @return pakeFinder
      */
     public function prune()
     {
@@ -275,8 +269,7 @@ class pakeFinder
     /**
      * Discards elements that matches.
      *
-     * @param  list   a list of patterns, globs to match
-     * @return object current pakeFinder object
+     * @return pakeFinder
      */
     public function discard()
     {
@@ -289,9 +282,9 @@ class pakeFinder
     /**
      * Ignores version control directories.
      *
-     * Currently supports subversion, CVS, DARCS, Gnu Arch, Monotone, Bazaar-NG
+     * Currently supports subversion, CVS, DARCS, Gnu Arch, Monotone, Bazaar-NG, Git, Mercurial
      *
-     * @return object current pakeFinder object
+     * @return pakeFinder
      */
     public function ignore_version_control()
     {
@@ -308,8 +301,7 @@ class pakeFinder
      * $finder->exec('myfunction');
      * $finder->exec(array($object, 'mymethod'));
      *
-     * @param  mixed  function or method to call
-     * @return object current pakeFinder object
+     * @return pakeFinder
      */
     public function exec()
     {
@@ -332,7 +324,7 @@ class pakeFinder
     /**
      * Returns relative paths for all files and directories.
      *
-     * @return object current pakeFinder object
+     * @return pakeFinder
      */
     public function relative()
     {
@@ -552,6 +544,7 @@ class pakeFinder
 
         $filesize = filesize($dir . DIRECTORY_SEPARATOR . $entry);
         foreach ($this->sizes as $number_compare) {
+            /** @var $number_compare pakeNumberCompare */
             if (!$number_compare->test($filesize)) {
                 return false;
             }
@@ -631,6 +624,7 @@ class pakeFinder
         } elseif (is_string($arg)) {
             $files[] = $arg;
         } elseif ($arg instanceof pakeFinder) {
+            /** @var $arg pakeFinder */
             $files = $arg->in($target_dir);
         } else {
             throw new pakeException('Wrong argument type (must be a list, a string or a pakeFinder object).');
