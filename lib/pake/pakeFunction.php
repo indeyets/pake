@@ -340,7 +340,17 @@ function pake_chmod($arg, $target_dir, $mode, $umask = 0000)
 function pake_which($cmd)
 {
     if (!isset($_SERVER['PATH']))
-        throw new pakeException('PATH environment variable is not set');
+    {
+        // win cli
+        if (!isset($_SERVER['Path']))
+        {
+            throw new pakeException('PATH environment variable is not set' );
+        }
+        else
+        {
+            $_SERVER['PATH'] = $_SERVER['Path'];
+        }
+    }
 
     $paths = explode(PATH_SEPARATOR, $_SERVER['PATH']);
 
@@ -350,9 +360,26 @@ function pake_which($cmd)
         }
 
         $test = $path.'/'.$cmd;
-        if (file_exists($test) and !is_dir($test) and is_executable($test)) {
+        // nb: on win, executable bit does not need to be set
+        if (file_exists($test) and (is_executable($test) || strtolower(substr(PHP_OS, 0, 3)) == 'win')) {
             return $test;
         }
+        if ( strtolower(substr(PHP_OS, 0, 3)) == 'win') {
+            /// @todo we could probbaly get the list of known command suffixes from env, too
+            $test .= '.exe';
+            if (file_exists($test)) {
+                return $test;
+            }
+            $test = substr( $test, 0, -4 ) . '.cmd';
+            if (file_exists($test))  {
+                return $test;
+            }
+            $test = substr( $test, 0, -4 ) . '.bat';
+            if (file_exists($test)) {
+                return $test;
+            }
+        }
+
     }
 
     throw new pakeException('Can not find "'.$cmd.'" executable');
