@@ -339,10 +339,13 @@ function pake_chmod($arg, $target_dir, $mode, $umask = 0000)
 
 function pake_which($cmd)
 {
-    if (!isset($_SERVER['PATH']))
-        throw new pakeException('PATH environment variable is not set');
+    $is_windows = (strtolower(substr(PHP_OS, 0, 3)) == 'win');
+    $path_env_var = $is_windows ? 'Path' : 'PATH';
 
-    $paths = explode(PATH_SEPARATOR, $_SERVER['PATH']);
+    if (!isset($_SERVER[$path_env_var]))
+        throw new pakeException($path_env_var.' environment variable is not set');
+
+    $paths = explode(PATH_SEPARATOR, $_SERVER[$path_env_var]);
 
     foreach ($paths as $path) {
         if (strlen($path) === 0) {
@@ -350,8 +353,22 @@ function pake_which($cmd)
         }
 
         $test = $path.'/'.$cmd;
-        if (file_exists($test) and !is_dir($test) and is_executable($test)) {
-            return $test;
+
+        if ($is_windows) {
+            // Windows
+            $extensions = array('.exe', '.com', '.cmd', '.bat');
+
+            foreach ($extensions as $suffix) {
+                $full_name = $test.$suffix;
+                if (file_exists($full_name) and !is_dir($full_name)) {
+                    return $full_name;
+                }
+            }
+        } else {
+            // UNIX-like system
+            if (file_exists($test) and !is_dir($test) and is_executable($test)) {
+                return $test;
+            }
         }
     }
 
