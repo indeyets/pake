@@ -83,6 +83,10 @@ class pakeApp
         self::$PROPERTIES = $properties;
     }
 
+    /**
+     * @static
+     * @return pakeApp
+     */
     public static function get_instance()
     {
         if (!self::$instance)
