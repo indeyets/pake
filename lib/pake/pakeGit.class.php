@@ -70,6 +70,45 @@ class pakeGit
         return $this;
     }
 
+    public function logLast($number)
+    {
+        if (!is_numeric($number)) {
+            throw new pakeException('pakeGit::logLast() takes number, as parameter');
+        }
+
+        return $this->log('-'.$number);
+    }
+
+    public function logSince($commit_hash, $till = 'HEAD')
+    {
+        return $this->log($commit_hash.'..'.$till);
+    }
+
+    public function log($suffix)
+    {
+        $cmd = 'log --format="%H%x00%an%x00%ae%x00%at%x00%s"'.' '.$suffix;
+        $result = $this->git_run($cmd);
+
+        $data = array();
+        foreach (explode("\n", $result) as $line) {
+            $line = trim($line);
+            if (strlen($line) == 0) {
+                continue;
+            }
+
+            $pieces = explode(chr(0), $line);
+
+            $data[] = array(
+                'hash' => $pieces[0],
+                'author' => array('name' => $pieces[1], 'email' => $pieces[2]),
+                'time' => new DateTime('@'.$pieces[3]),
+                'message' => $pieces[4]
+            );
+        }
+
+        return $data;
+    }
+
     // helpers
     public static function isRepository($path)
     {
@@ -98,12 +137,12 @@ class pakeGit
         }
 
         try {
-            pake_sh($cmd);
+            return pake_sh($cmd);
         } catch (pakeException $e) {
             if (strpos($e->getMessage(), 'cannot be used without a working tree') !== false) {
                 pake_echo_error('Your version of git is buggy. Using workaround');
                 self::$needs_work_tree_workaround = true;
-                $this->git_run($command);
+                return $this->git_run($command);
             }
         }
     }
