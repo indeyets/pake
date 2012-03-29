@@ -67,10 +67,10 @@ class pakeMySQL
     {
         return escapeshellarg($this->db)
                 .' --force'
-                .' '.escapeshellarg('--host='.$this->more['host'])
-                .' '.escapeshellarg('--port='.$this->more['port'])
-                .' '.escapeshellarg('--user='.$this->more['login'])
-                .' '.escapeshellarg('--password='.$this->more['password']);
+                .' --host='.escapeshellarg($this->more['host'])
+                .' --port='.escapeshellarg($this->more['port'])
+                .' --user='.escapeshellarg($this->more['login'])
+                .' --password='.escapeshellarg($this->more['password']);
     }
 
     private function sqlExec($sql)

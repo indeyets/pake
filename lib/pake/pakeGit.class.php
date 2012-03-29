@@ -84,8 +84,8 @@ class pakeGit
             $cmd = '(cd '.escapeshellarg($this->repository_path).' && '.$git.' '.$command.')';
         } else {
             $cmd = $git;
-            $cmd .= ' '.escapeshellarg('--git-dir='.$this->repository_path.'/.git');
-            $cmd .= ' '.escapeshellarg('--work-tree='.$this->repository_path);
+            $cmd .= ' --git-dir='.escapeshellarg($this->repository_path.'/.git');
+            $cmd .= ' --work-tree='.escapeshellarg($this->repository_path);
             $cmd .= ' '.$command;
         }
 
@@ -115,10 +115,10 @@ class pakeGit
         $cmd = escapeshellarg(pake_which('git')).' init -q';
 
         if (null !== $template_path) {
-            $cmd .= ' '.escapeshellarg('--template='.$template_path);
+            $cmd .= ' --template='.escapeshellarg($template_path);
         }
 
-        $cmd .= ' '.escapeshellarg('--shared='.$shared);
+        $cmd .= ' --shared='.escapeshellarg($shared);
 
         $cwd = getcwd();
         chdir($path);

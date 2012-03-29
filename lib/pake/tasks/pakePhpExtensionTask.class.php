@@ -67,7 +67,7 @@ class pakePhpExtensionTask
             pake_sh(escapeshellarg($phpize));
 
         if (!file_exists('Makefile')) {
-            pake_sh(escapeshellarg(realpath('configure')).' '.escapeshellarg('--with-php-config='.$php_config));
+            pake_sh(escapeshellarg(realpath('configure')).' --with-php-config='.escapeshellarg($php_config));
         }
 
         if ($need_to_write) {
@@ -141,7 +141,7 @@ class pakePhpExtensionTask
 
         if (count($files) == 0) {
             pake_echo('   All tests PASSed!');
-            return;
+            return true;
         }
 
         pake_echo_error('Following tests FAILed:');
