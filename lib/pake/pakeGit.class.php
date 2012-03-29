@@ -70,6 +70,23 @@ class pakeGit
         return $this;
     }
 
+    public function push($remote = null, $branch = null)
+    {
+        $cmd = 'push -q';
+
+        if (null !== $remote) {
+            $cmd .= ' '.escapeshellarg($remote);
+
+            if (null !== $branch) {
+                $cmd .= ' '.escapeshellarg($branch);
+            }
+        }
+
+        $this->git_run($cmd);
+
+        return $this;
+    }
+
     public function logLast($number)
     {
         if (!is_numeric($number)) {
