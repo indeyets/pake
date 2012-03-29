@@ -109,6 +109,29 @@ class pakeGit
         return $data;
     }
 
+    public function remotes()
+    {
+        $result = $this->git_run('remote -v');
+
+        $data = array();
+        foreach (explode("\n", $result) as $line) {
+            $line = trim($line);
+            if (strlen($line) == 0) {
+                continue;
+            }
+
+            list($name, $tail) = explode("\t", $line, 2);
+
+            if (strpos($tail, '(fetch)') == strlen($tail) - 7) {
+                $data[$name]['fetch'] = substr($tail, 0, -7);
+            } elseif (strpos($tail, '(push)') == strlen($tail) - 6) {
+                $data[$name]['push'] = substr($tail, 0, -6);
+            }
+        }
+
+        return $data;
+    }
+
     // helpers
     public static function isRepository($path)
     {
