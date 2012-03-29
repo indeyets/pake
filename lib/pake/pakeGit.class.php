@@ -76,7 +76,15 @@ class pakeGit
         return is_dir($path.'/.git');
     }
 
-    private function git_run($command)
+    /**
+     * Run git-command in context of repository
+     *
+     * This method is useful for implementing some custom command, not implemented by pake.
+     * In cases when pake has native support for command, please use it, as it will provide better compatibility
+     *
+     * @param $command
+     */
+    public function git_run($command)
     {
         $git = escapeshellarg(pake_which('git'));
 
