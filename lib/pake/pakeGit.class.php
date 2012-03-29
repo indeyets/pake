@@ -90,7 +90,7 @@ class pakeGit
         $result = $this->git_run($cmd);
 
         $data = array();
-        foreach (explode("\n", $result) as $line) {
+        foreach (preg_split('/(\r\n|\n\r|\r|\n)/', $result) as $line) {
             $line = trim($line);
             if (strlen($line) == 0) {
                 continue;
@@ -114,7 +114,7 @@ class pakeGit
         $result = $this->git_run('remote -v');
 
         $data = array();
-        foreach (explode("\n", $result) as $line) {
+        foreach (preg_split('/(\r\n|\n\r|\r|\n)/', $result) as $line) {
             $line = trim($line);
             if (strlen($line) == 0) {
                 continue;
