@@ -33,12 +33,6 @@ class pakePHPDoc
 
         $comment = $reflection->getDocComment();
 
-        $short_desc = '';
-        $long_desc = '';
-
-        $looking_for_short = true;
-        $short_lines_counter = 0;
-
         $lines = explode("\n", $comment);
         $obj = new self($lines);
 
