@@ -339,15 +339,15 @@ function pake_chmod($arg, $target_dir, $mode, $umask = 0000)
 
 function pake_which($cmd)
 {
-    static $win_executable_extensions = array('.exe', '.com', '.cmd', '.bat');
     $is_windows = (strtolower(substr(PHP_OS, 0, 3)) == 'win');
 
-    $path_env_var = $is_windows ? 'Path' : 'PATH';
+    $paths = explode(PATH_SEPARATOR, getenv('PATH'));
+    $win_executable_extensions = array();
 
-    if (!isset($_SERVER[$path_env_var]))
-        throw new pakeException($path_env_var.' environment variable is not set');
+    if ($is_windows) {
+        $win_executable_extensions = explode(';', getenv('PATHEXT'));
+    }
 
-    $paths = explode(PATH_SEPARATOR, $_SERVER[$path_env_var]);
     $extension = pathinfo($cmd, PATHINFO_EXTENSION);
 
     foreach ($paths as $path) {
