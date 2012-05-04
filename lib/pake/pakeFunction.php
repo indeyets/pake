@@ -197,25 +197,30 @@ function pake_mirror($arg, $origin_dir, $target_dir, $options = array())
   }
 }
 
+/**
+ * Use pake_remove for smarter operations
+ */
+function pake_unlink($file)
+{
+    if (!file_exists($file))
+        return;
+
+    if (is_dir($file) && !is_link($file)) {
+        pake_echo_action('dir-', $file);
+        rmdir($file);
+    } else {
+        pake_echo_action(is_link($file) ? 'link-' : 'file-', $file);
+        unlink($file);
+    }
+}
+
 function pake_remove($arg, $target_dir)
 {
-  $files = array_reverse(pakeFinder::get_files_from_argument($arg, $target_dir));
+    $files = array_reverse(pakeFinder::get_files_from_argument($arg, $target_dir));
 
-  foreach ($files as $file)
-  {
-    if (is_dir($file) && !is_link($file))
-    {
-      pake_echo_action('dir-', $file);
-
-      rmdir($file);
+    foreach ($files as $file) {
+        pake_unlink($file);
     }
-    else
-    {
-      pake_echo_action(is_link($file) ? 'link-' : 'file-', $file);
-
-      unlink($file);
-    }
-  }
 }
 
 // shortcut for common operation
