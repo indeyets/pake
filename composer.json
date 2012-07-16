@@ -1,0 +1,44 @@
+{
+    "name": "indeyets/pake",
+    "description": "PHP automation tool with capabilities similar to make",
+    "authors": [
+        {
+             "name": "Alexey Zakhlestin",
+             "email": "indeyets@gmail.com",
+             "homepage": "http://wiki.github.com/indeyets/pake"
+        },
+        {
+             "name": "Fabien Potencier",
+             "email": "fabien.potencier@symfony-project.com"
+        }
+    ],
+    "homepage": "https://github.com/indeyets/pake",
+    "license": "BSD",
+    "require": {
+        "php": ">=5.2.1",
+        "php-phar": "*",
+        "php-zlib": "*",
+        "php-bz2": "*",
+        "php-mbstring": "*",
+        "php-pcntl": "*",
+        "php-posix": "*",
+        "fabpot/yaml": "1.0.6"
+    },
+    "autoload": {
+        "files": ["lib/pake/init.php"]
+    },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "fabpot/yaml",
+                "version": "1.0.6",
+                "autoload": {"psr-0": {"sfYaml": ""}},
+                "dist": {
+                    "type": "zip",
+                    "url": "https://github.com/fabpot/yaml/zipball/master"
+                }
+            }
+        }
+    ]
+}
