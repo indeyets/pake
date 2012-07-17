@@ -620,9 +620,19 @@ class pakeFinder
         $files = array();
 
         if (is_array($arg)) {
-            $files = $arg;
+            if (strlen($target_dir) > 0) {
+                foreach ($arg as $path) {
+                    $files[] = $target_dir.'/'.$path;
+                }
+            } else {
+                $files = $arg;
+            }
         } elseif (is_string($arg)) {
-            $files[] = $arg;
+            if (strlen($target_dir) > 0) {
+                $files[] = $target_dir.'/'.$arg;
+            } else {
+                $files[] = $arg;
+            }
         } elseif ($arg instanceof pakeFinder) {
             /** @var $arg pakeFinder */
             $files = $arg->in($target_dir);
