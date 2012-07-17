@@ -76,10 +76,33 @@ class pakeTask
     return $tasks;
   }
 
-  public static function get_abbreviated_tasknames()
-  {
-      return self::abbrev(array_keys(self::get_tasks()));
-  }
+    public static function get_abbreviated_tasknames()
+    {
+        return self::abbrev(array_keys(self::get_tasks()));
+    }
+
+    /**
+     * @static
+     * @param $abbreviation string
+     * @return string
+     * @throws pakeException
+     */
+    public static function taskname_from_abbreviation($abbreviation)
+    {
+        // generating abbreviations
+        $abbreviated_tasks = self::get_abbreviated_tasknames();
+
+        // does requested task correspond to full or abbreviated name?
+        if (!array_key_exists($abbreviation, $abbreviated_tasks)) {
+            throw new pakeException('Task "'.$abbreviation.'" is not defined.');
+        }
+
+        if (count($abbreviated_tasks[$abbreviation]) > 1) {
+            throw new pakeException('Task "'.$abbreviation.'" is ambiguous ('.implode(', ', $abbreviated_tasks[$abbreviation]).').');
+        }
+
+        return $abbreviated_tasks[$abbreviation][0];
+    }
 
   public function get_property($name, $section = null)
   {
