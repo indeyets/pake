@@ -1,44 +1,41 @@
 {
     "name": "indeyets/pake",
-    "description": "PHP automation tool with capabilities similar to make",
+    "description": "PHP automation tool inspired by Rake",
+    "keywords": ["automation", "build", "task"],
     "authors": [
         {
              "name": "Alexey Zakhlestin",
              "email": "indeyets@gmail.com",
-             "homepage": "http://wiki.github.com/indeyets/pake"
+             "homepage": "https://indeyets.ru/",
+             "role": "Developer"
         },
         {
              "name": "Fabien Potencier",
-             "email": "fabien.potencier@symfony-project.com"
+             "email": "fabien.potencier@symfony-project.com",
+             "homepage": "http://fabien.potencier.org/",
+             "role": "Developer"
         }
     ],
-    "homepage": "https://github.com/indeyets/pake",
-    "license": "BSD",
+    "homepage": "https://github.com/indeyets/pake/wiki",
+    "license": "MIT",
+    "support": {
+        "email": "pake@googlegroups.com",
+        "issues": "https://github.com/indeyets/pake/issues",
+        "forum": "https://groups.google.com/forum/?fromgroups#!forum/pake",
+        "wiki": "https://github.com/indeyets/pake/wiki",
+        "source": "https://github.com/indeyets/pake"
+    },
     "require": {
         "php": ">=5.2.1",
-        "php-phar": "*",
-        "php-zlib": "*",
-        "php-bz2": "*",
-        "php-mbstring": "*",
-        "php-pcntl": "*",
-        "php-posix": "*",
-        "fabpot/yaml": "1.0.6"
+        "ext-phar": "*",
+        "ext-zlib": "*",
+        "ext-bz2": "*",
+        "ext-mbstring": "*",
+        "ext-pcntl": "*",
+        "ext-posix": "*"
     },
     "autoload": {
         "files": ["lib/pake/init.php"]
     },
-    "repositories": [
-        {
-            "type": "package",
-            "package": {
-                "name": "fabpot/yaml",
-                "version": "1.0.6",
-                "autoload": {"psr-0": {"sfYaml": ""}},
-                "dist": {
-                    "type": "zip",
-                    "url": "https://github.com/fabpot/yaml/zipball/master"
-                }
-            }
-        }
-    ]
+    "bin": ["bin/pake"]
 }
