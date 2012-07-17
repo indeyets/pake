@@ -236,21 +236,8 @@ class pakeApp
 
     protected function initAndRunTask($task_name, $args, $options)
     {
-        // generating abbreviations
-        $abbreviated_tasks = pakeTask::get_abbreviated_tasknames();
-
-        // does requested task correspond to full or abbreviated name?
-        if (!array_key_exists($task_name, $abbreviated_tasks)) {
-            throw new pakeException('Task "'.$task_name.'" is not defined.');
-        }
-
-        if (count($abbreviated_tasks[$task_name]) > 1) {
-            throw new pakeException('Task "'.$task_name.'" is ambiguous ('.implode(', ', $abbreviated_tasks[$task_name]).').');
-        }
-
-        // init and run task
-        $task = pakeTask::get($abbreviated_tasks[$task_name][0]);
-        return $task->invoke($args, $options);
+        $task_name = pakeTask::taskname_from_abbreviation($task_name);
+        return pakeTask::get($task_name)->invoke($args, $options);
     }
 
     protected function runDefaultTask()
@@ -533,14 +520,22 @@ class pakeApp
         }
 
         $victim_name = $args[0];
+        $task_name = pakeTask::taskname_from_abbreviation($victim_name);
+
+        $victim = null;
+
         foreach (pakeTask::get_tasks() as $name => $task) {
-            if ($victim_name == $name or $victim_name == pakeTask::get_mini_task_name($name)) {
+            if ($task_name== $name or $task_name== pakeTask::get_mini_task_name($name)) {
                 $victim = $task;
                 break;
             }
         }
 
-        $title = 'Documentation for "'.$victim_name.'" task';
+        if (null === $victim) {
+            throw new pakeException("Couldn't find documentation for {$task_name}");
+        }
+
+        $title = 'Documentation for "'.$task_name.'" task';
 
         pake_echo($title);
         pake_echo(str_repeat('=', mb_strlen($title)));
