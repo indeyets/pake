@@ -1,8 +1,8 @@
 #!/usr/bin/env php
 <?php
-if (is_dir('../../../../vendor')) {
+if (is_dir(__DIR__.'/../../../../vendor')) {
     // prefer composer's autoloader
-    require_once realpath('../../../..').'/vendor/autoload.php';
+    require_once realpath(__DIR__.'/../../../..').'/vendor/autoload.php';
 } else {
     // fallback to custom autoloader
     require_once realpath(__DIR__.'/..').'/lib/pake/init.php';
