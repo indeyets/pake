@@ -1,6 +1,12 @@
 #!/usr/bin/env php
 <?php
-require realpath(__DIR__.'/..').'/lib/pake/init.php';
+if (is_dir('../../../../vendor')) {
+    // prefer composer's autoloader
+    require realpath('../../../..').'/vendor/autoload.php';
+} else {
+    // fallback to custom autoloader
+    require realpath(__DIR__.'/..').'/lib/pake/init.php';
+}
 
 $retval = pakeApp::get_instance()->run();
 
