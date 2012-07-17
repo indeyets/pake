@@ -287,17 +287,23 @@ class pakeTask
     return pakeTask::$TASKS[$task_name];
   }
 
-  public static function get($task_name)
-  {
-    $tasks = self::get_tasks();
-    $task_name = self::get_full_task_name($task_name);
-    if (!array_key_exists($task_name, $tasks))
+    /**
+     * @static
+     * @param $task_name string
+     * @return pakeTask
+     * @throws pakeException
+     */
+    public static function get($task_name)
     {
-      throw new pakeException('Task "'.$task_name.'" is not defined.');
-    }
+        $tasks = self::get_tasks();
+        $task_name = self::get_full_task_name($task_name);
 
-    return $tasks[$task_name];
-  }
+        if (!array_key_exists($task_name, $tasks)) {
+            throw new pakeException('Task "'.$task_name.'" is not defined.');
+        }
+
+        return $tasks[$task_name];
+    }
 
   public static function get_full_task_name($task_name)
   {
@@ -319,8 +325,7 @@ class pakeTask
    * abc::def => def
    *
    * @param string $task_name 
-   * @return void
-   * @author Jimi Dini
+   * @return string
    */
   public static function get_mini_task_name($task_name)
   {
