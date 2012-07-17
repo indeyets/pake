@@ -27,12 +27,15 @@
         <api>1.7.0</api>
     </version>
     <stability>
-        <release>beta</release>
+        <release>stable</release>
         <api>stable</api>
     </stability>
     <license uri="https://raw.github.com/indeyets/pake/master/LICENSE">BSD license</license>
     <notes>
-        -
+        - windows-compatibility fixes
+        - "pake help taskname" can take abbreviations instead of full task names
+        - in helpers, target_dir is applied to explicit paths too now (not only pakeFinder)
+        - pake can be installed via composer, now
     </notes>
 
     <contents>
@@ -427,4 +430,3 @@
         </release>
     </changelog>
 </package>
-    
