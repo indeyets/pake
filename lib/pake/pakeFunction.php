@@ -223,16 +223,28 @@ function pake_remove($arg, $target_dir)
     }
 }
 
-// shortcut for common operation
+/**
+ * Removes directory and all it's contents
+ *
+ * @param $path string
+ */
 function pake_remove_dir($path)
 {
+    if (!file_exists($path)) {
+        // nothing to do
+        return;
+    }
+
+    if (!is_dir($path)) {
+        throw new pakeException('"'.$path.'" is not a directory');
+    }
+
     // remove contents
     $finder = pakeFinder::type('any');
     pake_remove($finder, $path);
 
     // remove folder
-    $finder = pakeFinder::type('dir')->name(basename($path))->maxdepth(0);
-    pake_remove($finder, dirname($path));
+    pake_unlink($path);
 }
 
 function pake_touch($arg, $target_dir)
