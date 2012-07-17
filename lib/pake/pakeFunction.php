@@ -351,7 +351,7 @@ function pake_which($cmd)
 
     if ($is_windows) {
         $win_executable_extensions = explode(';', getenv('PATHEXT'));
-        array_unshift($win_executable_extensions, realpath(getcwd()));
+        array_unshift($paths, realpath(getcwd()));
     }
 
     $extension = pathinfo($cmd, PATHINFO_EXTENSION);
