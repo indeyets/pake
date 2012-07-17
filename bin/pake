@@ -1,0 +1,9 @@
+#!/usr/bin/env php
+<?php
+require realpath(__DIR__.'/..').'/lib/pake/init.php';
+
+$retval = pakeApp::get_instance()->run();
+
+if (false === $retval) {
+    exit(1);
+}
