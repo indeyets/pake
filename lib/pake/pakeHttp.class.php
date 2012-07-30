@@ -102,7 +102,7 @@ class pakeHttp
         $status = $meta['wrapper_data'][0];
         $code = substr($status, 9, 3);
 
-        if ($status > 400)
+        if ($code > 400)
             throw new pakeException('http request returned: '.$status);
 
         pake_echo_action('…', 'got '.strlen($response).' bytes');
