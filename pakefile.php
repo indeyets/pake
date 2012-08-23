@@ -1,7 +1,7 @@
 <?php
 
 // force usage of local pake
-if ($_SERVER['PHP_SELF'] != dirname(__FILE__).'/bin/pake.php') {
+if (realpath($_SERVER['PHP_SELF']) != dirname(__FILE__).'/bin/pake.php') {
     $php_exec = (isset($_SERVER['_']) and substr($_SERVER['_'], -4) != 'pake') ? $_SERVER['_'] : 'php';
     $args = '';
 
