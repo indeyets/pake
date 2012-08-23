@@ -143,7 +143,10 @@ function run_compact($task, $args)
  */
 function run_phar()
 {
-    $finder = pakeFinder::type('any')->ignore_version_control()->name('phar-stub.php', '*.class.php', 'init.php', 'pakeFunction.php');
+    $finder = pakeFinder::type('any')
+                ->ignore_version_control()
+                ->name('phar-stub.php', '*.class.php', 'init.php', 'pakeFunction.php', 'sfYaml*.php');
+
     pakeArchive::createPharArchive($finder, dirname(__FILE__), 'pake.phar', 'phar-stub.php', null, true);
 }
 
