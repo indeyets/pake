@@ -5,8 +5,10 @@ if (is_dir(__DIR__.'/../../../../vendor')) {
     require_once realpath(__DIR__.'/../../../..').'/vendor/autoload.php';
 } else {
     // fallback to custom autoloader
-    require_once realpath(__DIR__.'/..').'/lib/pake/init.php';
+    require_once realpath(__DIR__.'/..').'/lib/pake/autoload.php';
 }
+
+require_once realpath(__DIR__.'/..').'/lib/pake/cli_init.php';
 
 $retval = pakeApp::get_instance()->run();
 

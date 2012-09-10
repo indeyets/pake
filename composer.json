@@ -35,7 +35,7 @@
         "ext-posix": "*"
     },
     "autoload": {
-        "files": ["lib/pake/init.php"]
+        "files": ["lib/pake/autoload.php"]
     },
     "bin": ["bin/pake"]
 }
