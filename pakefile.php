@@ -75,7 +75,8 @@ function run_compact($task, $args)
 
     // core-files
     $files = array(
-        $_root.'/lib/pake/init.php',
+        $_root.'/lib/pake/autoload.php',
+        $_root.'/lib/pake/cli_init.php',
         $_root.'/lib/pake/pakeFunction.php',
     );
 
@@ -145,7 +146,7 @@ function run_phar()
 {
     $finder = pakeFinder::type('any')
                 ->ignore_version_control()
-                ->name('phar-stub.php', '*.class.php', 'init.php', 'pakeFunction.php', 'sfYaml*.php');
+                ->name('phar-stub.php', '*.class.php', 'autoload.php', 'cli_init.php', 'pakeFunction.php', 'sfYaml*.php');
 
     pakeArchive::createPharArchive($finder, dirname(__FILE__), 'pake.phar', 'phar-stub.php', null, true);
 }
