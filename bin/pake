@@ -1,8 +1,12 @@
 #!/usr/bin/env php
 <?php
-if (is_dir(__DIR__.'/../../../../vendor')) {
-    // prefer composer's autoloader
+
+if (is_dir(__DIR__.'/../../../../vendor') and file_exists(__DIR__.'/../../../../vendor/autoload.php')) {
+    // looks like we are installed as dependency via composer
     require_once realpath(__DIR__.'/../../../..').'/vendor/autoload.php';
+} elseif (is_dir(__DIR__.'/../vendor') and file_exists(__DIR__.'/../vendor/autoload.php')) {
+    // looks like we are in composer dev-environment
+    require_once realpath(__DIR__.'/..').'/vendor/autoload.php';
 } else {
     // fallback to custom autoloader
     require_once realpath(__DIR__.'/..').'/lib/pake/autoload.php';
