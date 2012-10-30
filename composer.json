@@ -29,6 +29,9 @@
         "php": ">=5.2.1",
         "ext-mbstring": "*"
     },
+    "require-dev": {
+        "vierbergenlars/simpletest": "1.1.*"
+    },
     "suggest": {
         "ext-bz2": "*",
         "ext-pcntl": "*",

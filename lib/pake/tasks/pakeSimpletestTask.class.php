@@ -26,15 +26,17 @@ class pakeSimpletestTask
         $new_error_reporting = $new_error_reporting ^ E_STRICT;
     }
 
-    include_once('simpletest/unit_tester.php');
-    include_once('simpletest/web_tester.php');
-    if (!class_exists('TestSuite'))
-    {
-      throw new pakeException('You must install SimpleTest to use this task.');
-    }
+    if (!class_exists('TestSuite')) {
+        include_once('simpletest/unit_tester.php');
+        include_once('simpletest/web_tester.php');
 
-    require_once('simpletest/reporter.php');
-    require_once('simpletest/mock_objects.php');
+        if (!class_exists('TestSuite')) {
+            throw new pakeException('You must install SimpleTest to use this task.');
+        }
+
+        require_once('simpletest/reporter.php');
+        require_once('simpletest/mock_objects.php');
+    }
 
     set_include_path('test'.PATH_SEPARATOR.'lib'.PATH_SEPARATOR.get_include_path());
 
