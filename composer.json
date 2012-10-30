@@ -27,12 +27,14 @@
     },
     "require": {
         "php": ">=5.2.1",
-        "ext-phar": "*",
-        "ext-zlib": "*",
+        "ext-mbstring": "*"
+    },
+    "suggest": {
         "ext-bz2": "*",
-        "ext-mbstring": "*",
         "ext-pcntl": "*",
-        "ext-posix": "*"
+        "ext-phar": "*",
+        "ext-posix": "*",
+        "ext-zlib": "*"
     },
     "autoload": {
         "files": ["lib/pake/autoload.php"]
