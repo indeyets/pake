@@ -37,7 +37,9 @@
         "ext-pcntl": "*",
         "ext-phar": "*",
         "ext-posix": "*",
-        "ext-zlib": "*"
+        "ext-zlib": "*",
+        "phing/phing": "2.4.*",
+        "vierbergenlars/simpletest": "1.1.*"
     },
     "autoload": {
         "files": ["lib/pake/autoload.php"]

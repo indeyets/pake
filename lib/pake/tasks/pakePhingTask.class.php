@@ -8,10 +8,12 @@
  * @version    SVN: $Id$
  */
 
-include_once 'phing/Phing.php';
-if (!class_exists('Phing'))
-{
-  throw new pakeException('You must install Phing to use this task. (pear install http://phing.info/pear/phing-current.tgz)');
+if (!class_exists('Phing')) {
+    include_once 'phing/Phing.php';
+
+    if (!class_exists('Phing')) {
+        throw new pakeException('You must install Phing to use this task. (pear install http://phing.info/pear/phing-current.tgz)');
+    }
 }
 
 class pakePhingTask
