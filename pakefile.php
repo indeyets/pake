@@ -1,7 +1,11 @@
 <?php
 
 // force usage of local pake
-if (realpath($_SERVER['PHP_SELF']) != dirname(__FILE__).'/bin/pake.php') {
+$_self_path = realpath($_SERVER['PHP_SELF']);
+$_oldstyle_local = dirname(__FILE__).'/bin/pake.php';
+$_newstyle_local = dirname(__FILE__).'/bin/pake';
+
+if ($_self_path != $_oldstyle_local and $_self_path != $_newstyle_local) {
     $php_exec = (isset($_SERVER['_']) and substr($_SERVER['_'], -4) != 'pake') ? $_SERVER['_'] : 'php';
     $args = '';
 
@@ -17,7 +21,7 @@ if (realpath($_SERVER['PHP_SELF']) != dirname(__FILE__).'/bin/pake.php') {
     }
 
     pake_echo_comment("oops… you're using installed pake. restarting with local version…");
-    pake_sh(escapeshellarg($php_exec).' '.escapeshellarg(dirname(__FILE__).'/bin/pake.php').$force_tty.$args, true);
+    pake_sh(escapeshellarg($php_exec).' '.escapeshellarg($_newstyle_local).$force_tty.$args, true);
 
     die();
 } else {
