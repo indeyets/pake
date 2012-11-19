@@ -22,7 +22,7 @@
  */
 class pakeApp
 {
-    const VERSION = '1.1.DEV';
+    const VERSION = '1.7.3';
     const QUIT_INTERACTIVE = 0xDD;
 
     public static $MAX_LINE_SIZE = 78;
