@@ -2,8 +2,8 @@
 
 // force usage of local pake
 $_self_path = realpath($_SERVER['PHP_SELF']);
-$_oldstyle_local = dirname(__FILE__).'/bin/pake.php';
-$_newstyle_local = dirname(__FILE__).'/bin/pake';
+$_oldstyle_local = dirname(__FILE__).DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'pake.php';
+$_newstyle_local = dirname(__FILE__).DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'pake';
 
 if ($_self_path != $_oldstyle_local and $_self_path != $_newstyle_local) {
     $php_exec = (isset($_SERVER['_']) and substr($_SERVER['_'], -4) != 'pake') ? $_SERVER['_'] : 'php';
