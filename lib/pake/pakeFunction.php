@@ -263,19 +263,18 @@ function pake_replace_tokens_to_dir($arg, $src_dir, $target_dir, $begin_token, $
 {
     $files = pakeFinder::get_files_from_argument($arg, $src_dir, true);
 
-    foreach ($files as $file)
-    {
-      $replaced = false;
-      $content = pake_read_file($src_dir.'/'.$file);
-      foreach ($tokens as $key => $value)
-      {
-        $content = str_replace($begin_token.$key.$end_token, $value, $content, $count);
-        if ($count) $replaced = true;
-      }
+    foreach ($files as $file) {
+        $replaced = false;
+        $content = pake_read_file($src_dir.'/'.$file);
 
-      pake_echo_action('tokens', $target_dir.DIRECTORY_SEPARATOR.$file);
+        foreach ($tokens as $key => $value) {
+            $content = str_replace($begin_token.$key.$end_token, $value, $content, $count);
+            if ($count)
+                $replaced = true;
+        }
 
-      file_put_contents($target_dir.DIRECTORY_SEPARATOR.$file, $content);
+        pake_echo_action('tokens', $target_dir.DIRECTORY_SEPARATOR.$file);
+        file_put_contents($target_dir.DIRECTORY_SEPARATOR.$file, $content);
     }
 }
 
