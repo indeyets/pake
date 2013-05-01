@@ -21,6 +21,7 @@ class pakeFunctionTest extends UnitTestCase
     function tearDown()
     {
         $this->_cleanup();
+        rmdir($this->test_dir);
     }
 
     private function _cleanup()
@@ -39,15 +40,10 @@ class pakeFunctionTest extends UnitTestCase
         $test_file_name = 'file.tpl';
         $test_file = $this->test_dir.DIRECTORY_SEPARATOR.$test_file_name;
 
-        if (file_exists($test_file)) {
-            unlink($test_file);
-        }
-
         file_put_contents($test_file, '{token} {token2}');
         pake_replace_tokens($test_file_name, $this->test_dir, '{', '}', array('token' => 'hello', 'token2' => 'world'));
 
         $replaced = file_get_contents($test_file);
-        unlink($test_file);
 
         $this->assertEqual('hello world', $replaced);
     }
