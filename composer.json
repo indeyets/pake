@@ -30,7 +30,7 @@
         "ext-mbstring": "*"
     },
     "require-dev": {
-        "vierbergenlars/simpletest": "1.1.*"
+        "simpletest/simpletest": "1.1.*"
     },
     "suggest": {
         "ext-bz2": "*",
@@ -39,7 +39,7 @@
         "ext-posix": "*",
         "ext-zlib": "*",
         "phing/phing": "2.4.*",
-        "vierbergenlars/simpletest": "1.1.*"
+        "simpletest/simpletest": "1.1.*"
     },
     "autoload": {
         "files": ["lib/pake/autoload.php"]
