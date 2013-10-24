@@ -37,14 +37,27 @@ class pakeFunctionTest extends UnitTestCase
 
     public function test_pake_replace_tokens()
     {
-        $test_file_name = 'file.tpl';
-        $test_file = $this->test_dir.DIRECTORY_SEPARATOR.$test_file_name;
+        $test_file_names = array( 'file1.tpl', 'file2.tpl', 'file3.tpl' );
+        foreach( $test_file_names as $test_file_name )
+        {
+            file_put_contents($this->test_dir.DIRECTORY_SEPARATOR.$test_file_name, '{token} {token2}');
+        }
 
-        file_put_contents($test_file, '{token} {token2}');
-        pake_replace_tokens($test_file_name, $this->test_dir, '{', '}', array('token' => 'hello', 'token2' => 'world'));
-
+        pake_replace_tokens($test_file_names[0], $this->test_dir, '{', '}', array('token' => 'hello', 'token2' => 'world'));
+        $test_file = $this->test_dir.DIRECTORY_SEPARATOR.$test_file_names[0];
         $replaced = file_get_contents($test_file);
-
         $this->assertEqual('hello world', $replaced);
+        unlink($test_file);
+        unset($test_file_names[0]);
+
+        $files = pakeFinder::type('file')->in($this->test_dir);
+        pake_replace_tokens($files, $this->test_dir, '{', '}', array('token' => 'hello', 'token2' => 'world'));
+        foreach( $test_file_names as $test_file_name )
+        {
+            $test_file = $this->test_dir.DIRECTORY_SEPARATOR.$test_file_name;
+            $replaced = file_get_contents($test_file);
+            $this->assertEqual('hello world', $replaced);
+            unlink($test_file);
+        }
     }
 }
