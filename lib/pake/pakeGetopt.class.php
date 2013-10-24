@@ -67,7 +67,7 @@ class pakeGetopt
     if (is_string($args))
     {
       // hack to split arguments with spaces : --test="with some spaces"
-      $args = preg_replace('/(\'|")(.+?)\\1/e', "str_replace(' ', '=PLACEHOLDER=', '\\2')", $args);
+      $args = preg_replace_callback('/(\'|")(.+?)\\1/', array($this, 'parse_callback'), $args);
       $args = preg_split('/\s+/', $args);
       $args = str_replace('=PLACEHOLDER=', ' ', $args);
     }
@@ -111,6 +111,11 @@ class pakeGetopt
       }
     }
   }
+
+    public function parse_callback(array $matches)
+    {
+        return str_replace(' ', '=PLACEHOLDER=', $matches[2]);
+    }
 
   public function has_option($option)
   {
