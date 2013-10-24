@@ -533,7 +533,7 @@ function pake_read_file($file_or_url)
 
     if (false === $retval) {
         $err = error_get_last();
-        throw new pakeException("Couldn't get file: ".$err['message']);
+        throw new pakeException("Couldn't get file '{$file_or_url}': ".$err['message']);
     }
 
     return $retval;
