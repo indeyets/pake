@@ -6,7 +6,7 @@ class pakeFinderTest extends UnitTestCase
 
   public function setUp()
   {
-    $this->dir = dirname(__FILE__).'/finder_tests';
+    $this->dir = dirname(__FILE__).DIRECTORY_SEPARATOR.'finder_tests';
   }
 
   public function test_simple()
@@ -158,7 +158,7 @@ class pakeFinderTest extends UnitTestCase
     foreach ($files as $file)
     {
       if (preg_match('/\.php$/', $file)) $ok = false;
-      else if (!preg_match('/(\/|^)file2/', $file)) $ok = false;
+      else if (!preg_match('/(\/|\\\\|^)file2/', $file)) $ok = false;
     }
     $this->assertTrue($ok);
   }
@@ -171,7 +171,7 @@ class pakeFinderTest extends UnitTestCase
       $ok = true;
       foreach ($files as $file)
       {
-        if (substr_count($file, '/') < $mindepth) $ok = false;
+        if (substr_count($file, DIRECTORY_SEPARATOR) < $mindepth) $ok = false;
       }
       $this->assertTrue($ok);
     }
@@ -193,7 +193,7 @@ class pakeFinderTest extends UnitTestCase
       $ok = true;
       foreach ($files as $file)
       {
-        if (substr_count($file, '/') != $depth) $ok = false;
+        if (substr_count($file, DIRECTORY_SEPARATOR) != $depth) $ok = false;
       }
       $this->assertTrue($ok);
     }
