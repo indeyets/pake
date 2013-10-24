@@ -179,7 +179,9 @@ class pakeGit
         try {
             return pake_sh($cmd);
         } catch (pakeException $e) {
-            if (strpos($e->getMessage(), 'cannot be used without a working tree') !== false) {
+            if (strpos($e->getMessage(), 'cannot be used without a working tree') !== false ||
+                // workaround for windows (using win7 and git 1.7.10)
+                strpos($e->getMessage(), 'fatal: Could not switch to ') !== false) {
                 pake_echo_error('Your version of git is buggy. Using workaround');
                 self::$needs_work_tree_workaround = true;
                 return $this->git_run($command);

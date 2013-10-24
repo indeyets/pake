@@ -374,7 +374,7 @@ function pake_which($cmd)
 
         $test = $path.'/'.$cmd;
 
-        if ($is_windows and !in_array($extension, $win_executable_extensions)) {
+        if ($is_windows and (!in_array($extension, $win_executable_extensions) || $extension == '')) {
             // Windows
             foreach ($win_executable_extensions as $suffix) {
                 $full_name = $test.$suffix;
