@@ -28,7 +28,6 @@ class pakeApp
     public static $MAX_LINE_SIZE = 78;
     protected static $EXEC_NAME = 'pake';
     private static $PROPERTIES = array();
-    protected static $PAKEFILES = array('pakefile', 'Pakefile', 'pakefile.php', 'Pakefile.php');
     protected static $PLUGINDIRS = array();
     protected static $OPTIONS = array(
         array('--interactive', '-i', pakeGetopt::NO_ARGUMENT,       "Start pake in interactive (shell-like) mode."),
@@ -48,6 +47,8 @@ class pakeApp
         array('--full-width',  '',   pakeGetopt::NO_ARGUMENT,       "Force full width of output"),
         array('--version',     '-V', pakeGetopt::NO_ARGUMENT,       "Display the program version."),
     );
+
+    protected $PAKEFILES = array('pakefile', 'Pakefile', 'pakefile.php', 'Pakefile.php');
 
     private $opt = null;
     private $nosearch = false;
@@ -118,7 +119,7 @@ class pakeApp
     public function run($pakefile = null, $options = null, $load_pakefile = true)
     {
         if ($pakefile) {
-            self::$PAKEFILES = array($pakefile);
+            $this->PAKEFILES = array($pakefile);
         }
 
         $this->handle_options($options);
@@ -299,9 +300,11 @@ class pakeApp
     public function have_pakefile()
     {
         $here = getcwd();
-        foreach (self::$PAKEFILES as $file) {
-            if (file_exists($here.'/'.$file)) {
-                $this->pakefile = $here.'/'.$file;
+        foreach ($this->PAKEFILES as $file) {
+            $filepath = $here . '/' . $file;
+
+            if (file_exists($filepath)) {
+                $this->pakefile = $filepath;
                 return true;
             }
         }
@@ -314,9 +317,10 @@ class pakeApp
         $start = $here = getcwd();
         while (!$this->have_pakefile()) {
             chdir('..');
+
             if (getcwd() == $here || $this->nosearch) {
                 chdir($start);
-                throw new pakeException('No pakefile found (looking for: '.join(', ', self::$PAKEFILES).')');
+                throw new pakeException('No pakefile found (looking for: '.join(', ', $this->PAKEFILES).')');
             }
 
             $here = getcwd();
@@ -355,7 +359,7 @@ class pakeApp
                 $this->verbose = false;
                 break;
             case 'pakefile':
-                self::$PAKEFILES = array($value);
+                $this->PAKEFILES = array($value);
                 break;
             case 'require':
                 require $value;
