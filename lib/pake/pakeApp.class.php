@@ -299,12 +299,30 @@ class pakeApp
     // If a match is found, it is copied into @pakefile.
     public function have_pakefile()
     {
+        $is_windows = (strtolower(substr(PHP_OS, 0, 3)) == 'win');
+
         $here = getcwd();
         foreach ($this->PAKEFILES as $file) {
-            $filepath = $here . '/' . $file;
+            $path_includes_directory = basename($file) !== $file;
+
+            if ($path_includes_directory) {
+                if ($is_windows) {
+                    $is_absolute_path = ($file[0] == '\\' or $file[0] == '/' or mb_ereg('^[A-Za-z]+:', $file) === 1);
+                } else {
+                    $is_absolute_path = $file[0] == '/';
+                }
+            } else {
+                $is_absolute_path = false;
+            }
+
+            if ($is_absolute_path) {
+                $filepath = $file;
+            } else {
+                $filepath = $here . DIRECTORY_SEPARATOR . $file;
+            }
 
             if (file_exists($filepath)) {
-                $this->pakefile = $filepath;
+                $this->pakefile = realpath($filepath);
                 return true;
             }
         }
@@ -326,7 +344,7 @@ class pakeApp
             $here = getcwd();
         }
 
-        require($this->pakefile);
+        require $this->pakefile;
         chdir($start);
     }
 
