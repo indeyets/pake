@@ -12,7 +12,7 @@ if (!class_exists('Phing')) {
     include_once 'phing/Phing.php';
 
     if (!class_exists('Phing')) {
-        throw new pakeException('You must install Phing to use this task. (pear install http://phing.info/pear/phing-current.tgz)');
+        throw new pakeException('You must install Phing to use this task. (see https://packagist.org/packages/phing/phing)');
     }
 }
 
