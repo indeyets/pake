@@ -1,21 +1,46 @@
 #!/usr/bin/env php
 <?php
 
-if (is_dir(__DIR__.'/../../../../vendor') and file_exists(__DIR__.'/../../../../vendor/autoload.php')) {
-    // looks like we are installed as dependency via composer
-    require_once realpath(__DIR__.'/../../../..').'/vendor/autoload.php';
-} elseif (is_dir(__DIR__.'/../vendor') and file_exists(__DIR__.'/../vendor/autoload.php')) {
-    // looks like we are in composer dev-environment
-    require_once realpath(__DIR__.'/..').'/vendor/autoload.php';
-} else {
-    // fallback to custom autoloader
-    require_once realpath(__DIR__.'/..').'/lib/pake/autoload.php';
+function _pake_bin_init()
+{
+    $loaded = false;
+    $_path = dirname(__FILE__); // php 5.2 compatibility
+
+    if (file_exists($_path.'/../../../../composer.json')) {
+        // looks like we are installed as dependency via composer
+        $project_dir = realpath($_path . '/../../../..');
+
+        $data = json_decode(file_get_contents($project_dir . DIRECTORY_SEPARATOR . 'composer.json'));
+
+        if (isset($data['config']['vendor-dir'])) {
+            $vendor_dir = $data['config']['vendor-dir'];
+        } else {
+            $vendor_dir = 'vendor';
+        }
+
+        require_once $project_dir . '/' . $vendor_dir . '/autoload.php';
+        $loaded = true;
+    }
+
+    if (!$loaded and is_dir($_path . '/../vendor') and file_exists($_path . '/../vendor/autoload.php')) {
+        // looks like we are in composer dev-environment
+        require_once realpath($_path . '/..').'/vendor/autoload.php';
+        $loaded = true;
+    }
+
+    if (!$loaded) {
+        // fallback to custom autoloader
+        require_once realpath($_path . '/..').'/lib/pake/autoload.php';
+        $loaded = true;
+    }
+
+    require_once realpath($_path . '/..').'/lib/pake/cli_init.php';
+
+    $retval = pakeApp::get_instance()->run();
+
+    if (false === $retval) {
+        exit(1);
+    }
 }
 
-require_once realpath(__DIR__.'/..').'/lib/pake/cli_init.php';
-
-$retval = pakeApp::get_instance()->run();
-
-if (false === $retval) {
-    exit(1);
-}
+_pake_bin_init();
