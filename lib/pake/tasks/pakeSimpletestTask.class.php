@@ -21,6 +21,8 @@ class pakeSimpletestTask
             throw new pakeException('You must install SimpleTest to use this task.');
         }
 
+        SimpleTest::ignore('UnitTestCase');
+
         $base_test_dir = 'test';
         $test_dirs = array();
 
