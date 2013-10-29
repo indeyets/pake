@@ -18,8 +18,12 @@ function _pake_bin_init()
             $vendor_dir = 'vendor';
         }
 
-        require_once $project_dir . '/' . $vendor_dir . '/autoload.php';
-        $loaded = true;
+        $autoload_file = $project_dir . '/' . $vendor_dir . '/autoload.php';
+
+        if (file_exists($autoload_file)) {
+            require_once $autoload_file;
+            $loaded = true;
+        }
     }
 
     if (!$loaded and is_dir($_path . '/../vendor') and file_exists($_path . '/../vendor/autoload.php')) {
