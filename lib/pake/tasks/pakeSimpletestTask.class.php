@@ -35,30 +35,30 @@ class pakeSimpletestTask
             $test_dirs[] = $base_test_dir;
         }
 
-        $test = new TestSuite('Test suite in (' . implode(', ', $test_dirs) . ')');
         $files = pakeFinder::type('file')->name('*Test.php')->in($test_dirs);
 
-        if (count($files) > 0) {
-            foreach ($files as $file) {
-                $test->addFile($file);
-            }
-
-            ob_start();
-            if ($type == 'html') {
-                $result = $test->run(new HtmlReporter());
-            } else if ($type == 'xml') {
-                $result = $test->run(new XmlReporter());
-            } else {
-                $result = $test->run(new TextReporter());
-            }
-            $content = ob_get_contents();
-            ob_end_clean();
-
-            if ($task->is_verbose()) {
-                echo $content;
-            }
-        } else {
+        if (count($files) == 0) {
             throw new pakeException('No test to run.');
+        }
+
+        $test = new TestSuite('Test suite in (' . implode(', ', $test_dirs) . ')');
+        foreach ($files as $file) {
+            $test->addFile($file);
+        }
+
+        ob_start();
+        if ($type == 'html') {
+            $result = $test->run(new HtmlReporter());
+        } else if ($type == 'xml') {
+            $result = $test->run(new XmlReporter());
+        } else {
+            $result = $test->run(new TextReporter());
+        }
+        $content = ob_get_contents();
+        ob_end_clean();
+
+        if ($task->is_verbose()) {
+            echo $content;
         }
     }
 
