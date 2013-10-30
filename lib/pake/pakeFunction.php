@@ -333,7 +333,9 @@ function pake_symlink($origin_dir, $target_dir, $copy_on_windows = false)
   if (!$ok)
   {
     pake_echo_action('link+', $target_dir);
-    symlink($origin_dir, $target_dir);
+    // symlink can fail, esp. on windows where user needs admin privileges
+    if (!symlink($origin_dir, $target_dir))
+        throw new pakeException('Unable to create symlink "'.$target_dir.'"');
   }
 }
 
