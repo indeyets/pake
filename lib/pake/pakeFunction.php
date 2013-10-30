@@ -412,7 +412,7 @@ function pake_sh($cmd, $interactive = false)
         }
     } else {
         if ($return > 0) {
-            throw new pakeException('Problem executing command');
+            throw new pakeException('Problem executing command', $return);
         }
     }
 
