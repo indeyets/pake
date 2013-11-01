@@ -243,7 +243,7 @@ class pakeApp
 
     protected function runDefaultTask()
     {
-        return $this->initAndRunTask('default', array(), array());
+        return $this->initAndRunTask(pakeTask::get_full_task_name('default'), array(), array());
     }
 
     protected static function parseTaskAndParameters(array $args)
