@@ -529,9 +529,9 @@ class pakeApp
     /**
      * show documentation; use "pake help taskname" to see detailed documentation on task
      *
-     * @param string $task 
-     * @param string $args 
-     * @return bool
+     * @param string $task
+     * @param string $args
+     * @throws pakeException
      * @author Alexey Zakhlestin
      */
     public static function run_help($task, $args)
@@ -547,7 +547,7 @@ class pakeApp
         $victim = null;
 
         foreach (pakeTask::get_tasks() as $name => $task) {
-            if ($task_name== $name or $task_name== pakeTask::get_mini_task_name($name)) {
+            if ($task_name == $name or $task_name == pakeTask::get_mini_task_name($name)) {
                 $victim = $task;
                 break;
             }

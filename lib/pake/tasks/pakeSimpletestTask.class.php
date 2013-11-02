@@ -62,6 +62,12 @@ class pakeSimpletestTask
         }
     }
 
+    /**
+     * Run the testsuite
+     *
+     * One of 'text', 'html', 'xml' can be given as first argument to select output type. Default is 'text'.
+     * Further arguments specify directories which have test-files. By-default, "test" is used as directory.
+     */
     public static function run_test(pakeTask $task, $args)
     {
         $types = array('text', 'html', 'xml');

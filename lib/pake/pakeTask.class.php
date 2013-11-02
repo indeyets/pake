@@ -56,25 +56,24 @@ class pakeTask
     }
   }
 
-  public static function get_tasks()
-  {
-    $tasks = pakeTask::$TASKS;
-    // we merge tasks and aliases
-    foreach (pakeTask::$ALIAS as $alias => $name)
+    public static function get_tasks()
     {
-      if (!array_key_exists($name, $tasks))
-      {
-        throw new pakeException('Task "'.$name.'" cannot be cloned to "'.$alias.'" because it does not exist.');
-      }
+        $tasks = pakeTask::$TASKS;
 
-      $alias_task = clone $tasks[$name];
-      $alias_task->alias = $name;
-      $alias_task->name = $alias;
-      $tasks[$alias] = $alias_task;
+        // we merge tasks and aliases
+        foreach (pakeTask::$ALIAS as $alias => $name) {
+            if (!array_key_exists($name, $tasks)) {
+                throw new pakeException('Task "'.$name.'" cannot be cloned to "'.$alias.'" because it does not exist.');
+            }
+
+            $alias_task = clone $tasks[$name];
+            $alias_task->alias = $name;
+            $alias_task->name = $alias;
+            $tasks[$alias] = $alias_task;
+        }
+
+        return $tasks;
     }
-
-    return $tasks;
-  }
 
     public static function get_abbreviated_tasknames()
     {
@@ -396,10 +395,10 @@ class pakeTask
       $table = array();
 
       foreach ($options as $option) {
-          $option = pakeTask::get_mini_task_name($option);
+          $short_option = pakeTask::get_mini_task_name($option);
 
-          for ($len = (strlen($option)) - 1; $len > 0; --$len) {
-              $abbrev = substr($option, 0, $len);
+          for ($len = (strlen($short_option)); $len > 0; --$len) {
+              $abbrev = substr($short_option, 0, $len);
 
               if (!array_key_exists($abbrev, $table))
                   $table[$abbrev] = 1;
