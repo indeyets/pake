@@ -10,7 +10,7 @@ function _pake_bin_init()
         // looks like we are installed as dependency via composer
         $project_dir = realpath($_path . '/../../../..');
 
-        $data = json_decode(file_get_contents($project_dir . DIRECTORY_SEPARATOR . 'composer.json'));
+        $data = json_decode(file_get_contents($project_dir . DIRECTORY_SEPARATOR . 'composer.json'), true);
 
         if (isset($data['config']['vendor-dir'])) {
             $vendor_dir = $data['config']['vendor-dir'];
