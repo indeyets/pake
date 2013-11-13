@@ -641,6 +641,7 @@ class pakeFinder
         }
 
         if ($relative and $target_dir) {
+            $files = array_map(create_function('$f', 'return realpath($);'), $files);
             $files = preg_replace('/^' . preg_quote(realpath($target_dir), '/') . '/', '', $files);
 
             // remove leading /
