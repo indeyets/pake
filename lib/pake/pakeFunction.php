@@ -21,7 +21,7 @@ function pake_import($name, $import_default_tasks = true)
     if (!class_exists($class_name)) {
         // plugin available?
         $plugin_path = '';
-        foreach (pakeApp::get_plugin_dirs() as $dir) {
+        foreach (pakeApp::get_instance()->get_plugin_dirs() as $dir) {
             if (file_exists($dir.'/'.$class_name.'.class.php')) {
                 $plugin_path = $dir.'/'.$class_name.'.class.php';
                 break;

@@ -28,7 +28,6 @@ class pakeApp
     public static $MAX_LINE_SIZE = 78;
     protected static $EXEC_NAME = 'pake';
     private static $PROPERTIES = array();
-    protected static $PLUGINDIRS = array();
     protected static $OPTIONS = array(
         array('--interactive', '-i', pakeGetopt::NO_ARGUMENT,       "Start pake in interactive (shell-like) mode."),
         array('--dry-run',     '-n', pakeGetopt::NO_ARGUMENT,       "Do a dry run without executing actions."),
@@ -49,6 +48,7 @@ class pakeApp
     );
 
     protected $PAKEFILES = array('pakefile', 'Pakefile', 'pakefile.php', 'Pakefile.php');
+    protected $PLUGINDIRS = array();
 
     private $opt = null;
     private $nosearch = false;
@@ -66,12 +66,12 @@ class pakeApp
 
     protected function __construct()
     {
-        self::$PLUGINDIRS[] = dirname(__FILE__).'/tasks';
+        $this->PLUGINDIRS[] = dirname(__FILE__).'/tasks';
     }
 
-    public static function get_plugin_dirs()
+    public function get_plugin_dirs()
     {
-        return self::$PLUGINDIRS;
+        return $this->PLUGINDIRS;
     }
 
     public function get_properties()
