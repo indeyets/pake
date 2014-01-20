@@ -66,7 +66,16 @@ class pakeApp
 
     protected function __construct()
     {
-        $this->PLUGINDIRS[] = dirname(__FILE__).'/tasks';
+        $this->add_plugin_dir(dirname(__FILE__).'/tasks');
+    }
+
+    public function add_plugin_dir($dir)
+    {
+        if (!is_dir($dir)) {
+            throw new pakeException("plugin path {$dir} is not found");
+        }
+
+        $this->PLUGINDIRS[] = $dir;
     }
 
     public function get_plugin_dirs()
