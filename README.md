@@ -15,4 +15,3 @@ Just create a `composer.json` file and run the `php composer.phar install` comma
             "indeyets/pake": "~1.99"
         }
     }
-
