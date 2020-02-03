@@ -4,13 +4,10 @@
 function _pake_bin_init()
 {
     $loaded = false;
-    $_path = dirname(__FILE__); // php 5.2 compatibility
 
-    if (file_exists($_path.'/../../../../composer.json')) {
+    if (file_exists('composer.json')) {
         // looks like we are installed as dependency via composer
-        $project_dir = realpath($_path . '/../../../..');
-
-        $data = json_decode(file_get_contents($project_dir . DIRECTORY_SEPARATOR . 'composer.json'), true);
+        $data = json_decode(file_get_contents('composer.json'), true);
 
         if (isset($data['config']['vendor-dir'])) {
             $vendor_dir = $data['config']['vendor-dir'];
@@ -18,27 +15,27 @@ function _pake_bin_init()
             $vendor_dir = 'vendor';
         }
 
-        $autoload_file = $project_dir . '/' . $vendor_dir . '/autoload.php';
+        $autoload_file = $vendor_dir . '/autoload.php';
 
         if (file_exists($autoload_file)) {
-            require_once $autoload_file;
+            require_once($autoload_file);
             $loaded = true;
         }
     }
 
-    if (!$loaded and is_dir($_path . '/../vendor') and file_exists($_path . '/../vendor/autoload.php')) {
+    if (!$loaded and is_dir($__DIR__. '/../vendor') and file_exists($__DIR__. '/../vendor/autoload.php')) {
         // looks like we are in composer dev-environment
-        require_once realpath($_path . '/..').'/vendor/autoload.php';
+        require_once(realpath($__DIR__. '/..').'/vendor/autoload.php');
         $loaded = true;
     }
 
     if (!$loaded) {
         // fallback to custom autoloader
-        require_once realpath($_path . '/..').'/lib/pake/autoload.php';
+        require_once('../lib/pake/autoload.php');
         $loaded = true;
     }
 
-    require_once realpath($_path . '/..').'/lib/pake/cli_init.php';
+    require_once('../lib/pake/cli_init.php');
 
     $retval = pakeApp::get_instance()->run();
 

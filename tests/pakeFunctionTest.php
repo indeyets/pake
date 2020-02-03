@@ -1,6 +1,8 @@
 <?php
+use PHPUnit\Framework\TestCase;
 
-class pakeFunctionTest extends UnitTestCase
+
+class pakeFunctionTest extends TestCase
 {
     protected $test_dir;
 
@@ -44,7 +46,7 @@ class pakeFunctionTest extends UnitTestCase
 
         $test_file = $this->test_dir.DIRECTORY_SEPARATOR.$test_file_name;
         $replaced = file_get_contents($test_file);
-        $this->assertEqual('hello world', $replaced);
+        $this->assertEquals('hello world', $replaced);
     }
 
     public function test_pake_replace_tokens_finder()
@@ -60,7 +62,7 @@ class pakeFunctionTest extends UnitTestCase
         foreach ($test_file_names as $test_file_name) {
             $test_file = $this->test_dir.DIRECTORY_SEPARATOR.$test_file_name;
             $replaced = file_get_contents($test_file);
-            $this->assertEqual('hello world', $replaced);
+            $this->assertEquals('hello world', $replaced);
         }
     }
 }

@@ -1,6 +1,8 @@
 <?php
+use PHPUnit\Framework\TestCase;
 
-class pakeNumberCompareTest extends UnitTestCase
+
+class pakeNumberCompareTest extends TestCase
 {
   public function test_simple()
   {

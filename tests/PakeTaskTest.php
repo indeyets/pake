@@ -1,8 +1,10 @@
 <?php
+use PHPUnit\Framework\TestCase;
 
-class pakeTaskTest extends UnitTestCase
+
+class PakeTaskTest extends TestCase
 {
-  public function test_abbrev()
+  public function testAbbrev()
   {
     $words = array('start', 'stop', 'queue', 'quit');
     $result = pakeTask::abbrev($words);
@@ -17,6 +19,6 @@ class pakeTaskTest extends UnitTestCase
       'que' => array('queue'), 'queu' => array('queue'), 'queue' => array('queue'),
       'qui' => array('quit'), 'quit' => array('quit')
     );
-    $this->assertEqual($expected, $result);
+    $this->assertEquals($expected, $result);
   }
 }
