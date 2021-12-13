@@ -27,6 +27,7 @@
     },
     "require": {
         "php": ">=5.2.1",
+        "ext-ctype": "*",
         "ext-json": "*",
         "ext-mbstring": "*"
     },

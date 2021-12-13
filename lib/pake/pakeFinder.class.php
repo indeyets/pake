@@ -141,7 +141,7 @@ class pakeFinder
     /**
      * converts ant-pattern to PCRE regex
      *
-     * @param string $pattern 
+     * @param string $pattern
      * @return string
      */
     private function pattern_to_regex($pattern)
@@ -602,10 +602,10 @@ class pakeFinder
 
     public static function isPathAbsolute($path)
     {
-        if ($path{0} == '/' || $path{0} == '\\' ||
-            (strlen($path) > 3 && ctype_alpha($path{0}) &&
-             $path{1} == ':' &&
-             ($path{2} == '\\' || $path{2} == '/')
+        if ($path[0] == '/' || $path[0] == '\\' ||
+            (strlen($path) > 3 && ctype_alpha($path[0]) &&
+                $path[1] == ':' &&
+                ($path[2] == '\\' || $path[2] == '/')
             )
         ) {
             return true;
