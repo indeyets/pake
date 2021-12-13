@@ -1,7 +1,14 @@
+1.99.5:
+
+* fix compatibility with php 8.1 in `pakeFinder::isPathAbsolute`
+* add ctype php extension to the requirements
+
+
 1.99.4:
 
 * fix compatibility with php 7.4 (thanks rlerdorf)
 * add json php extension to the requirements
+
 
 1.99.3:
 
