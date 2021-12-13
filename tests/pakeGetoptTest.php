@@ -1,6 +1,8 @@
 <?php
+use PHPUnit\Framework\TestCase;
 
-class pakeGetoptTest extends UnitTestCase
+
+class pakeGetoptTest extends TestCase
 {
   public function test_simple()
   {
@@ -17,7 +19,7 @@ class pakeGetoptTest extends UnitTestCase
     }
     catch (pakeException $e)
     {
-      $this->assertPattern('/You cannot get a value for a NO_ARGUMENT/', $e->getMessage());
+      $this->assertEquals('pakeGetopt: You cannot get a value for a NO_ARGUMENT option.', $e->getMessage());
     }
 
     $g->parse('-t');
@@ -29,7 +31,7 @@ class pakeGetoptTest extends UnitTestCase
     }
     catch (pakeException $e)
     {
-      $this->assertPattern('/unrecognized option \-v/', $e->getMessage());
+      $this->assertEquals('pakeGetopt: unrecognized option -v.', $e->getMessage());
     }
   }
 
@@ -41,16 +43,16 @@ class pakeGetoptTest extends UnitTestCase
 
     $g = new pakeGetopt($options);
     $g->parse('--test toto with arguments');
-    $this->assertEqual(array('toto', 'with', 'arguments'), $g->get_arguments());
+    $this->assertEquals(array('toto', 'with', 'arguments'), $g->get_arguments());
 
     $g->parse('toto with arguments');
-    $this->assertEqual(array('toto', 'with', 'arguments'), $g->get_arguments());
+    $this->assertEquals(array('toto', 'with', 'arguments'), $g->get_arguments());
 
     $g->parse('-- --toto with arguments');
-    $this->assertEqual(array('--toto', 'with', 'arguments'), $g->get_arguments());
+    $this->assertEquals(array('--toto', 'with', 'arguments'), $g->get_arguments());
 
     $g->parse('-t -- --toto with arguments');
-    $this->assertEqual(array('--toto', 'with', 'arguments'), $g->get_arguments());
+    $this->assertEquals(array('--toto', 'with', 'arguments'), $g->get_arguments());
   }
 
   public function test_options()
@@ -74,44 +76,44 @@ class pakeGetoptTest extends UnitTestCase
     }
 
     $g->parse('--test=Toto');
-    $this->assertEqual('Toto', $g->has_option('test'));
-    $this->assertEqual('Toto', $g->get_option('test'));
+    $this->assertEquals(true, $g->has_option('test'));
+    $this->assertEquals('Toto', $g->get_option('test'));
 
     $g->parse('--test="Foo bar"');
-    $this->assertEqual('Foo bar', $g->get_option('test'));
+    $this->assertEquals('Foo bar', $g->get_option('test'));
 
     $g->parse('--test=\'Foo  bar    bar\'');
-    $this->assertEqual('Foo  bar    bar', $g->get_option('test'));
+    $this->assertEquals('Foo  bar    bar', $g->get_option('test'));
 
     $g->parse('-pr');
     $this->assertTrue($g->has_option('opt1'));
     $this->assertTrue($g->has_option('opt2'));
 
     $g->parse('-tFoo');
-    $this->assertEqual('Foo', $g->get_option('test'));
+    $this->assertEquals('Foo', $g->get_option('test'));
 
     $g->parse('-t Foo');
-    $this->assertEqual('Foo', $g->get_option('test'));
+    $this->assertEquals('Foo', $g->get_option('test'));
 
     $g->parse('-o Foo');
-    $this->assertEqual('Foo', $g->get_option('opt'));
+    $this->assertEquals('Foo', $g->get_option('opt'));
 
     $g->parse('-o -p');
     $this->assertTrue($g->has_option('opt'));
     $this->assertTrue($g->has_option('opt1'));
 
     $g->parse('-t "Foo bar"');
-    $this->assertEqual('Foo bar', $g->get_option('test'));
+    $this->assertEquals('Foo bar', $g->get_option('test'));
 
     $g->parse('-t"Foo bar"');
-    $this->assertEqual('Foo bar', $g->get_option('test'));
+    $this->assertEquals('Foo bar', $g->get_option('test'));
 
     $g->parse('-t\'Foo bar\'');
-    $this->assertEqual('Foo bar', $g->get_option('test'));
+    $this->assertEquals('Foo bar', $g->get_option('test'));
 
     $g->parse('-t"Foo bar" --test1="Another test"');
-    $this->assertEqual('Foo bar', $g->get_option('test'));
-    $this->assertEqual('Another test', $g->get_option('test1'));
+    $this->assertEquals('Foo bar', $g->get_option('test'));
+    $this->assertEquals('Another test', $g->get_option('test1'));
 
     $g->parse('-o');
     $this->assertTrue($g->get_option('opt'));
@@ -120,8 +122,8 @@ class pakeGetoptTest extends UnitTestCase
     $this->assertTrue($g->get_option('opt'));
 
     $g->parse('--opt="foo"');
-    $this->assertEqual('foo', $g->get_option('opt'));
-    $this->assertFalse($g->get_option('test'));
+    $this->assertEquals('foo', $g->get_option('opt'));
+    $this->assertEquals('', $g->get_option('test'));
   }
 }
 

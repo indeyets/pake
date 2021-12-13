@@ -32,7 +32,8 @@
         "ext-mbstring": "*"
     },
     "require-dev": {
-        "simpletest/simpletest": "1.1.*"
+        "simpletest/simpletest": "1.1.*",
+        "phpunit/phpunit": "^7.5.18"
     },
     "suggest": {
         "ext-bz2": "*",
@@ -44,7 +45,12 @@
         "simpletest/simpletest": "1.1.*"
     },
     "autoload": {
-        "files": ["lib/pake/autoload.php"]
+        "classmap": ["lib/pake/"],
+        "files": ["lib/pake/pakeFunction.php"]
+    },
+    "autoload-dev": {
+        "classmap": ["tests/", "lib/pake/"],
+        "files": ["lib/pake/pakeFunction.php"]
     },
     "bin": ["bin/pake"]
 }
